@@ -15,6 +15,7 @@ public class MapComponents {
 	public String d_errorMessage;
 	public List<Continent> d_continent_list;
 	public List<Country> d_country_list;
+
 	
 	
 	
