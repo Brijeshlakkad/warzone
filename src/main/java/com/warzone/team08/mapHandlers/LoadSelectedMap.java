@@ -83,7 +83,8 @@ public class LoadSelectedMap {
 						d_mapComponents.setErrorMessage("Invalid Country Details");
 						break;
 					}
-				}	
+				}
+				
 			}
 		}
 	}
