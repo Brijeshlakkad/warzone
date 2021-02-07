@@ -3,6 +3,7 @@ package com.warzone.team08.mapHandlers;
 import java.util.List;
 
 import com.warzone.team08.components.Continent;
+import com.warzone.team08.components.Country;
 /**
  * This class provides different methods for validations and handling of smooth execution of the map commands.
  * @author CHARIT
@@ -10,9 +11,11 @@ import com.warzone.team08.components.Continent;
  */
 public class MapComponents {
 	
-	public boolean d_correctMap = true;
+	public boolean d_correctMap = true; 
 	public String d_errorMessage;
 	public List<Continent> d_continent_list;
+	public List<Country> d_country_list;
+	
 	
 	
 	/**
@@ -68,7 +71,18 @@ public class MapComponents {
 	public List<Continent> getContinentList() {
 		return d_continent_list;
 	}
+
 	
+	public void setCountryList(List<Country> p_country_list) {
+		// TODO Auto-generated method stub
+		d_country_list = p_country_list;
+	}
+
+	
+	public List<Country> getCountryList() {
+		return d_country_list;
+	}
+
 
 
 }

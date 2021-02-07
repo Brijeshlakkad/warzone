@@ -1,5 +1,8 @@
 package com.warzone.team08.components;
-
+/**
+ * This class provides different methods to perform different operation on Continent.
+ * @author CHARIT
+ */
 public class Continent {
 
 	public String d_continentName;
