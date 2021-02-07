@@ -1,8 +1,3 @@
-[files]
-pic solar_pic.jpg
-map solar_map.gif
-crd solar.cards
-
 [continents]
 Mercury 6 yellow  
 Venus 8 yellow    
