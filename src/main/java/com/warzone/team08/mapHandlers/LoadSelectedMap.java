@@ -20,11 +20,12 @@ import com.warzone.team08.components.Country;
  */
 public class LoadSelectedMap {
 
+
 	public static List<Continent> d_continent_list;
 	public static List<Country> d_country_list;
 	public static TreeMap<Integer, List<Integer>> d_country_neighbour_map;
 	public static LinkedHashMap<String, List<String>> d_continent_country_map;
-	public MapComponents d_mapComponents = new MapComponents();
+	public static MapComponents d_mapComponents = new MapComponents();
 
 	/**
 	 * This method reads user provided map file.
@@ -63,6 +64,7 @@ public class LoadSelectedMap {
 					{
 						d_mapComponents = readContinents(l_reader, d_mapComponents);
 						d_mapComponents.setContinentList(d_continent_list);
+						
 						System.out.println("Set continents");
 					} 
 					else {
@@ -88,6 +90,7 @@ public class LoadSelectedMap {
 						break;
 					}
 				}
+
 				else if (l_line.substring(l_line.indexOf("[") + 1, l_line.indexOf("]")).equalsIgnoreCase("borders")) 
 				{
 					System.out.println("Borders are available");
@@ -109,9 +112,9 @@ public class LoadSelectedMap {
 				}
 				else
 				{
-					System.out.println("In else");
-					
-				}
+					System.out.println("outside loop");
+				}	
+				setMapComponent(d_mapComponents);
 			}
 		}
 	}
@@ -150,11 +153,13 @@ public class LoadSelectedMap {
 		if (!p_file_obj.exists()) {
 			return "File doesn't exist.";
 		}
-
+		
 		int l_index = l_fileName.lastIndexOf('.');
-		if (l_index > 0) {
+		if (l_index > 0) 
+		{
 			String l_extension = l_fileName.substring(l_index + 1);
-			if (!l_extension.equalsIgnoreCase("map")) {
+			if (!l_extension.equalsIgnoreCase("map")) 
+			{
 				return "Invalid file extension.";
 			}
 		} 
@@ -201,6 +206,7 @@ public class LoadSelectedMap {
 	}
 	
 	
+	
 	/**
 	 * This method is used to read country data from map file. 
 	 * It reads the country serial number, country name, corresponding continent serial number 
@@ -239,7 +245,8 @@ public class LoadSelectedMap {
 		return p_mapcompo;
 	}
 	
-	/**
+
+/*
 	 * This method is used to read country and its neighbor data from map file.
 	 * It reads the line from the file and creates the list of the neighboring countries.
 	 * And it adds country and list of its neighboring countries into a TreeMap.
@@ -281,60 +288,68 @@ public class LoadSelectedMap {
 		}
 		return p_mapcompo;
 	}
+
+	/**
+	 * This method stores the Map Component object in List. 
+	 * 
+	 */
+	
+	public static MapComponents d_mapCompo;
+	public static void setMapComponent(MapComponents p_map)
+	{
+		d_mapCompo = p_map;
+	}
+	public static MapComponents getMapComponent()
+	{
+		return d_mapCompo;
+	}
+
 	/**
 	 * This is a main method.
 	 * 
 	 * @param args command line argument
 	 * @throws IOException handles generated IOException while operation
 	 */
-	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-		LoadSelectedMap l = new LoadSelectedMap();
-		l.loadMap("C:\\Users\\CHARIT\\eclipse-workspace\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map");
-		
-		/* 
-			For Rutwik File System:-
-			C:\\Users\\Rutwik\\dsd_assignments\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map
-		*/
-		System.out.println("Map loaded");
-		
-		
-		System.out.println("\nList of Continents");
-		for (Continent c : d_continent_list)
+
+		public void show()
 		{
-			System.out.println(c.getContinentSerialNumber()+"   "+c.getContinentName()+"   "+c.getContinentControlValue());
-		}
-		
-		System.out.println("\nList of Countries");
-		for(Country co : d_country_list)
-		{
-			System.out.println(co.getCountrySerialNumber()+"   "+co.getCountryName()+"   "+co.getParentContinentSerialNumber());
-		}
-		
-		System.out.println("\nList of neighbours");
-		 for(Map.Entry<Integer, List<Integer>> entry:d_country_neighbour_map.entrySet())
-		 {    
-		        int key=entry.getKey();  
-		        List<Integer> b=entry.getValue();  
-		        System.out.print(key+" ");
-		        for(Integer i : b)
-		        {
-		        	System.out.print(i+"  ");
-		        }
-		        System.out.println();
-		 }    
-		 
-		 System.out.println("\nList of continent countries");
-		 for(Map.Entry<String, List<String>> entry:d_continent_country_map.entrySet())
-		 {    
-		        String key=entry.getKey();  
-		        List<String> b=entry.getValue();  
-		        System.out.print(key+" ");
-		        for(String i : b)
-		        {
-		        	System.out.print(i+"  ");
-		        }
-		        System.out.println();
-		 }    
-	}
+			System.out.println("\nList of Continents");
+			for (Continent c : d_continent_list)
+			{
+				System.out.println(c.getContinentSerialNumber()+"   "+c.getContinentName()+"   "+c.getContinentControlValue());
+			}
+			
+			System.out.println("\nList of Countries");
+			for(Country co : d_country_list)
+			{
+				System.out.println(co.getCountrySerialNumber()+"   "+co.getCountryName()+"   "+co.getParentContinentSerialNumber());
+			}
+			
+			System.out.println("\nList of neighbours");
+			 for(Map.Entry<Integer, List<Integer>> entry:d_country_neighbour_map.entrySet())
+			 {    
+			        int key=entry.getKey();  
+			        List<Integer> b=entry.getValue();  
+			        System.out.print(key+" ");
+			        for(Integer i : b)
+			        {
+			        	System.out.print(i+"  ");
+			        }
+			        System.out.println();
+			 }    
+			 
+			 
+			 System.out.println("\nList of continent countries");
+			 for(Map.Entry<String, List<String>> entry:d_continent_country_map.entrySet())
+			 {    
+			        String key=entry.getKey();  
+			        List<String> b=entry.getValue();  
+			        System.out.print(key+" ");
+			        for(String i : b)
+			        {
+			        	System.out.print(i+"  ");
+			        }
+			        System.out.println();
+			 }    
+		}		
 }

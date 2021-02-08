@@ -17,6 +17,7 @@ public class MapComponents {
 	public String d_errorMessage;
 	public List<Continent> d_continent_list;
 	public List<Country> d_country_list;
+	
 	public TreeMap<Integer,List<Integer>> d_countryNeighbourMap = new TreeMap<Integer,List<Integer>>();
 	public LinkedHashMap<String,List<String>> d_continentCountryMap = new LinkedHashMap<String, List<String>>();
 	
