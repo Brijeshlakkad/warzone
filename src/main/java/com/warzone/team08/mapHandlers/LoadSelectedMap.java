@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.warzone.team08.components.Continent;
 import com.warzone.team08.components.Country;
@@ -19,11 +21,17 @@ public class LoadSelectedMap {
 
 	public static List<Continent> d_continent_list = new ArrayList<Continent>();
 	public static List<Country> d_country_list = new ArrayList<Country>();
-	String d_extension;
-	String d_fileName;
-	String d_line;
+
+	public String d_extension;
+	public String d_fileName;
+	public String d_line;
 
 	public static MapComponents d_mapComponents = new MapComponents();
+
+	public static Map<Integer, List<Integer>> d_country_neighbour_map = new TreeMap<Integer,List<Integer>>();
+	
+	
+
 
 	/**
 	 * This method reads user provided map file.
@@ -39,7 +47,6 @@ public class LoadSelectedMap {
 		if (!l_msg.equalsIgnoreCase("Valid file name")) {
 			d_mapComponents.setCorrectMap(false);
 			d_mapComponents.setErrorMessage(l_msg);
-			// System.out.println("not");
 		}
 		
 		System.out.println("valid map");
@@ -83,20 +90,32 @@ public class LoadSelectedMap {
 						break;
 					}
 				}
-				
 
+				else if (l_line.substring(l_line.indexOf("[") + 1, l_line.indexOf("]")).equalsIgnoreCase("borders")) 
+				{
+					System.out.println("Borders are available");
+					if (d_mapComponents.checkMapCorrect()) 
+					{
+						d_mapComponents = readNeighbours(l_reader, d_mapComponents);
+					}
+					else 
+					{
+						d_mapComponents.setCorrectMap(false);
+						d_mapComponents.setErrorMessage("Invalid Neighbour Details");
+						break;
+					}
+				}
 				
 
 				else
 				{
 					System.out.println("outside loop");
-					//setMapComponent(d_mapComponents);
 				}	
+				setMapComponent(d_mapComponents);
 
 			}
 		}
 	}
-
 	/**
 	 * This method checks whether the given file name is valid or not.
 	 * 
@@ -138,6 +157,7 @@ public class LoadSelectedMap {
 	 */
 	public static MapComponents readContinents(BufferedReader p_reader, MapComponents p_mapcompo) throws IOException {
 		String l_line;
+		int l_continentCounter = 1;
 		try {
 			while ((l_line = p_reader.readLine()) != null && !l_line.startsWith("["))
 			{
@@ -145,9 +165,10 @@ public class LoadSelectedMap {
 				String l_continentComponents[] = l_line.split(" ");
 				if (!l_continentComponents[0].isEmpty() && !l_continentComponents[1].isEmpty()) {
 
+					l_con.setContinentSerialNumber(l_continentCounter);
+					l_continentCounter++;
 					l_con.setContinentName(l_continentComponents[0]);
 					l_con.setContinentControlValue(Integer.parseInt(l_continentComponents[1]));
-					l_con.setContinentColor(l_continentComponents[2]);
 					d_continent_list.add(l_con);
 				} 
 				p_reader.mark(0);
@@ -199,11 +220,58 @@ public class LoadSelectedMap {
 		return p_mapcompo;
 	}
 	
+
+/*
+	 * This method is used to read country and its neighbor data from map file.
+	 * It reads the line from the file and creates the list of the neighboring countries.
+	 * And it adds country and list of its neighboring countries into a TreeMap.
+	 * 
+	 * @param p_reader   object of BufferedReader
+	 * @param p_mapcompo object of MapComponents class
+	 * @return p_mapcompo it returns object of MapComponents class
+	 * @throws IOException handles generated IOException while operation
+	 */
+	public static MapComponents readNeighbours(BufferedReader p_reader, MapComponents p_mapcompo) throws IOException {
+		String l_line;
+		int l_countryNumber;
+		try {
+					while ((l_line = p_reader.readLine()) != null && !l_line.startsWith("["))
+					{
+						List<Integer> l_neighbourNodes = new ArrayList<Integer>();
+						String l_borderComponents[] = l_line.split(" ");
+						l_countryNumber = Integer.parseInt(l_borderComponents[0]);
+						for(int i = 1; i<l_borderComponents.length;i++)
+						{
+							l_neighbourNodes.add(Integer.parseInt(l_borderComponents[i]));
+						}
+						d_country_neighbour_map.put(l_countryNumber, l_neighbourNodes);
+						
+						for(Country c : d_country_list)
+						{
+							if(c.getCountrySerialNumber() == Integer.parseInt(l_borderComponents[0]))
+							{
+								c.setNeighbourCountries(l_neighbourNodes);
+							}
+						}
+						p_reader.mark(0);
+					}
+					//p_reader.reset();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		return p_mapcompo;
+	}
+
+	
+	
+
 	/**
 	 * This method stores the Map Component object in List. 
 	 * 
 	 */
-/*	
+	
 	public static MapComponents d_mapCompo;
 	public static void setMapComponent(MapComponents p_map)
 	{
@@ -213,7 +281,6 @@ public class LoadSelectedMap {
 	{
 		return d_mapCompo;
 	}
-*/
 
 	/**
 	 * This is a main method.
@@ -221,7 +288,7 @@ public class LoadSelectedMap {
 	 * @param args command line argument
 	 * @throws IOException handles generated IOException while operation
 	 */
-	public static void main(String[] args) throws IOException {
+	/*public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		LoadSelectedMap l = new LoadSelectedMap();
 		l.loadMap("C:\\Users\\Rutwik\\dsd_assignments\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map");
@@ -230,10 +297,10 @@ public class LoadSelectedMap {
 			For Rutwik File System:-
 			C:\\Users\\Rutwik\\dsd_assignments\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map
 		*/
-		System.out.println("Map loaded");
-		//public void show()
-		//{
-		
+	//	System.out.println("Map loaded");
+		public void show()
+		{
+			
 			System.out.println("\nList of Continents");
 			for (Continent c : d_continent_list)
 			{
@@ -245,7 +312,20 @@ public class LoadSelectedMap {
 			{
 				System.out.println(co.getCountrySerialNumber()+"   "+co.getCountryName()+"   "+co.getParentContinentSerialNumber());
 			}
-		//}
-	}
+			
+			System.out.println("\nList of neighbours");
+			 for(Map.Entry<Integer, List<Integer>> entry:d_country_neighbour_map.entrySet())
+			 {    
+			        int key=entry.getKey();  
+			        List<Integer> b=entry.getValue();  
+			        System.out.print(key+" ");
+			        for(Integer i : b)
+			        {
+			        	System.out.print(i+"  ");
+			        }
+			        System.out.println();
+			 }    
+		}
+	//}
 
 }

@@ -1,5 +1,7 @@
 package com.warzone.team08.components;
 
+import java.util.List;
+
 /*
  * This class is to set and get the country variables 
  * @author RUTWIK PATEL 
@@ -10,8 +12,10 @@ public class Country {
 	public int d_countrySerialNumber;
 	public String d_countryName;
 	public int d_parentContinentSerialNumber;
+	public List<Integer> d_neighbourCountries;	
 	
 	
+
 	/*
 	 * This function sets the country Id.
 	 * @param p_countrySerialNumber it is the country Id.
@@ -67,4 +71,15 @@ public class Country {
 	{
 		return d_parentContinentSerialNumber;
 	}
+	
+	
+	public void setNeighbourCountries(List<Integer> p_neighbourCountries) {
+		d_neighbourCountries = p_neighbourCountries;
+	}
+	
+	public List<Integer> getNeighbourCountries() {
+		return d_neighbourCountries;
+	}
+
+	
 }

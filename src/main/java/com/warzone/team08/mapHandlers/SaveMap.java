@@ -1,8 +1,9 @@
 package com.warzone.team08.mapHandlers;
 
 import java.io.File;
-
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -32,26 +33,31 @@ public class SaveMap {
 		{
 			
 			d_continentList = l_map.getContinentList();
-			System.out.println("["+"Continents"+"]");   
+			   
+			Writer l_writer = new FileWriter("C:\\Users\\Rutwik\\dsd_assignments\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\testing_file.map");
+			l_writer.write("["+"Continents"+"]\n");
 			
-			for(Continent name : d_continentList)
+			for(Continent continents : d_continentList)
 			{
-				
-				System.out.print(name.getContinentName() + " ");
-				System.out.println(name.d_continentControlValue);
+				l_writer.write( continents.getContinentSerialNumber()+ " "+continents.getContinentName()+" "+continents.getContinentControlValue()+"\n");
+				//System.out.print(name.getContinentName() + " ");
+				//System.out.println(name.d_continentControlValue);
 			}
+			
 			
 			d_countryList = l_map.getCountryList();
 			
-			System.out.println("\n"+"["+"Country"+"]");
+			l_writer.write("\n["+"Countries"+"]\n");
 			
 			for(Country country : d_countryList)
 			{
-				System.out.print(country.getCountrySerialNumber() + " ");
-				System.out.print(country.getCountryName()+" ");
-				System.out.println(country.getParentContinentSerialNumber());
+				l_writer.write(country.d_countrySerialNumber+ " "+country.getCountryName()+" "+country.getParentContinentSerialNumber()+"\n");
+				//System.out.print(country.getCountrySerialNumber() + " ");
+				//System.out.print(country.getCountryName()+" ");
+				//System.out.println(country.getParentContinentSerialNumber());
 			}
 			
+			l_writer.close();
 		}
 	}
 	

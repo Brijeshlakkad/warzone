@@ -19,7 +19,7 @@ public class checkFile {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//load.show();
+		load.show();
 		
 		SaveMap savemap = new SaveMap();
 		try {
