@@ -3,6 +3,7 @@ package com.warzone.team08.CLI.constants.layouts;
 import com.warzone.team08.Application;
 import com.warzone.team08.CLI.constants.enums.states.GameState;
 import com.warzone.team08.CLI.constants.layouts.commands.MapEditorCommandLayout;
+import com.warzone.team08.CLI.exceptions.InvalidArgumentException;
 import com.warzone.team08.CLI.models.UserCommand;
 
 import java.util.HashMap;
@@ -47,10 +48,14 @@ public class UserCommandLayout {
      */
     public static UserCommand matchAndGetUserCommand(String p_headOfCommand) {
         // Gets the list of command from the layout, and then it is being streamed over to filter the list
-        return d_gameStateListMap.get(Application.getGameState()).getUserCommands()
-                .stream().filter((userCommand) ->
-                        userCommand.getHeadCommand().equals(p_headOfCommand)
-                ).collect(Collectors.toList()).get(0);
+        try {
+            return d_gameStateListMap.get(Application.getGameState()).getUserCommands()
+                    .stream().filter((userCommand) ->
+                            userCommand.getHeadCommand().equals(p_headOfCommand)
+                    ).collect(Collectors.toList()).get(0);
+        } catch (IndexOutOfBoundsException e) {
+            throw new InvalidArgumentException("Unrecognized command!");
+        }
     }
 
     /**

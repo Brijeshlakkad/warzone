@@ -11,7 +11,6 @@ import com.warzone.team08.CLI.models.UserCommand;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -48,15 +47,23 @@ public class CommandLineInterface implements Runnable {
     }
 
     /**
-     * Sets the state of user interaction whether:
-     * 1. the program is waiting for user to enter the input
-     * 2. User is waiting for the execution to finish
+     * Sets the state of user interaction whether: 1. the program is waiting for user to enter the input 2. User is
+     * waiting for the execution to finish
      *
      * @param p_interactionState the state of user interaction
      */
     public void setInteractionState(UserInteractionState p_interactionState) {
         this.d_interactionState = p_interactionState;
     }
+
+    /**
+     * This variable will be used when a øsingle command with or without its value will be entered.
+     * <p>
+     * For example: > savemap filename
+     * <p>
+     * In this case, the method with this name will be called of a specific class decided at runtime.
+     */
+    private final String DEFAULT_METHOD_NAME = "execute";
 
     /**
      * Represents the created thread of this class implementing Runnable interface
@@ -83,6 +90,9 @@ public class CommandLineInterface implements Runnable {
         return l_bufferedReader.readLine();
     }
 
+    /**
+     * Method to be called when thread steps
+     */
     public void run() {
         while (Application.isRunning()) {
             try {
@@ -105,10 +115,9 @@ public class CommandLineInterface implements Runnable {
     }
 
     /**
-     * Calls the suggested function of the mapped class.
-     * Uses the mappings of the command text to the class name.
-     * Here, the suggested function is the same as the argument key provided by the user, and its values are the argument to be passed to the function call.
-     * (Mappings for this can be created if the both are not the same?)
+     * Calls the suggested function of the mapped class. Uses the mappings of the command text to the class name. Here,
+     * the suggested function is the same as the argument key provided by the user, and its values are the argument to
+     * be passed to the function call. (Mappings for this can be created if the both are not the same?)
      *
      * @param p_userCommand Value of the object (instance) which is equivalent to the user text input
      * @throws InvalidArgumentException Raised if the command not found
@@ -122,34 +131,16 @@ public class CommandLineInterface implements Runnable {
 
             // If the command does not have any argument keys
             if (p_userCommand.getUserArguments().size() == 0) {
-                // Call the class constructor in this case
-                // This type of commands only represents the data
-                Constructor<?> l_constructor = l_object.getClass().getConstructor();
-                l_constructor.newInstance();
+                // Call the default method of the instance with the arguments
+                this.handleMethodInvocation(l_object, DEFAULT_METHOD_NAME, p_userCommand.getCommandValues());
             } else {
                 // Iterate over the user arguments
                 for (Map.Entry<String, List<String>> entry : p_userCommand.getUserArguments().entrySet()) {
                     String p_argKey = entry.getKey();
                     List<String> p_argValues = entry.getValue();
-                    Method l_methodReference;
 
-                    // If the argument key does not have any value
-                    if (p_argValues.size() == 0) {
-                        l_methodReference = l_object.getClass().getMethod(p_argKey);
-                        l_methodReference.invoke(l_object);
-                    } else {
-                        // Create two arrays:
-                        // 1. For type of the value
-                        // 2. For the values
-                        Class<?>[] l_valueTypes = new Class[p_argValues.size()];
-                        Object[] l_values = p_argValues.toArray();
-                        for (int l_argIndex = 0; l_argIndex < p_argValues.size(); l_argIndex++) {
-                            l_valueTypes[l_argIndex] = String.class;
-                        }
-                        // Get the reference and call the method with arguments
-                        l_methodReference = l_object.getClass().getMethod(p_argKey, l_valueTypes);
-                        l_methodReference.invoke(l_object, l_values);
-                    }
+                    // If the argument key does not have any value, it will send empty list
+                    this.handleMethodInvocation(l_object, p_argKey, p_argValues);
                 }
             }
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException p_e) {
@@ -157,5 +148,35 @@ public class CommandLineInterface implements Runnable {
         } catch (NoSuchMethodException | InvocationTargetException p_e) {
             throw new InvalidArgumentException("Unrecognized argument and/or its values");
         }
+    }
+
+    /**
+     * This method handles the actual call of the specific method at runtime. Prepares two arrays of Class and Object
+     * for the argument type and the value respectively. Uses these arrays to find the method and call the method with
+     * the value(s).
+     *
+     * @param p_object    An instance of the object which specifies the class for being called method
+     * @param p_argKey    Value of the argument key passed by the user; This represents also the method name of the
+     *                    object.
+     * @param p_argValues Value of the argument values; This represents the arguments to be passed to the method call.
+     * @return Returns the same value returned by the method invocation
+     * @throws NoSuchMethodException     Raised if the method doesn't exist at the object.
+     * @throws InvocationTargetException Raised if invoked a method that throws an underlying exception itself.
+     * @throws IllegalAccessException    Raised if the method is not accessible by the caller.
+     */
+    private Object handleMethodInvocation(Object p_object,
+                                          String p_argKey, List<String> p_argValues)
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        // Create two arrays:
+        // 1. For type of the value
+        // 2. For the values
+        Class<?>[] l_valueTypes = new Class[p_argValues.size()];
+        Object[] l_values = p_argValues.toArray();
+        for (int l_argIndex = 0; l_argIndex < p_argValues.size(); l_argIndex++) {
+            l_valueTypes[l_argIndex] = String.class;
+        }
+        // Get the reference and call the method with arguments
+        Method l_methodReference = p_object.getClass().getMethod(p_argKey, l_valueTypes);
+        return l_methodReference.invoke(p_object, l_values);
     }
 }

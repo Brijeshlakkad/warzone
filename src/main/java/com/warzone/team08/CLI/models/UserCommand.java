@@ -21,6 +21,7 @@ public class UserCommand {
      * Represents the user command
      */
     private String d_headCommand;
+
     /**
      * Represents the arguments passed with the command
      */
@@ -36,9 +37,16 @@ public class UserCommand {
      */
     private CommandSpecification d_commandSpecification;
 
+    /**
+     * Value(s) of the head of the command if any
+     */
+    private List<String> d_commandValues;
+
     public UserCommand() {
+        // Initialise references
         d_commandArgumentList = new ArrayList<CommandArgument>();
         d_userArguments = new HashMap<>();
+        d_commandValues = new ArrayList<>();
     }
 
     /**
@@ -79,6 +87,7 @@ public class UserCommand {
 
     /**
      * Gets the list of argument key and its value(s)
+     *
      * @return Value of the list of argument key and its value(s)
      */
     public Map<String, List<String>> getUserArguments() {
@@ -150,7 +159,26 @@ public class UserCommand {
     }
 
     /**
+     * Gets the values of the head of the command if any.
+     *
+     * @return Values of the head of the command if any.
+     */
+    public List<String> getCommandValues() {
+        return d_commandValues;
+    }
+
+    /**
+     * Sets new values for the command.
+     *
+     * @param d_commandValues New value for the command.
+     */
+    public void setCommandValues(List<String> d_commandValues) {
+        this.d_commandValues = d_commandValues;
+    }
+
+    /**
      * Checks the head of the command and its argument key only
+     *
      * @param l_p_o UserCommand need to checked with
      * @return true if both objects are equal
      */

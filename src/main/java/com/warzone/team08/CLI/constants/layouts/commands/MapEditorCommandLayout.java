@@ -7,6 +7,7 @@ import com.warzone.team08.CLI.models.CommandArgument;
 import com.warzone.team08.CLI.models.UserCommand;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -73,6 +74,14 @@ public class MapEditorCommandLayout implements CommandLayout {
                 2,
                 ArgumentSpecification.EQUAL
         ));
+        d_userCommands.add(l_userCommand);
+
+        // Example of the below command:
+        // savemap filename
+        l_userCommand = new UserCommand();
+        l_userCommand.setHeadCommand("savemap");
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setCommandValues(Collections.singletonList("filename"));
         d_userCommands.add(l_userCommand);
     }
 
