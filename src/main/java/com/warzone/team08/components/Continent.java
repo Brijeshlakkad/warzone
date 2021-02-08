@@ -20,7 +20,6 @@ public class Continent {
 	}
 
 	public void setContinentControlValue(int p_continentControlValue) {
-		// TODO Auto-generated method stub
 		d_continentControlValue = p_continentControlValue;
 	}
 	

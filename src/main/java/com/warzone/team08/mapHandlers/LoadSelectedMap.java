@@ -23,7 +23,7 @@ public class LoadSelectedMap {
 	String d_fileName;
 	String d_line;
 
-	MapComponents d_mapComponents = new MapComponents();
+	public static MapComponents d_mapComponents = new MapComponents();
 
 	/**
 	 * This method reads user provided map file.
@@ -57,6 +57,7 @@ public class LoadSelectedMap {
 					{
 						d_mapComponents = readContinents(l_reader, d_mapComponents);
 						d_mapComponents.setContinentList(d_continent_list);
+						
 						System.out.println("Set continents");
 					} 
 					else {
@@ -82,12 +83,14 @@ public class LoadSelectedMap {
 						break;
 					}
 				}
+				
 
 				
 
 				else
 				{
 					System.out.println("outside loop");
+					//setMapComponent(d_mapComponents);
 				}	
 
 			}
@@ -110,9 +113,11 @@ public class LoadSelectedMap {
 		}
 
 		int index = l_fileName.lastIndexOf('.');
-		if (index > 0) {
+		if (index > 0) 
+		{
 			String l_extension = l_fileName.substring(index + 1);
-			if (!l_extension.equalsIgnoreCase("map")) {
+			if (!l_extension.equalsIgnoreCase("map")) 
+			{
 				return "Invalid file extension.";
 			}
 		} else {
@@ -155,6 +160,7 @@ public class LoadSelectedMap {
 	}
 	
 	
+	
 	/**
 	 * This method is used to read country data from map file. 
 	 * It reads the country serial number, country name, corresponding continent serial number 
@@ -192,7 +198,22 @@ public class LoadSelectedMap {
 		}
 		return p_mapcompo;
 	}
-		
+	
+	/**
+	 * This method stores the Map Component object in List. 
+	 * 
+	 */
+/*	
+	public static MapComponents d_mapCompo;
+	public static void setMapComponent(MapComponents p_map)
+	{
+		d_mapCompo = p_map;
+	}
+	public static MapComponents getMapComponent()
+	{
+		return d_mapCompo;
+	}
+*/
 
 	/**
 	 * This is a main method.
@@ -203,26 +224,28 @@ public class LoadSelectedMap {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		LoadSelectedMap l = new LoadSelectedMap();
-		l.loadMap("C:\\Users\\CHARIT\\eclipse-workspace\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map");
+		l.loadMap("C:\\Users\\Rutwik\\dsd_assignments\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map");
 		
 		/* 
 			For Rutwik File System:-
 			C:\\Users\\Rutwik\\dsd_assignments\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map
 		*/
 		System.out.println("Map loaded");
+		//public void show()
+		//{
 		
-		
-		System.out.println("\nList of Continents");
-		for (Continent c : d_continent_list)
-		{
-			System.out.println(c.getContinentName()+"   "+c.getContinentControlValue());
-		}
-		
-		System.out.println("\nList of Countries");
-		for(Country co : d_country_list)
-		{
-			System.out.println(co.getCountrySerialNumber()+"   "+co.getCountryName()+"   "+co.getParentContinentSerialNumber());
-		}
+			System.out.println("\nList of Continents");
+			for (Continent c : d_continent_list)
+			{
+				System.out.println(c.getContinentName()+"   "+c.getContinentControlValue());
+			}
+			
+			System.out.println("\nList of Countries");
+			for(Country co : d_country_list)
+			{
+				System.out.println(co.getCountrySerialNumber()+"   "+co.getCountryName()+"   "+co.getParentContinentSerialNumber());
+			}
+		//}
 	}
 
 }
