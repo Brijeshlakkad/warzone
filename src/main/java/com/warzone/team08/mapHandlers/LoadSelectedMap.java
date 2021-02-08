@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,12 +20,10 @@ import com.warzone.team08.components.Country;
  */
 public class LoadSelectedMap {
 
-	public static List<Continent> d_continent_list = new ArrayList<Continent>();
-	public static List<Country> d_country_list = new ArrayList<Country>();
-	public static Map<Integer, List<Integer>> d_country_neighbour_map = new TreeMap<Integer,List<Integer>>();
-	public String d_extension;
-	public String d_fileName;
-	public String d_line;
+	public static List<Continent> d_continent_list;
+	public static List<Country> d_country_list;
+	public static TreeMap<Integer, List<Integer>> d_country_neighbour_map;
+	public static LinkedHashMap<String, List<String>> d_continent_country_map;
 	public MapComponents d_mapComponents = new MapComponents();
 
 	/**
@@ -45,6 +44,12 @@ public class LoadSelectedMap {
 		
 		System.out.println("valid map");
 		BufferedReader l_reader = new BufferedReader(new FileReader(p_file_path));
+		
+		d_continent_list = new ArrayList<Continent>();
+		d_country_list = new ArrayList<Country>();
+		d_country_neighbour_map = new TreeMap<Integer,List<Integer>>();
+		d_continent_country_map = new LinkedHashMap<String, List<String>>();
+		
 		String l_line;
 		while ((l_line = l_reader.readLine()) != null) 
 		{
@@ -89,6 +94,11 @@ public class LoadSelectedMap {
 					if (d_mapComponents.checkMapCorrect()) 
 					{
 						d_mapComponents = readNeighbours(l_reader, d_mapComponents);
+						d_mapComponents.setCountryNeighbourMap(d_country_neighbour_map);
+						createContinentCountryMap(d_continent_list, d_country_list);
+						d_mapComponents.setContinentCountryMap(d_continent_country_map);
+						System.out.println("Country neighbour map set");
+						
 					}
 					else 
 					{
@@ -97,9 +107,36 @@ public class LoadSelectedMap {
 						break;
 					}
 				}
+				else
+				{
+					System.out.println("In else");
+					
+				}
 			}
 		}
 	}
+	
+	/**
+	 * This method creates the map which stores continent name as a key and list of neighboring countries as a value.
+	 * @param p_continent_list  List of continents.
+	 * @param p_country_list  List of Countries.
+	 */
+	public void createContinentCountryMap(List<Continent> p_continent_list, List<Country> p_country_list)
+	{
+		for(Continent l_continent : p_continent_list)
+		{
+			ArrayList<String> l_countryList = new ArrayList<String>();
+			for(Country l_country : p_country_list)
+			{
+				if(l_continent.getContinentSerialNumber() == l_country.getParentContinentSerialNumber())
+				{
+					l_countryList.add(l_country.getCountryName());
+				}
+			}
+			d_continent_country_map.put(l_continent.getContinentName(), l_countryList);
+		}
+	}
+	
 	/**
 	 * This method checks whether the given file name is valid or not.
 	 * 
@@ -107,21 +144,22 @@ public class LoadSelectedMap {
 	 * @return message about validity of the file.
 	 */
 	public String fileValidation(File p_file_obj) {
-		// TODO Auto-generated method stub
-
+		
 		String l_fileName = p_file_obj.getName();
 
 		if (!p_file_obj.exists()) {
 			return "File doesn't exist.";
 		}
 
-		int index = l_fileName.lastIndexOf('.');
-		if (index > 0) {
-			String l_extension = l_fileName.substring(index + 1);
+		int l_index = l_fileName.lastIndexOf('.');
+		if (l_index > 0) {
+			String l_extension = l_fileName.substring(l_index + 1);
 			if (!l_extension.equalsIgnoreCase("map")) {
 				return "Invalid file extension.";
 			}
-		} else {
+		} 
+		else 
+		{
 			return "File must have an extension.";
 		}
 		return "Valid file name";
@@ -264,7 +302,7 @@ public class LoadSelectedMap {
 		System.out.println("\nList of Continents");
 		for (Continent c : d_continent_list)
 		{
-			System.out.println(c.getContinentName()+"   "+c.getContinentControlValue());
+			System.out.println(c.getContinentSerialNumber()+"   "+c.getContinentName()+"   "+c.getContinentControlValue());
 		}
 		
 		System.out.println("\nList of Countries");
@@ -285,6 +323,18 @@ public class LoadSelectedMap {
 		        }
 		        System.out.println();
 		 }    
+		 
+		 System.out.println("\nList of continent countries");
+		 for(Map.Entry<String, List<String>> entry:d_continent_country_map.entrySet())
+		 {    
+		        String key=entry.getKey();  
+		        List<String> b=entry.getValue();  
+		        System.out.print(key+" ");
+		        for(String i : b)
+		        {
+		        	System.out.print(i+"  ");
+		        }
+		        System.out.println();
+		 }    
 	}
-
 }

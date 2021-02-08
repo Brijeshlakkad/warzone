@@ -2,7 +2,7 @@ package com.warzone.team08.components;
 
 import java.util.List;
 
-/*
+/**
  * This class is to set and get the country variables 
  * @author RUTWIK PATEL 
  * 
@@ -14,9 +14,7 @@ public class Country {
 	public int d_parentContinentSerialNumber;
 	public List<Integer> d_neighbourCountries;	
 	
-	
-
-	/*
+	/**
 	 * This function sets the country Id.
 	 * @param p_countrySerialNumber it is the country Id.
 	 */
@@ -25,7 +23,7 @@ public class Country {
 		d_countrySerialNumber = p_countrySerialNumber;
 	}
 	
-	/*
+	/**
 	 * This function return the country Id.
 	 * @return country id.
 	 */
@@ -35,7 +33,7 @@ public class Country {
 	}
 	
 	
-	/*
+	/**
 	 * This function sets the country name.
 	 * @param p_countryName, it is the country name.
 	 */
@@ -44,7 +42,7 @@ public class Country {
 		d_countryName = p_countryName;
 	}
 	
-	/*
+	/**
 	 * This function returns current country name.
 	 * @return this country name.
 	 */
@@ -53,7 +51,7 @@ public class Country {
 		return d_countryName;
 	}
 	
-	/*
+	/**
 	 * This function sets the continent Id for current country.
 	 * @param p_parentContinentSerialNumber, it sets the continent Id.
 	 */
@@ -63,7 +61,7 @@ public class Country {
 	}
 	
 	
-	/*
+	/**
 	 * This function returns continent Id for current country.
 	 * @return continent Id for current Country.
 	 */
@@ -72,11 +70,18 @@ public class Country {
 		return d_parentContinentSerialNumber;
 	}
 	
-	
+	/**
+	 * This function is used to set the list of the neighboring countries.
+	 * @param p_neighbourCountries List of neighboring countries.
+	 */
 	public void setNeighbourCountries(List<Integer> p_neighbourCountries) {
 		d_neighbourCountries = p_neighbourCountries;
 	}
 	
+	/**
+	 * This function returns the list of neighboring countries.
+	 * @return list of neighboring countries.
+	 */
 	public List<Integer> getNeighbourCountries() {
 		return d_neighbourCountries;
 	}
