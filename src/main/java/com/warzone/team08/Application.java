@@ -2,6 +2,7 @@ package com.warzone.team08;
 
 import com.warzone.team08.CLI.CommandLineInterface;
 import com.warzone.team08.CLI.constants.enums.states.GameState;
+import com.warzone.team08.VM.VirtualMachine;
 
 /**
  * The main class of the War Zone Team08
@@ -19,6 +20,11 @@ public class Application {
      * Keeps track of the game state
      */
     private static GameState d_gameState = GameState.MAP_EDITOR;
+
+    /**
+     * Connects interface with method APIs; An environment for the player to store the information.
+     */
+    private static VirtualMachine d_virtualMachine;
 
     /**
      * Gets false if user is interacting, meaning user is playing the game; true otherwise.
@@ -59,13 +65,26 @@ public class Application {
     public static void main(String[] args) throws InterruptedException {
         setIsRunning(true);
 
-        // Creates interface for user interaction.
-        CommandLineInterface l_userInteraction = new CommandLineInterface();
+        // Starts the runtime engine (GameEngine) for the game.
+        d_virtualMachine = new VirtualMachine();
 
-        l_userInteraction.d_thread.start();
+        // Creates interface for user interaction.
+        // Just a local variable as the instance is not being used/shared with any other class.
+        // An instance of the virtual machine can be passed to the user interface?
+        CommandLineInterface l_commandLineInterface = new CommandLineInterface();
+        l_commandLineInterface.d_thread.start();
 
         // Wait till the game is over.
-        l_userInteraction.d_thread.join();
+        l_commandLineInterface.d_thread.join();
+    }
+
+    /**
+     * Gets the instance of virtual machine.
+     *
+     * @return Value of virtual machine.
+     */
+    public VirtualMachine VIRTUAL_MACHINE() {
+        return d_virtualMachine;
     }
 
     /**
