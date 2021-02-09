@@ -69,7 +69,7 @@ public class MapComponents {
 	}
 
 	/**
-	 * This method returns the list of continents.
+	 * This method returns the list of continents. 
 	 * @return d_continent_list List of continents.
 	 */
 	public List<Continent> getContinentList() {

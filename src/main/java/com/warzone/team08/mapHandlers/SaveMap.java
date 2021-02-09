@@ -7,43 +7,62 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.warzone.team08.components.Continent;
 import com.warzone.team08.components.Country;
 
-/*
+/**
  * This class is to save the edited Map File.
- * @author RUTWIK PATEL 
- * 
+ * @author Rutwik
+ * @version 1.0
  */
 
 public class SaveMap {
 	
-	public static List<Continent> d_continentList = new ArrayList<Continent>(); 
-	public static List<Country> d_countryList = new ArrayList<Country>();
+	public List<Continent> d_continentList = new ArrayList<Continent>(); 
+	public List<Country> d_countryList = new ArrayList<Country>();
+	public TreeMap <Integer, List<Integer>> d_neighbourList = new TreeMap<Integer, List<Integer>>();  
 	
 	
-	public void SaveSelectedMap(String p_filePath) throws IOException
+	/**
+	 * This method will take path of the file which user wants to save(edited file).
+	 * @param p_filePath, it will take file path as input parameter.
+	 * @return, it will return a string acknowledging user that the file is save or not.
+	 * @throws IOException, it will throw Input Output Exception which may occur during File creation or write.
+	 */
+	public String execute(String p_filePath) throws IOException
 	{
 		File l_fileObject = new File(p_filePath);
-		String l_check = fileExist(l_fileObject);
-		
+		String l_check = fileValidation(l_fileObject);
+		boolean l_messageFromDataWrite = DataWriteIntoFile(l_check,l_fileObject);
+		String l_messageToBeSend = (l_messageFromDataWrite==true)?"File Saved.":l_check;
+		return l_messageToBeSend;
+	}
+	
+	/**
+	 * This method will write all the data into the file and save it.
+	 * @param p_check, it will state that the file is valid or not.
+	 * @param p_fileObject, it will take file path, to create and write into files.
+	 * @return, it will return boolean value, true if file is save else false.
+	 * @throws IOException, it will throw Input Output Exception which may occur during File Write.
+	 */
+	public boolean DataWriteIntoFile(String p_checkFile, File p_fileObject) throws IOException
+	{
 		MapComponents l_map = LoadSelectedMap.getMapComponent();
 		
-		if(l_check == "valid Name")
+		if(p_checkFile == "valid Name")
 		{
-			
 			d_continentList = l_map.getContinentList();
 			   
-			Writer l_writer = new FileWriter("C:\\Users\\Rutwik\\dsd_assignments\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\testing_file.map");
+			Writer l_writer = new FileWriter(p_fileObject);
 			l_writer.write("["+"Continents"+"]\n");
 			
 			for(Continent continents : d_continentList)
 			{
 				l_writer.write( continents.getContinentSerialNumber()+ " "+continents.getContinentName()+" "+continents.getContinentControlValue()+"\n");
-				//System.out.print(name.getContinentName() + " ");
-				//System.out.println(name.d_continentControlValue);
 			}
-			
 			
 			d_countryList = l_map.getCountryList();
 			
@@ -52,28 +71,45 @@ public class SaveMap {
 			for(Country country : d_countryList)
 			{
 				l_writer.write(country.d_countrySerialNumber+ " "+country.getCountryName()+" "+country.getParentContinentSerialNumber()+"\n");
-				//System.out.print(country.getCountrySerialNumber() + " ");
-				//System.out.print(country.getCountryName()+" ");
-				//System.out.println(country.getParentContinentSerialNumber());
 			}
 			
+			d_neighbourList = l_map.getCountryNeighbourMap();
+			
+			l_writer.write("\n["+"borders"+"]\n");
+			
+			for(Map.Entry<Integer, List<Integer>> entry:d_neighbourList.entrySet())
+			{
+				int key = entry.getKey();
+				List<Integer> neighbour = entry.getValue();
+				l_writer.write(key+" ");
+				for(Integer a : neighbour)
+				{
+					l_writer.write(a+" ");
+				}	
+				l_writer.write("\n");
+			}
 			l_writer.close();
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 	
-	public String fileExist(File p_fileObject)
+
+	/**
+	 * This method will check if the file is valid or not. It will check its extension and name.
+	 * @param p_fileObject, the path of the file is passed into this function.
+	 * @return, String is return stating whether the file is valid or not.
+	 */
+	public String fileValidation(File p_fileObject)
 	{
 		String l_fileName = p_fileObject.getName();
-		if(!p_fileObject.exists())
-		{
-			return "Enter valid filename.";
-		}
-		
 		int index = l_fileName.lastIndexOf('.');
 		if (index > 0) 
 		{
 			String l_extension = l_fileName.substring(index + 1);
-			//String[] l_nameComponent = l_fileName.split(".");
 			if(!l_extension.equalsIgnoreCase("map"))
 			{
 				return "Enter Valid Extension.";
