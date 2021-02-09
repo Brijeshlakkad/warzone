@@ -27,7 +27,7 @@ public class SaveMap {
 		File l_fileObject = new File(p_filePath);
 		String l_check = fileExist(l_fileObject);
 		
-		MapComponents l_map = LoadSelectedMap.getMapComponent();
+		MapComponents l_map = MapComponents.getInstance();
 		
 		if(l_check == "valid Name")
 		{

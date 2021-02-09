@@ -20,12 +20,11 @@ import com.warzone.team08.components.Country;
  */
 public class LoadSelectedMap {
 
-
 	public static List<Continent> d_continent_list;
 	public static List<Country> d_country_list;
 	public static TreeMap<Integer, List<Integer>> d_country_neighbour_map;
 	public static LinkedHashMap<String, List<String>> d_continent_country_map;
-	public static MapComponents d_mapComponents = new MapComponents();
+	MapComponents d_mapComponents = MapComponents.getInstance();
 
 	/**
 	 * This method reads user provided map file.
@@ -33,14 +32,22 @@ public class LoadSelectedMap {
 	 * @param p_file_path path of the requested file.
 	 * @throws IOException handles IOException.
 	 */
-	public void loadMap(String p_file_path) throws IOException {
+	public MapComponents loadMap(String p_file_path) throws IOException {
+		
 		String l_msg;
+		boolean d_isContinentPresent = false;// to check [continents] tag is available or not in map file.
+		boolean d_isCountryPresent = false;// to check [countries] is available or not in map file.
+		boolean d_isBorderPresent = false; // to check [borders] is available or not in map file. 
+
 		File l_file_obj = new File(p_file_path);
 		l_file_obj.createNewFile();
 		l_msg = fileValidation(l_file_obj);
+		
+		//Checking whether file is correct or not.
 		if (!l_msg.equalsIgnoreCase("Valid file name")) {
 			d_mapComponents.setCorrectMap(false);
 			d_mapComponents.setErrorMessage(l_msg);
+			return d_mapComponents;
 		}
 		
 		System.out.println("valid map");
@@ -56,10 +63,11 @@ public class LoadSelectedMap {
 		{
 			if (l_line.startsWith("[")) 
 			{
-				System.out.println("Hello");
+				// Parsing the [continents] portion of the map file
 				if (l_line.substring(l_line.indexOf("[") + 1, l_line.indexOf("]")).equalsIgnoreCase("continents"))
 				{
 					System.out.println("Continents are available");
+					d_isContinentPresent = true;
 					if (d_mapComponents.checkMapCorrect())
 					{
 						d_mapComponents = readContinents(l_reader, d_mapComponents);
@@ -73,10 +81,12 @@ public class LoadSelectedMap {
 						break;
 					}
 				}
-
+				
+				// Parsing the [countries] portion of the map file
 				else if (l_line.substring(l_line.indexOf("[") + 1, l_line.indexOf("]")).equalsIgnoreCase("countries")) 
 				{
 					System.out.println("Countries are available");
+					d_isCountryPresent = true;
 					if (d_mapComponents.checkMapCorrect()) 
 					{
 						d_mapComponents = readCountries(l_reader, d_mapComponents);
@@ -90,10 +100,12 @@ public class LoadSelectedMap {
 						break;
 					}
 				}
-
+				
+				// Parsing the [borders] portion of the map file
 				else if (l_line.substring(l_line.indexOf("[") + 1, l_line.indexOf("]")).equalsIgnoreCase("borders")) 
 				{
 					System.out.println("Borders are available");
+					d_isBorderPresent = true;
 					if (d_mapComponents.checkMapCorrect()) 
 					{
 						d_mapComponents = readNeighbours(l_reader, d_mapComponents);
@@ -114,9 +126,9 @@ public class LoadSelectedMap {
 				{
 					System.out.println("outside loop");
 				}	
-				setMapComponent(d_mapComponents);
 			}
 		}
+		return d_mapComponents;
 	}
 	
 	/**
@@ -186,16 +198,23 @@ public class LoadSelectedMap {
 		try {
 			while ((l_line = p_reader.readLine()) != null && !l_line.startsWith("["))
 			{
-				Continent l_con = new Continent();
-				String l_continentComponents[] = l_line.split(" ");
-				if (!l_continentComponents[0].isEmpty() && !l_continentComponents[1].isEmpty()) {
-
-					l_con.setContinentSerialNumber(l_continentCounter);
-					l_continentCounter++;
-					l_con.setContinentName(l_continentComponents[0]);
-					l_con.setContinentControlValue(Integer.parseInt(l_continentComponents[1]));
-					d_continent_list.add(l_con);
-				} 
+				if (!l_line.isEmpty() && l_line != null && !l_line.equals("") && l_line.contains(" ")) {	
+					Continent l_con = new Continent();
+					String l_continentComponents[] = l_line.split(" ");
+					if (!l_continentComponents[0].isEmpty() && !l_continentComponents[1].isEmpty()) {
+	
+						l_con.setContinentSerialNumber(l_continentCounter);
+						l_continentCounter++;
+						l_con.setContinentName(l_continentComponents[0]);
+						l_con.setContinentControlValue(Integer.parseInt(l_continentComponents[1]));
+						d_continent_list.add(l_con);
+					}
+					else{
+						p_mapcompo.setErrorMessage("Continent property empty.");
+						p_mapcompo.setCorrectMap(false);
+						break;
+					}
+				}
 				p_reader.mark(0);
 			}
 			p_reader.reset();
@@ -204,8 +223,6 @@ public class LoadSelectedMap {
 		}
 		return p_mapcompo;
 	}
-	
-	
 	
 	/**
 	 * This method is used to read country data from map file. 
@@ -224,16 +241,22 @@ public class LoadSelectedMap {
 		try {
 		while ((l_string = p_reader.readLine()) != null && !l_string.startsWith("[")) 
 		{
-			Country l_country = new Country();
-			String l_countryComponents[] = l_string.split(" ");
-			if (!l_countryComponents[0].isEmpty() && !l_countryComponents[1].isEmpty() && !l_countryComponents[2].isEmpty()) 
-			{
-				l_country.setCountrySerialNumber(Integer.parseInt(l_countryComponents[0]));
-				l_country.setCountryName(l_countryComponents[1]);
-				l_country.setParentContinentSerialNumber(Integer.parseInt(l_countryComponents[2]));
-				d_country_list.add(l_country);
-			} 
-				
+			if (!l_string.isEmpty() && l_string != null && !l_string.equals("") && l_string.contains(" ")) {
+				Country l_country = new Country();
+				String l_countryComponents[] = l_string.split(" ");
+				if (!l_countryComponents[0].isEmpty() && !l_countryComponents[1].isEmpty() && !l_countryComponents[2].isEmpty()) 
+				{
+					l_country.setCountrySerialNumber(Integer.parseInt(l_countryComponents[0]));
+					l_country.setCountryName(l_countryComponents[1]);
+					l_country.setParentContinentSerialNumber(Integer.parseInt(l_countryComponents[2]));
+					d_country_list.add(l_country);
+				}
+				else{
+					p_mapcompo.setErrorMessage("Continent property empty.");
+					p_mapcompo.setCorrectMap(false);
+					break;
+				}
+			}
 			p_reader.mark(0);
 		}
 		p_reader.reset();
@@ -246,7 +269,7 @@ public class LoadSelectedMap {
 	}
 	
 
-/*
+	/**
 	 * This method is used to read country and its neighbor data from map file.
 	 * It reads the line from the file and creates the list of the neighboring countries.
 	 * And it adds country and list of its neighboring countries into a TreeMap.
@@ -260,27 +283,26 @@ public class LoadSelectedMap {
 		String l_line;
 		int l_countryNumber;
 		try {
-					while ((l_line = p_reader.readLine()) != null && !l_line.startsWith("["))
+				while ((l_line = p_reader.readLine()) != null && !l_line.startsWith("["))
+				{				
+					List<Integer> l_neighbourNodes = new ArrayList<Integer>();
+					String l_borderComponents[] = l_line.split(" ");					
+					l_countryNumber = Integer.parseInt(l_borderComponents[0]);
+					for(int i = 1; i<l_borderComponents.length;i++)
 					{
-						List<Integer> l_neighbourNodes = new ArrayList<Integer>();
-						String l_borderComponents[] = l_line.split(" ");
-						l_countryNumber = Integer.parseInt(l_borderComponents[0]);
-						for(int i = 1; i<l_borderComponents.length;i++)
-						{
-							l_neighbourNodes.add(Integer.parseInt(l_borderComponents[i]));
-						}
-						d_country_neighbour_map.put(l_countryNumber, l_neighbourNodes);
-						
-						for(Country c : d_country_list)
-						{
-							if(c.getCountrySerialNumber() == Integer.parseInt(l_borderComponents[0]))
-							{
-								c.setNeighbourCountries(l_neighbourNodes);
-							}
-						}
-						p_reader.mark(0);
+						l_neighbourNodes.add(Integer.parseInt(l_borderComponents[i]));
 					}
-					//p_reader.reset();
+					d_country_neighbour_map.put(l_countryNumber, l_neighbourNodes);
+							
+					for(Country c : d_country_list)
+					{
+						if(c.getCountrySerialNumber() == Integer.parseInt(l_borderComponents[0]))
+						{
+							c.setNeighbourCountries(l_neighbourNodes);
+						}
+					}
+				}							
+				p_reader.mark(0);
 		}
 		catch(IOException e)
 		{
@@ -289,28 +311,9 @@ public class LoadSelectedMap {
 		return p_mapcompo;
 	}
 
-	/**
-	 * This method stores the Map Component object in List. 
-	 * 
-	 */
-	
-	public static MapComponents d_mapCompo;
-	public static void setMapComponent(MapComponents p_map)
-	{
-		d_mapCompo = p_map;
-	}
-	public static MapComponents getMapComponent()
-	{
-		return d_mapCompo;
-	}
-
-	/**
-	 * This is a main method.
-	 * 
-	 * @param args command line argument
-	 * @throws IOException handles generated IOException while operation
-	 */
-
+		/**
+		 * This method prints data stored in different java objects.
+		 */
 		public void show()
 		{
 			System.out.println("\nList of Continents");

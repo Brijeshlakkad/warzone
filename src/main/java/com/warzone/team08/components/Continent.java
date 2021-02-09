@@ -35,7 +35,6 @@ public class Continent {
 	 */
 	public void setContinentName(String p_continentName) {
 		d_continentName = p_continentName;
-		
 	}
 	
 	/**

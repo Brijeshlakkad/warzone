@@ -9,19 +9,30 @@ import com.warzone.team08.components.Country;
 /**
  * This class provides different methods for validations and handling of smooth execution of the map commands.
  * @author CHARIT
- *
  */
 public class MapComponents {
 	
 	public boolean d_correctMap = true; 
 	public String d_errorMessage;
-	public List<Continent> d_continent_list;
-	public List<Country> d_country_list;
-	
+	public List<Continent> d_continentList;
+	public List<Country> d_countryList;
 	public TreeMap<Integer,List<Integer>> d_countryNeighbourMap = new TreeMap<Integer,List<Integer>>();
 	public LinkedHashMap<String,List<String>> d_continentCountryMap = new LinkedHashMap<String, List<String>>();
-	
+	private static MapComponents d_mapComponents = new MapComponents();
 
+	/**
+	 * Default Constructor
+	 */
+	private MapComponents(){}
+	
+	/**
+	 * This function returns returns singleton instance of the MapComponents class
+	 * @return singleton instance of the class
+	 */
+	public static MapComponents getInstance()
+	{
+		return d_mapComponents;
+	}
 	/**
 	 * This method is used to set a boolean variable which is used to check whether map is correct or not.
 	 * if correct the value is true; otherwise false. 
@@ -30,7 +41,6 @@ public class MapComponents {
 	public void setCorrectMap(boolean p_bool) {
 		// TODO Auto-generated method stub
 		d_correctMap = p_bool;
-		
 	}
 	
 	/**
@@ -63,26 +73,26 @@ public class MapComponents {
 	 * This method is used to set value of continent list.
 	 * @param p_continent_list list of continents.
 	 */
-	public void setContinentList(List<Continent> p_continent_list) {
+	public void setContinentList(List<Continent> p_continentList) {
 		// TODO Auto-generated method stub
-		d_continent_list = p_continent_list;
+		d_continentList = p_continentList;
 	}
 
 	/**
 	 * This method returns the list of continents.
-	 * @return d_continent_list List of continents.
+	 * @return d_continentList List of continents.
 	 */
 	public List<Continent> getContinentList() {
-		return d_continent_list;
+		return d_continentList;
 	}
 
 	/**
 	 * This method is used to set the list of the countries.
 	 * @param p_country_list List of countries.
 	 */
-	public void setCountryList(List<Country> p_country_list) {
+	public void setCountryList(List<Country> p_countryList) {
 		// TODO Auto-generated method stub
-		d_country_list = p_country_list;
+		d_countryList = p_countryList;
 	}
 
 	/**
@@ -90,7 +100,7 @@ public class MapComponents {
 	 * @return list of countries.
 	 */
 	public List<Country> getCountryList() {
-		return d_country_list;
+		return d_countryList;
 	}
 
 	/**
