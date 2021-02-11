@@ -44,7 +44,7 @@ public class SaveMap {
 	
 	/**
 	 * This method will write all the data into the file and save it.
-	 * @param p_check, it will state that the file is valid or not.
+	 * @param p_checkFile, it will state that the file is valid or not.
 	 * @param p_fileObject, it will take file path, to create and write into files.
 	 * @return, it will return boolean value, true if file is save else false.
 	 * @throws IOException, it will throw Input Output Exception which may occur during File Write.

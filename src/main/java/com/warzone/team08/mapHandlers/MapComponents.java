@@ -71,7 +71,7 @@ public class MapComponents {
 
 	/**
 	 * This method is used to set value of continent list.
-	 * @param p_continent_list list of continents.
+	 * @param p_continentList list of continents.
 	 */
 	public void setContinentList(List<Continent> p_continentList) {
 		// TODO Auto-generated method stub
@@ -89,7 +89,7 @@ public class MapComponents {
 
 	/**
 	 * This method is used to set the list of the countries.
-	 * @param p_country_list List of countries.
+	 * @param p_countryList List of countries.
 	 */
 	public void setCountryList(List<Country> p_countryList) {
 		// TODO Auto-generated method stub
