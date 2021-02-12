@@ -1,4 +1,4 @@
-package com.warzone.team08.mapHandlers;
+package com.warzone.team08.maphandlers;
 
 import java.util.*;
 

@@ -2,8 +2,9 @@ package test;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-import com.warzone.team08.mapHandlers.LoadSelectedMap;
-import com.warzone.team08.mapHandlers.MapComponents;
+
+import com.warzone.team08.maphandlers.LoadMap;
+import com.warzone.team08.maphandlers.MapComponents;
 
 /**
  * This Class tests the blank fields available in the map file.
@@ -11,7 +12,7 @@ import com.warzone.team08.mapHandlers.MapComponents;
  */
 public class TestBlankDataFields {
 	private MapComponents d_mapComponents;
-	private LoadSelectedMap load;
+	private LoadMap load;
 	private String path;
 	
 	/**
@@ -22,7 +23,7 @@ public class TestBlankDataFields {
 	public void beforeTest()
 	{
 		d_mapComponents = MapComponents.getInstance();
-		load = new LoadSelectedMap();
+		load = new LoadMap();
 		path = "C:\\Users\\CHARIT\\eclipse-workspace\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\TestMapFiles\\";
 	}
 	/**

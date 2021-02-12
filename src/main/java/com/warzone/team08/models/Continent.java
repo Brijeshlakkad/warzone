@@ -1,4 +1,4 @@
-package com.warzone.team08.components;
+package com.warzone.team08.models;
 /**
  * This class provides different getter-setter methods to perform different operation on Continent.
  * @author CHARIT

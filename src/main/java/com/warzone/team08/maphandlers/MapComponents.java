@@ -1,11 +1,11 @@
-package com.warzone.team08.mapHandlers;
+package com.warzone.team08.maphandlers;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
 
-import com.warzone.team08.components.Continent;
-import com.warzone.team08.components.Country;
+import com.warzone.team08.models.Continent;
+import com.warzone.team08.models.Country;
 /**
  * This class provides different methods for validations and handling of smooth execution of the map commands.
  * @author CHARIT

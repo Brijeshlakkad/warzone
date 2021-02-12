@@ -1,4 +1,4 @@
-package com.warzone.team08.mapHandlers;
+package com.warzone.team08.maphandlers;
 
 /**
  * This File is used to run as a complete file. It is just a testing file. For running Load and save file together.
@@ -7,11 +7,13 @@ package com.warzone.team08.mapHandlers;
  */
 import java.io.IOException;
 
+import com.warzone.team08.exceptions.InvalidMapException;
+
 
 public class checkFile {
-	public static void main(String[] args)
+	public static void main(String[] args) throws InvalidMapException
 	{
-		LoadSelectedMap load = new LoadSelectedMap();
+		LoadMap load = new LoadMap();
 		try {
 			load.loadMap("C:\\Users\\CHARIT\\eclipse-workspace\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map");
 		} catch (IOException e) {
