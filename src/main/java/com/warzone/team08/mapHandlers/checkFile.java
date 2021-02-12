@@ -13,14 +13,14 @@ public class checkFile {
 	{
 		LoadSelectedMap load = new LoadSelectedMap();
 		try {
-			load.loadMap("C:\\Users\\Rutwik\\dsd_assignments\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map");
+			load.loadMap("C:\\Users\\CHARIT\\eclipse-workspace\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\solar.map");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		load.show();
 		
-		SaveMap savemap = new SaveMap();
+	/*	SaveMap savemap = new SaveMap();
 		try {
 			String a = savemap.execute("C:\\Users\\Rutwik\\dsd_assignments\\warzone-team-08\\src\\main\\java\\com\\warzone\\team08\\maps\\testing_file.map");
 			System.out.println(a);
@@ -28,7 +28,7 @@ public class checkFile {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		*/
 		
 	}
 

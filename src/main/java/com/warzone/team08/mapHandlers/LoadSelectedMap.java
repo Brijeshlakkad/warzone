@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import com.warzone.team08.components.Continent;
 import com.warzone.team08.components.Country;
+import com.warzone.team08.exceptions.AbsentTagException;
 
 /**
  * This file loads map file in the user console.
@@ -219,7 +220,7 @@ public class LoadSelectedMap {
 			}
 			p_reader.reset();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new AbsentTagException("Error while processing continents tag.");
 		}
 		return p_mapcompo;
 	}
@@ -263,7 +264,7 @@ public class LoadSelectedMap {
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			throw new AbsentTagException("Error while processing countries tag.");
 		}
 		return p_mapcompo;
 	}
@@ -306,7 +307,7 @@ public class LoadSelectedMap {
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			throw new AbsentTagException("Error while processing borders tag.");
 		}
 		return p_mapcompo;
 	}
