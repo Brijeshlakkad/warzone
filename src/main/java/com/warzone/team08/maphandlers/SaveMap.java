@@ -1,4 +1,4 @@
-package com.warzone.team08.mapHandlers;
+package com.warzone.team08.maphandlers;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.warzone.team08.components.Continent;
-import com.warzone.team08.components.Country;
+import com.warzone.team08.models.Continent;
+import com.warzone.team08.models.Country;
 
 /**
  * This class is to save the edited Map File.

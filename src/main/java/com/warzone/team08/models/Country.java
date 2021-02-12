@@ -1,4 +1,4 @@
-package com.warzone.team08.components;
+package com.warzone.team08.models;
 
 import java.util.List;
 

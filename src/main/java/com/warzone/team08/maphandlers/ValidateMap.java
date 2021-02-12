@@ -1,4 +1,4 @@
-package com.warzone.team08.mapHandlers;
+package com.warzone.team08.maphandlers;
 
 import com.warzone.team08.components.Continent;
 
