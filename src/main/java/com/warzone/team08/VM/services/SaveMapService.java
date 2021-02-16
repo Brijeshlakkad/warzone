@@ -75,13 +75,13 @@ public class SaveMapService implements SingleCommand {
     /**
      * Takes the path of the file which user wants to save(edited file).
      *
-     * @param p_commandValue Value of parameters entered by the user.
+     * @param p_commandValues Value of parameters entered by the user.
      * @return Value of string acknowledging user that the file is saved or not.
      * @throws InvalidInputException Throws if the file write operation was not successful.
      * @throws InvalidMapException   Throws if the map was not valid.
      */
     @Override
-    public String execute(String p_commandValue) throws InvalidInputException,
+    public String execute(List<String> p_commandValues) throws InvalidInputException,
             InvalidMapException,
             ResourceNotFoundException {
         // Validates the map before saving the file.
@@ -89,6 +89,6 @@ public class SaveMapService implements SingleCommand {
         d_validateObj.execute(null);
 
         // Validates the file, gets the file object, and writes the data into it.
-        return saveToFile(FileUtil.retrieveFile(p_commandValue));
+        return saveToFile(FileUtil.retrieveFile(p_commandValues.get(0)));
     }
 }

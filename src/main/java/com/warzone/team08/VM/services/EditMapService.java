@@ -39,11 +39,14 @@ public class EditMapService implements SingleCommand {
      * This method reads user provided map file. It reads data from file and stores into different java objects.
      *
      * @param p_filePath Path of the file to be read.
+     * @return Value of the response.
      * @throws InvalidMapException       Throws if file does not have valid map data.
      * @throws AbsentTagException        Throws if there is missing tag.
      * @throws ResourceNotFoundException Throws if file not found.
      */
-    public void handleLoadMap(String p_filePath) throws InvalidMapException, AbsentTagException, ResourceNotFoundException {
+    public String handleLoadMap(String p_filePath) throws InvalidMapException, AbsentTagException, ResourceNotFoundException {
+        // (Re) initialise engine.
+        d_mapEditorEngine.initialise();
         try {
             // Will throw exception if the file path is not valid
             BufferedReader l_reader = new BufferedReader(new FileReader(p_filePath));
@@ -65,6 +68,7 @@ public class EditMapService implements SingleCommand {
                     }
                 }
             }
+            return "File loaded successfully!";
         } catch (IOException p_ioException) {
             throw new ResourceNotFoundException("File not found!");
         }
@@ -220,16 +224,15 @@ public class EditMapService implements SingleCommand {
      * @inheritDoc
      */
     @Override
-    public String execute(String p_commandValue)
+    public String execute(List<String> p_commandValues)
             throws InvalidMapException,
             ResourceNotFoundException,
             InvalidInputException,
             AbsentTagException {
-        if (!p_commandValue.isEmpty()) {
+        if (!p_commandValues.isEmpty()) {
             // Resolve file path using absolute path of user data directory.
-            String resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValue);
-            this.handleLoadMap(resolvedPathToFile);
-            return null;
+            String resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));
+            return this.handleLoadMap(resolvedPathToFile);
         } else {
             throw new InvalidInputException("File name is empty!");
         }

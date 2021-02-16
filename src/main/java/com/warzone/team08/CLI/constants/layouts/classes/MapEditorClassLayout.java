@@ -15,7 +15,7 @@ public class MapEditorClassLayout implements ClassLayout {
     /**
      * Stores the one-to-one mappings between user-command and Java Class Object
      */
-    private final Map<String, String> d_commandToClassMapper = new HashMap<String, String>();
+    private final Map<String, String> d_commandToClassMapper = new HashMap<>();
 
     public MapEditorClassLayout() {
         d_commandToClassMapper.put("editcontinent", "com.warzone.team08.VM.services.ContinentService");

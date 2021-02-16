@@ -69,10 +69,11 @@ public class ValidateMapService implements SingleCommand {
     /**
      * Initiate all the validation procedures. Checks all the validation and replies to the execute method.
      *
+     * @param p_commandValues Values of command entered by user if any.
      * @return Value of the response.
      */
     @Override
-    public String execute(String p_commandValue) throws InvalidMapException {
+    public String execute(List<String> p_commandValues) throws InvalidMapException {
         if (d_mapEditorEngine.getContinentList().size() > 0) {
 //            if (validationControlValue(d_mapEditorEngine.getContinentList())) {
             if (d_mapEditorEngine.getCountryList().size() > 1) {
@@ -97,13 +98,13 @@ public class ValidateMapService implements SingleCommand {
                             }
                         }
                         if (p_continentCountrySize != l_counter1) {
-                            throw new InvalidMapException("Continent must has one country!");
+                            throw new InvalidMapException("Continent must have one country!");
                         }
                     } else {
                         throw new InvalidMapException("Country must have one neighbour!");
                     }
                 } else {
-                    throw new InvalidMapException("Continents must be lesser or equal to the countries!");
+                    throw new InvalidMapException("Total continents must be lesser or equal to the countries!");
                 }
             } else {
                 throw new InvalidMapException("At least one country required!");

@@ -7,7 +7,6 @@ import com.warzone.team08.CLI.models.CommandArgument;
 import com.warzone.team08.CLI.models.UserCommand;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,7 +94,6 @@ public class MapEditorCommandLayout implements CommandLayout {
         l_userCommand = new UserCommand();
         l_userCommand.setHeadCommand("editmap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
-        l_userCommand.setCommandValues(Collections.singletonList("filename"));
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
@@ -104,7 +102,6 @@ public class MapEditorCommandLayout implements CommandLayout {
         l_userCommand.setHeadCommand("validatemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
         d_userCommands.add(l_userCommand);
-
     }
 
     /**

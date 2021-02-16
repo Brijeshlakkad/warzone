@@ -133,7 +133,7 @@ public class CommandLineInterface implements Runnable {
             // If the command does not have any argument keys
             if (p_userCommand.getCommandSpecification() != CommandSpecification.AT_LEAST_ONE) {
                 // Call the default method of the instance with the arguments
-                this.handleMethodInvocation(l_object, DEFAULT_METHOD_NAME, p_userCommand.getCommandValues());
+                this.handleMethodInvocation(l_object, DEFAULT_METHOD_NAME, p_userCommand.getCommandValues(), true);
             } else {
                 // Iterate over the user arguments
                 for (Map.Entry<String, List<String>> entry : p_userCommand.getUserArguments().entrySet()) {
@@ -141,7 +141,7 @@ public class CommandLineInterface implements Runnable {
                     List<String> p_argValues = entry.getValue();
 
                     // If the argument key does not have any value, it will send empty list
-                    this.handleMethodInvocation(l_object, p_argKey, p_argValues);
+                    this.handleMethodInvocation(l_object, p_argKey, p_argValues, false);
                 }
             }
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException p_e) {
@@ -173,28 +173,38 @@ public class CommandLineInterface implements Runnable {
      * @throws IllegalAccessException    Raised if the method is not accessible by the caller.
      */
     private void handleMethodInvocation(Object p_object,
-                                        String p_argKey, List<String> p_argValues)
+                                        String p_argKey,
+                                        List<String> p_argValues,
+                                        boolean shouldMergeValues)
             throws NoSuchMethodException,
             InvocationTargetException,
             IllegalAccessException {
-        // Create two arrays:
-        // 1. For type of the value
-        // 2. For the values
-        Class<?>[] l_valueTypes = new Class[p_argValues.size()];
-        Object[] l_values = p_argValues.toArray();
-        for (int l_argIndex = 0; l_argIndex < p_argValues.size(); l_argIndex++) {
-            l_valueTypes[l_argIndex] = String.class;
-        }
-        // Get the reference and call the method with arguments
-        Method l_methodReference = p_object.getClass().getMethod(p_argKey, l_valueTypes);
-        Object l_responseObject = l_methodReference.invoke(p_object, l_values);
+        Object l_responseObject;
+        if (shouldMergeValues) {
+            // Get the reference and call the method with arguments
+            Method l_methodReference = p_object.getClass().getMethod(p_argKey, List.class);
+            l_responseObject = l_methodReference.invoke(p_object, p_argValues);
+        } else {
+            // Create two arrays:
+            // 1. For type of the value
+            // 2. For the values
+            Class<?>[] l_valueTypes = new Class[p_argValues.size()];
+            Object[] l_values = p_argValues.toArray();
+            for (int l_argIndex = 0; l_argIndex < p_argValues.size(); l_argIndex++) {
+                l_valueTypes[l_argIndex] = String.class;
+            }
 
+            // Get the reference and call the method with arguments
+            Method l_methodReference = p_object.getClass().getMethod(p_argKey, l_valueTypes);
+            l_responseObject = l_methodReference.invoke(p_object, l_values);
+        }
         try {
             String l_responseValue = (String) l_responseObject;
             if (!l_responseValue.isEmpty()) {
                 System.out.println(l_responseValue);
             }
-        } catch (Exception l_ignored) {
+        } catch (
+                Exception l_ignored) {
             // Ignore exception if the object does not represent the String value.
         }
     }
