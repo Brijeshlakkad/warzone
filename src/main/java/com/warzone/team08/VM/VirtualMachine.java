@@ -1,6 +1,6 @@
 package com.warzone.team08.VM;
 
-import com.warzone.team08.VM.engines.Runtime;
+import com.warzone.team08.VM.engines.MapEditorEngine;
 
 /**
  * Handles the connection with different user interfaces. Creates an environment for the player to store the
@@ -10,21 +10,17 @@ import com.warzone.team08.VM.engines.Runtime;
  * @version 1.0
  */
 public class VirtualMachine {
-    /**
-     * VM runtime, to store player runtime information.
-     */
-    private final Runtime d_runtime;
 
     public VirtualMachine() {
-        this.d_runtime = new Runtime();
+
     }
 
     /**
-     * Gets the runtime engine of the game.
+     * Gets VM runtime map-editor engine to store map runtime information.
      *
-     * @return Value of the runtime engine.
+     * @return Value of the map editor engine.
      */
-    public Runtime RUNTIME() {
-        return d_runtime;
+    public MapEditorEngine MAP_EDITOR_ENGINE() {
+        return MapEditorEngine.getInstance();
     }
 }
