@@ -2,6 +2,7 @@ package com.warzone.team08.VM.repositories;
 
 import com.warzone.team08.VM.engines.MapEditorEngine;
 import com.warzone.team08.VM.entities.Continent;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,8 +20,8 @@ public class ContinentRepository {
      * @param p_continentName Value of the name of continent.
      * @return Value of the list of matched continents.
      */
-    public List<Continent> findContinentWithContinentName(String p_continentName) {
-        return MapEditorEngine.getInstance().getContinentList().stream().filter(p_continent ->
+    public List<Continent> findByContinentName(String p_continentName) {
+        return MapEditorEngine.getInstance().getContinentSet().stream().filter(p_continent ->
                 p_continent.getContinentName().equals(p_continentName)
         ).collect(Collectors.toList());
     }
@@ -31,8 +32,27 @@ public class ContinentRepository {
      * @param p_continentName Value of the name of continent.
      * @return Value of the first matched continents.
      */
-    public Continent findFirstContinentWithContinentName(String p_continentName) {
-        List<Continent> l_continentList = this.findContinentWithContinentName(p_continentName);
-        return l_continentList.size() > 0 ? l_continentList.get(0) : null;
+    public Continent findFirstByContinentName(String p_continentName) throws EntityNotFoundException {
+        List<Continent> l_continentList = this.findByContinentName(p_continentName);
+        if (l_continentList.size() > 0)
+            return l_continentList.get(0);
+        throw new EntityNotFoundException(String.format("'%s' continent not found", p_continentName));
+    }
+
+    /**
+     * Finds the continent using its id.
+     *
+     * @param p_continentId Value of the continent Id.
+     * @return Value of the first matched continents.
+     */
+    public Continent findByContinentId(Integer p_continentId) {
+        List<Continent> l_continentList = MapEditorEngine.getInstance().getContinentSet().stream().filter(p_continent ->
+                p_continent.getContinentId().equals(p_continentId)
+        ).collect(Collectors.toList());
+        if (!l_continentList.isEmpty()) {
+            return l_continentList.get(0);
+        } else {
+            return null;
+        }
     }
 }

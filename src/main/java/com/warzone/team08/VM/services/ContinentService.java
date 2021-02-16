@@ -4,7 +4,7 @@ import com.warzone.team08.VM.engines.MapEditorEngine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -49,9 +49,10 @@ public class ContinentService {
     public void remove(String p_continentName) {
         // We can check if the continent exists before filtering?
         // Filters the continent list using the continent name
-        List<Continent> l_filteredContinentList = d_mapEditorEngine.getContinentList().stream().filter(p_continent ->
+        Set<Continent> l_filteredContinentList = d_mapEditorEngine.getContinentSet().stream().filter(p_continent ->
                 p_continent.getContinentName().equals(p_continentName)
-        ).collect(Collectors.toList());
-        d_mapEditorEngine.setContinentList(l_filteredContinentList);
+        ).collect(Collectors.toSet());
+
+        d_mapEditorEngine.setContinentSet(l_filteredContinentList);
     }
 }

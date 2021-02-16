@@ -3,18 +3,15 @@ package com.warzone.team08.VM.services;
 import com.warzone.team08.VM.constants.enums.MapModelType;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.engines.MapEditorEngine;
-import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
-import com.warzone.team08.VM.exceptions.AbsentTagException;
-import com.warzone.team08.VM.exceptions.InvalidInputException;
-import com.warzone.team08.VM.exceptions.InvalidMapException;
-import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.repositories.ContinentRepository;
+import com.warzone.team08.VM.repositories.CountryRepository;
 import com.warzone.team08.VM.utils.PathResolverUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,8 +28,19 @@ public class EditMapService implements SingleCommand {
      */
     private final MapEditorEngine d_mapEditorEngine;
 
+    private final ContinentRepository d_continentRepository;
+    private final CountryRepository d_countryRepository;
+    private final ContinentService d_continentService;
+    private final CountryService d_countryService;
+    private final CountryNeighborService d_countryNeighborService;
+
     public EditMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
+        d_continentRepository = new ContinentRepository();
+        d_countryRepository = new CountryRepository();
+        d_continentService = new ContinentService();
+        d_countryService = new CountryService();
+        d_countryNeighborService = new CountryNeighborService();
     }
 
     /**
@@ -43,8 +51,15 @@ public class EditMapService implements SingleCommand {
      * @throws InvalidMapException       Throws if file does not have valid map data.
      * @throws AbsentTagException        Throws if there is missing tag.
      * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException     Throws if type cast was not successful.
+     * @throws EntityNotFoundException   Throws if the referred entity is not found.
      */
-    public String handleLoadMap(String p_filePath) throws InvalidMapException, AbsentTagException, ResourceNotFoundException {
+    public String handleLoadMap(String p_filePath)
+            throws InvalidMapException,
+            AbsentTagException,
+            ResourceNotFoundException,
+            InvalidInputException,
+            EntityNotFoundException {
         // (Re) initialise engine.
         d_mapEditorEngine.initialise();
         try {
@@ -64,7 +79,6 @@ public class EditMapService implements SingleCommand {
                     } else if (this.doLineHasModelData(l_currentLine, MapModelType.BORDER)) {
                         // Parsing the [borders] portion of the map file
                         readNeighbours(l_reader);
-                        createContinentCountryMappings();
                     }
                 }
             }
@@ -75,48 +89,27 @@ public class EditMapService implements SingleCommand {
     }
 
     /**
-     * Stores the map of a continent name as a key and list of neighboring countries as a value.
-     */
-    private void createContinentCountryMappings() {
-        for (Continent l_continent : d_mapEditorEngine.getContinentList()) {
-            ArrayList<String> l_countryList = new ArrayList<>();
-            for (Country l_country : d_mapEditorEngine.getCountryList()) {
-                if (l_continent.getContinentId() == l_country.getContinentId()) {
-                    l_countryList.add(l_country.getCountryName());
-                }
-            }
-            d_mapEditorEngine.addContinentCountryMap(l_continent.getContinentName(), l_countryList);
-        }
-    }
-
-    /**
      * This method is used to read continent data from map file. It reads the continent name, control value, and color
      * and stores those values in Continent class object using Continent class methods. This object is later stored in
      * the list.
      *
      * @param p_reader object of BufferedReader
-     * @throws AbsentTagException handles generated IOException while operation
+     * @throws InvalidInputException Throws if the continent control value is not integer.
+     * @throws InvalidMapException   Throws if error while reading file.
      */
-    private void readContinents(BufferedReader p_reader) throws AbsentTagException, InvalidMapException {
+    private void readContinents(BufferedReader p_reader) throws InvalidInputException, InvalidMapException {
         String l_currentLine;
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
                 String[] l_continentComponents = this.getModelComponents(l_currentLine);
-                if (l_continentComponents != null) {
-                    if (!l_continentComponents[0].isEmpty() && !l_continentComponents[1].isEmpty()) {
-                        Continent l_continent = new Continent();
-                        l_continent.setContinentName(l_continentComponents[0]);
-                        l_continent.setContinentControlValue(Integer.parseInt(l_continentComponents[1]));
-                        d_mapEditorEngine.addContinent(l_continent);
-                    } else {
-                        throw new AbsentTagException("Error while processing continent tag!");
-                    }
+                if (l_continentComponents != null && l_continentComponents.length >= 2) {
+                    d_continentService.add(l_continentComponents[0], l_continentComponents[1]);
                 }
                 p_reader.mark(0);
             }
             p_reader.reset();
         } catch (IOException p_ioException) {
-            throw new InvalidMapException("Continent property empty!");
+            throw new InvalidMapException("Error while processing!");
         }
     }
 
@@ -126,29 +119,23 @@ public class EditMapService implements SingleCommand {
      * methods. This object is later stored in the list.
      *
      * @param p_reader object of BufferedReader
-     * @throws AbsentTagException handles generated IOException while operation
+     * @throws EntityNotFoundException Throws if the continent of the country not found.
+     * @throws InvalidMapException     Throws if error while reading file.
      */
-    private void readCountries(BufferedReader p_reader) throws AbsentTagException, InvalidMapException {
+    private void readCountries(BufferedReader p_reader) throws EntityNotFoundException, InvalidMapException {
         String l_currentLine;
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
                 String[] l_countryComponents = this.getModelComponents(l_currentLine);
-                if (l_countryComponents != null) {
-                    if (!l_countryComponents[0].isEmpty() && !l_countryComponents[1].isEmpty()
-                            && !l_countryComponents[2].isEmpty()) {
-                        Country l_country = new Country(Integer.parseInt(l_countryComponents[0]));
-                        l_country.setCountryName(l_countryComponents[1]);
-                        l_country.setContinentId(Integer.parseInt(l_countryComponents[2]));
-                        d_mapEditorEngine.addCountry(l_country);
-                    } else {
-                        throw new AbsentTagException("Error while processing countries tag!");
-                    }
+                if (l_countryComponents != null &&
+                        l_countryComponents.length >= 3) {
+                    d_countryService.add(Integer.parseInt(l_countryComponents[0]), l_countryComponents[1], Integer.parseInt(l_countryComponents[2]));
                 }
                 p_reader.mark(0);
             }
             p_reader.reset();
         } catch (IOException p_ioException) {
-            throw new InvalidMapException("Country property empty!");
+            throw new InvalidMapException("Error while processing!");
         }
     }
 
@@ -165,16 +152,14 @@ public class EditMapService implements SingleCommand {
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
                 String[] l_borderComponents = this.getModelComponents(l_currentLine);
-                if (l_borderComponents != null) {
-                    List<Integer> l_neighbourNodes = new ArrayList<>();
-                    for (int i = 1; i < l_borderComponents.length; i++) {
-                        l_neighbourNodes.add(Integer.parseInt(l_borderComponents[i]));
-                    }
-                    d_mapEditorEngine.addCountryNeighbour(Integer.parseInt(l_borderComponents[0]), l_neighbourNodes);
-
-                    for (Country l_country : d_mapEditorEngine.getCountryList()) {
-                        if (l_country.getContinentId() == Integer.parseInt(l_borderComponents[0])) {
-                            l_country.setNeighbourCountries(l_neighbourNodes);
+                if (l_borderComponents != null && l_borderComponents.length > 1) {
+                    Country l_country = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponents[0]));
+                    if (l_country != null) {
+                        for (int i = 1; i < l_borderComponents.length; i++) {
+                            Country l_neighbourCountry = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponents[i]));
+                            if (l_neighbourCountry != null) {
+                                d_countryNeighborService.add(l_country, l_neighbourCountry);
+                            }
                         }
                     }
                 }
@@ -228,7 +213,8 @@ public class EditMapService implements SingleCommand {
             throws InvalidMapException,
             ResourceNotFoundException,
             InvalidInputException,
-            AbsentTagException {
+            AbsentTagException,
+            EntityNotFoundException {
         if (!p_commandValues.isEmpty()) {
             // Resolve file path using absolute path of user data directory.
             String resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));

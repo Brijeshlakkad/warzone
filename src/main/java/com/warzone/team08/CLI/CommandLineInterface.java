@@ -87,8 +87,8 @@ public class CommandLineInterface implements Runnable {
         BufferedReader l_bufferedReader =
                 new BufferedReader(new InputStreamReader(System.in));
 
-        // Reading data using readLine
-        return l_bufferedReader.readLine();
+        // Reading data using readLine and trim the input string
+        return l_bufferedReader.readLine().trim();
     }
 
     /**

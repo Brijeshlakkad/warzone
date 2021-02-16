@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is to save the edited Map File.
@@ -45,21 +46,21 @@ public class SaveMapService implements SingleCommand {
         try (Writer l_writer = new FileWriter(p_fileObject)) {
             l_writer.write("[" + "Continents" + "]\n");
 
-            for (Continent continents : d_mapEditorEngine.getContinentList()) {
+            for (Continent continents : d_mapEditorEngine.getContinentSet()) {
                 l_writer.write(continents.getContinentId() + " " + continents.getContinentName() + " " + continents.getContinentControlValue() + "\n");
             }
 
             l_writer.write("\n[" + "Countries" + "]\n");
 
-            for (Country country : d_mapEditorEngine.getCountryList()) {
-                l_writer.write(country.getCountryId() + " " + country.getCountryName() + " " + country.getContinentId() + "\n");
+            for (Country country : d_mapEditorEngine.getCountrySet()) {
+                l_writer.write(country.getCountryId() + " " + country.getCountryName() + " " + country.getContinent().getContinentId() + "\n");
             }
 
             l_writer.write("\n[" + "borders" + "]\n");
 
-            for (Map.Entry<Integer, List<Integer>> entry : d_mapEditorEngine.getCountryNeighbourMap().entrySet()) {
+            for (Map.Entry<Integer, Set<Integer>> entry : d_mapEditorEngine.getCountryNeighbourMap().entrySet()) {
                 int key = entry.getKey();
-                List<Integer> neighbour = entry.getValue();
+                Set<Integer> neighbour = entry.getValue();
                 l_writer.write(key + " ");
                 for (Integer a : neighbour) {
                     l_writer.write(a + " ");

@@ -2,6 +2,7 @@ package com.warzone.team08.VM.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is to set and get the country variables
@@ -13,10 +14,10 @@ public class Country {
     /**
      * Auto-generated ID of the country.
      */
-    private int d_countryId;
+    private final Integer COUNTRY_ID;
     private String d_countryName;
-    private int d_continentId;
-    private List<Integer> d_neighbourCountries;
+    private Continent d_continent;
+    private List<Country> d_neighbourCountries;
 
     /**
      * Used to keep the track of unique IDs for the continent.
@@ -24,12 +25,12 @@ public class Country {
     public static int serialNumber = 0;
 
     public Country() {
-        this.d_continentId = ++serialNumber;
+        this.COUNTRY_ID = ++serialNumber;
         d_neighbourCountries = new ArrayList<>();
     }
 
     public Country(int p_countryId) {
-        this.d_continentId = p_countryId;
+        this.COUNTRY_ID = p_countryId;
         d_neighbourCountries = new ArrayList<>();
     }
 
@@ -38,8 +39,8 @@ public class Country {
      *
      * @return Value of the country ID.
      */
-    public int getCountryId() {
-        return d_continentId;
+    public Integer getCountryId() {
+        return COUNTRY_ID;
     }
 
 
@@ -62,22 +63,22 @@ public class Country {
     }
 
     /**
-     * Sets the continent ID for this country.
+     * Sets the continent for this country.
      *
-     * @param p_continentId Represents the value of continent ID.
+     * @param p_continent Represents the value of continent.
      */
-    public void setContinentId(int p_continentId) {
-        d_continentId = p_continentId;
+    public void setContinent(Continent p_continent) {
+        d_continent = p_continent;
     }
 
 
     /**
-     * Gets the continent ID for this country.
+     * Gets the continent of this country.
      *
-     * @return continent ID for this country.
+     * @return continent of this country.
      */
-    public int getContinentId() {
-        return d_continentId;
+    public Continent getContinent() {
+        return d_continent;
     }
 
     /**
@@ -85,7 +86,7 @@ public class Country {
      *
      * @param p_neighbourCountries List of neighboring countries.
      */
-    public void setNeighbourCountries(List<Integer> p_neighbourCountries) {
+    public void setNeighbourCountries(List<Country> p_neighbourCountries) {
         d_neighbourCountries = p_neighbourCountries;
     }
 
@@ -94,16 +95,45 @@ public class Country {
      *
      * @return Value of neighboring countries list.
      */
-    public List<Integer> getNeighbourCountries() {
+    public List<Country> getNeighbourCountries() {
         return d_neighbourCountries;
     }
 
     /**
      * Adds the neighbor to the country.
      *
-     * @param p_neighbourCountryId Id of the neighbor country.
+     * @param p_neighbourCountry Value of the neighbor country.
      */
-    public void addNeighbourCountry(Integer p_neighbourCountryId) {
-        d_neighbourCountries.add(p_neighbourCountryId);
+    public void addNeighbourCountry(Country p_neighbourCountry) {
+        d_neighbourCountries.add(p_neighbourCountry);
+    }
+
+    /**
+     * Removed the neighbor from the country.
+     *
+     * @param p_neighbourCountry Value of the neighbor country.
+     */
+    public void removeNeighbourCountry(Country p_neighbourCountry) {
+        d_neighbourCountries.remove(p_neighbourCountry);
+    }
+
+    /**
+     * Checks if both objects are the same using both the country and continent of the object.
+     *
+     * @param l_p_o Value of the second element to be checked with.
+     * @return True if the both are same.
+     */
+    @Override
+    public boolean equals(Object l_p_o) {
+        if (this == l_p_o) return true;
+        if (l_p_o == null || getClass() != l_p_o.getClass()) return false;
+        Country l_l_country = (Country) l_p_o;
+        return COUNTRY_ID.equals(l_l_country.COUNTRY_ID) &&
+                d_continent.equals(l_l_country.d_continent);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(COUNTRY_ID, d_continent);
     }
 }
