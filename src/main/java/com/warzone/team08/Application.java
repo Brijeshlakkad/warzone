@@ -3,6 +3,15 @@ package com.warzone.team08;
 import com.warzone.team08.CLI.CommandLineInterface;
 import com.warzone.team08.CLI.constants.enums.states.GameState;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.utils.FileUtil;
+import com.warzone.team08.VM.utils.PathResolverUtil;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 /**
  * The main class of the War Zone Team08
@@ -62,8 +71,10 @@ public class Application {
         return d_gameState;
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException, URISyntaxException {
         setIsRunning(true);
+        // Sets the environment for game.
+        onStartUp();
 
         // Starts the runtime engine (GameEngine) for the game.
         d_virtualMachine = new VirtualMachine();
@@ -83,8 +94,33 @@ public class Application {
      *
      * @return Value of virtual machine.
      */
-    public VirtualMachine VIRTUAL_MACHINE() {
+    public static VirtualMachine VIRTUAL_MACHINE() {
         return d_virtualMachine;
+    }
+
+    /**
+     * Will be called when game starts.
+     */
+    public static void onStartUp() {
+        try {
+            restoreMapFiles();
+        } catch (IOException | URISyntaxException l_ignored) {
+
+        }
+    }
+
+    /**
+     * Restores the map files to user data directory location. Downloads the files to user location.
+     *
+     * @throws IOException        Throws if the directory can not be created. (because of permissions?)
+     * @throws URISyntaxException Throws if the directory can not be found.
+     */
+    public static void restoreMapFiles() throws IOException, URISyntaxException {
+        // Download the files at user data directory.
+        Path l_sourceMapFiles = Paths.get(Objects.requireNonNull(Application.class.getClassLoader().getResource("map_files")).toURI());
+        Path l_userDataDirectory = PathResolverUtil.getUserDataDirectoryPath();
+        Files.walk(l_sourceMapFiles)
+                .forEach(source -> FileUtil.copy(source, l_userDataDirectory.resolve(l_sourceMapFiles.relativize(source))));
     }
 
     /**

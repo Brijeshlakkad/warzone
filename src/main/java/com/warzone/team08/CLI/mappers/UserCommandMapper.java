@@ -46,8 +46,9 @@ public class UserCommandMapper {
 
             // Throws an exception if the command needs its value to run and not provided by the user
             if (validateIfCommandDoesNeedValue(l_predefinedUserCommand, l_argumentBody.size())) {
-                // This UserCommand instance will be returned for further processing
+                // This UserCommand instance will be returned from here.
                 l_predefinedUserCommand.setCommandValues(l_argumentBody);
+                return l_predefinedUserCommand;
             } else if (validateIfCommandCanRunAlone(l_predefinedUserCommand, l_argumentBody.size())) {
                 // Throws an exception if the command can run alone and the user has provided with some random text
             } else {

@@ -77,12 +77,34 @@ public class MapEditorCommandLayout implements CommandLayout {
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
+        // showmap
+        l_userCommand = new UserCommand();
+        l_userCommand.setHeadCommand("showmap");
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
+        d_userCommands.add(l_userCommand);
+
+        // Example of the below command:
         // savemap filename
         l_userCommand = new UserCommand();
         l_userCommand.setHeadCommand("savemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        d_userCommands.add(l_userCommand);
+
+        // Example of the below command:
+        // editmap filename
+        l_userCommand = new UserCommand();
+        l_userCommand.setHeadCommand("editmap");
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
         l_userCommand.setCommandValues(Collections.singletonList("filename"));
         d_userCommands.add(l_userCommand);
+
+        // Example of the below command:
+        // validatemap
+        l_userCommand = new UserCommand();
+        l_userCommand.setHeadCommand("validatemap");
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
+        d_userCommands.add(l_userCommand);
+
     }
 
     /**

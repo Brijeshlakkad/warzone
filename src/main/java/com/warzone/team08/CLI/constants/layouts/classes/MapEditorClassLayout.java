@@ -18,8 +18,11 @@ public class MapEditorClassLayout implements ClassLayout {
     private final Map<String, String> d_commandToClassMapper = new HashMap<String, String>();
 
     public MapEditorClassLayout() {
-        d_commandToClassMapper.put("editcontinent", "com.warzone.team08.VM.controllers.ContinentController");
-        d_commandToClassMapper.put("editcountry", "com.warzone.team08.VM.controllers.CountryController");
+        d_commandToClassMapper.put("editcontinent", "com.warzone.team08.VM.services.ContinentService");
+        d_commandToClassMapper.put("editcountry", "com.warzone.team08.VM.services.CountryService");
+        d_commandToClassMapper.put("editmap", "com.warzone.team08.VM.services.EditMapService");
+        d_commandToClassMapper.put("validatemap", "com.warzone.team08.VM.services.ValidateMapService");
+        d_commandToClassMapper.put("savemap", "com.warzone.team08.VM.services.SaveMapService");
     }
 
     /**

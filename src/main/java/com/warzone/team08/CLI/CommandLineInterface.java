@@ -1,6 +1,7 @@
 package com.warzone.team08.CLI;
 
 import com.warzone.team08.Application;
+import com.warzone.team08.CLI.constants.enums.specifications.CommandSpecification;
 import com.warzone.team08.CLI.constants.enums.states.UserInteractionState;
 import com.warzone.team08.CLI.constants.layouts.UserClassLayout;
 import com.warzone.team08.CLI.exceptions.InvalidArgumentException;
@@ -106,10 +107,10 @@ public class CommandLineInterface implements Runnable {
                         p_e.printStackTrace();
                     }
                 }
-            } catch (InvalidArgumentException | InvalidCommandException e) {
+            } catch (InvalidArgumentException | InvalidCommandException p_exception) {
                 // Show exception message
                 // In Graphical User Interface, we can show different modals respective to the exception.
-                System.out.println(e.getMessage());
+                System.out.println(p_exception.getMessage());
             }
         }
     }
@@ -130,7 +131,7 @@ public class CommandLineInterface implements Runnable {
             Object l_object = l_class.getDeclaredConstructor().newInstance();
 
             // If the command does not have any argument keys
-            if (p_userCommand.getUserArguments().size() == 0) {
+            if (p_userCommand.getCommandSpecification() != CommandSpecification.AT_LEAST_ONE) {
                 // Call the default method of the instance with the arguments
                 this.handleMethodInvocation(l_object, DEFAULT_METHOD_NAME, p_userCommand.getCommandValues());
             } else {
@@ -146,7 +147,15 @@ public class CommandLineInterface implements Runnable {
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException p_e) {
             throw new InvalidCommandException("Command not found!");
         } catch (NoSuchMethodException | InvocationTargetException p_e) {
-            throw new InvalidArgumentException("Unrecognized argument and/or its values");
+            // If belongs to VMException
+            if (p_e.getCause() != null &&
+                    p_e.getCause().getClass() != null &&
+                    p_e.getCause().getClass().getSuperclass() != null &&
+                    p_e.getCause().getClass().getSuperclass().getName().equals("com.warzone.team08.VM.exceptions.VMException")) {
+                throw new InvalidCommandException(p_e.getCause().getMessage());
+            } else {
+                throw new InvalidArgumentException("Unrecognized argument and/or its values");
+            }
         }
     }
 
@@ -159,14 +168,15 @@ public class CommandLineInterface implements Runnable {
      * @param p_argKey    Value of the argument key passed by the user; This represents also the method name of the
      *                    object.
      * @param p_argValues Value of the argument values; This represents the arguments to be passed to the method call.
-     * @return Returns the same value returned by the method invocation
      * @throws NoSuchMethodException     Raised if the method doesn't exist at the object.
      * @throws InvocationTargetException Raised if invoked a method that throws an underlying exception itself.
      * @throws IllegalAccessException    Raised if the method is not accessible by the caller.
      */
-    private Object handleMethodInvocation(Object p_object,
-                                          String p_argKey, List<String> p_argValues)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    private void handleMethodInvocation(Object p_object,
+                                        String p_argKey, List<String> p_argValues)
+            throws NoSuchMethodException,
+            InvocationTargetException,
+            IllegalAccessException {
         // Create two arrays:
         // 1. For type of the value
         // 2. For the values
@@ -177,6 +187,15 @@ public class CommandLineInterface implements Runnable {
         }
         // Get the reference and call the method with arguments
         Method l_methodReference = p_object.getClass().getMethod(p_argKey, l_valueTypes);
-        return l_methodReference.invoke(p_object, l_values);
+        Object l_responseObject = l_methodReference.invoke(p_object, l_values);
+
+        try {
+            String l_responseValue = (String) l_responseObject;
+            if (!l_responseValue.isEmpty()) {
+                System.out.println(l_responseValue);
+            }
+        } catch (Exception l_ignored) {
+            // Ignore exception if the object does not represent the String value.
+        }
     }
 }
