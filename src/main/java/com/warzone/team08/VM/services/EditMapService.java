@@ -12,6 +12,7 @@ import com.warzone.team08.VM.utils.PathResolverUtil;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -96,14 +97,20 @@ public class EditMapService implements SingleCommand {
      * @param p_reader object of BufferedReader
      * @throws InvalidInputException Throws if the continent control value is not integer.
      * @throws InvalidMapException   Throws if error while reading file.
+     * @throws AbsentTagException    Throws if the required element in line is not available.
      */
-    private void readContinents(BufferedReader p_reader) throws InvalidInputException, InvalidMapException {
+    private void readContinents(BufferedReader p_reader) throws InvalidInputException, InvalidMapException, AbsentTagException {
         String l_currentLine;
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
-                String[] l_continentComponents = this.getModelComponents(l_currentLine);
-                if (l_continentComponents != null && l_continentComponents.length >= 2) {
-                    d_continentService.add(l_continentComponents[0], l_continentComponents[1]);
+                List<String> l_continentComponents = Arrays.asList(this.getModelComponents(l_currentLine));
+                if (!l_continentComponents.isEmpty()) {
+                    if (!(l_continentComponents.contains(null) || l_continentComponents.contains(""))
+                            && l_continentComponents.size() >= 2) {
+                        d_continentService.add(l_continentComponents.get(0), l_continentComponents.get(1));
+                    } else {
+                        throw new AbsentTagException("Missing continent value!");
+                    }
                 }
                 p_reader.mark(0);
             }
@@ -121,15 +128,20 @@ public class EditMapService implements SingleCommand {
      * @param p_reader object of BufferedReader
      * @throws EntityNotFoundException Throws if the continent of the country not found.
      * @throws InvalidMapException     Throws if error while reading file.
+     * @throws AbsentTagException      Throws if the required element in line is not available.
      */
-    private void readCountries(BufferedReader p_reader) throws EntityNotFoundException, InvalidMapException {
+    private void readCountries(BufferedReader p_reader) throws EntityNotFoundException, InvalidMapException, AbsentTagException {
         String l_currentLine;
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
-                String[] l_countryComponents = this.getModelComponents(l_currentLine);
-                if (l_countryComponents != null &&
-                        l_countryComponents.length >= 3) {
-                    d_countryService.add(Integer.parseInt(l_countryComponents[0]), l_countryComponents[1], Integer.parseInt(l_countryComponents[2]));
+                List<String> l_countryComponents = Arrays.asList(this.getModelComponents(l_currentLine));
+                if (!l_countryComponents.isEmpty()) {
+                    if (!(l_countryComponents.contains(null) || l_countryComponents.contains(""))
+                            && l_countryComponents.size() >= 3) {
+                        d_countryService.add(Integer.parseInt(l_countryComponents.get(0)), l_countryComponents.get(1), Integer.parseInt(l_countryComponents.get(1)));
+                    } else {
+                        throw new AbsentTagException("Missing country value!");
+                    }
                 }
                 p_reader.mark(0);
             }
@@ -137,6 +149,7 @@ public class EditMapService implements SingleCommand {
         } catch (IOException p_ioException) {
             throw new InvalidMapException("Error while processing!");
         }
+
     }
 
     /**
@@ -145,28 +158,34 @@ public class EditMapService implements SingleCommand {
      * TreeMap.
      *
      * @param p_reader object of BufferedReader
-     * @throws AbsentTagException handles generated IOException while operation
+     * @throws InvalidMapException Throws if error while reading file.
+     * @throws AbsentTagException  Throws if the required element in line is not available.
      */
-    private void readNeighbours(BufferedReader p_reader) throws AbsentTagException {
+    private void readNeighbours(BufferedReader p_reader) throws AbsentTagException, InvalidMapException {
         String l_currentLine;
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
-                String[] l_borderComponents = this.getModelComponents(l_currentLine);
-                if (l_borderComponents != null && l_borderComponents.length > 1) {
-                    Country l_country = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponents[0]));
-                    if (l_country != null) {
-                        for (int i = 1; i < l_borderComponents.length; i++) {
-                            Country l_neighbourCountry = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponents[i]));
-                            if (l_neighbourCountry != null) {
-                                d_countryNeighborService.add(l_country, l_neighbourCountry);
+                List<String> l_borderComponents = Arrays.asList(this.getModelComponents(l_currentLine));
+                if (!l_borderComponents.isEmpty()) {
+                    if (!(l_borderComponents.contains(null) || l_borderComponents.contains(""))
+                            && l_borderComponents.size() > 1) {
+                        Country l_country = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponents.get(0)));
+                        if (l_country != null) {
+                            for (int i = 1; i < l_borderComponents.size(); i++) {
+                                Country l_neighbourCountry = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponents.get(i)));
+                                if (l_neighbourCountry != null) {
+                                    d_countryNeighborService.add(l_country, l_neighbourCountry);
+                                }
                             }
                         }
+                    } else {
+                        throw new AbsentTagException("Missing border value!");
                     }
                 }
             }
             p_reader.mark(0);
         } catch (IOException e) {
-            throw new AbsentTagException("Error while processing borders tag!");
+            throw new InvalidMapException("Error while processing!");
         }
     }
 
