@@ -234,7 +234,7 @@ public class EditMapService implements SingleCommand {
     }
 
     /**
-     * @see SingleCommand#execute(List)
+     * {@inheritDoc}
      */
     @Override
     public String execute(List<String> p_commandValues)

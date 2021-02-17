@@ -29,8 +29,9 @@ public class CountryNeighborService {
     /**
      * Attach the neighbor to the country using the name of the countries.
      *
-     * @param p_countryName         Value of the continent name.
+     * @param p_countryName         Value of the country name.
      * @param p_neighborCountryName Value of the neighbour country to be set.
+     * @throws EntityNotFoundException Throws if the either country not found.
      */
     public void add(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);
@@ -53,6 +54,7 @@ public class CountryNeighborService {
      *
      * @param p_countryName         Value of the country name.
      * @param p_neighborCountryName Value of the neighbor country.
+     * @throws EntityNotFoundException Throws if the either country not found.
      */
     public void remove(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);

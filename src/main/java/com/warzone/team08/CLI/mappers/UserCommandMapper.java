@@ -25,7 +25,8 @@ public class UserCommandMapper {
      * The UserCommand object is equivalent to the user text which is being used to call the APIs related to the command instruction
      * </pre>
      *
-     * @param p_userInput Text entered by the user
+     * @param p_userInput Text entered by the user.
+     * @return Value of interpreted UserCommand object from user input string.
      */
     public UserCommand toUserCommand(String p_userInput) {
         // Cracks a command line string

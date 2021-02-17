@@ -27,7 +27,8 @@ public class ContinentService {
      * Adds the continent to the list stored at map editor engine.
      *
      * @param p_continentName Value of the continent name.
-     * @param p_countryValue  Value of the co
+     * @param p_countryValue  Value of the control value of the continent.
+     * @throws InvalidInputException Throws if the control value can not be parsed into Integer data type.
      */
     public void add(String p_continentName, String p_countryValue) throws InvalidInputException {
         try {

@@ -42,6 +42,7 @@ public class CountryService {
      *
      * @param p_countryName   Value of the country name.
      * @param p_continentName Value of the continent to which this country will be added.
+     * @throws EntityNotFoundException Throws if the either country not found.
      */
     public void add(String p_countryName, String p_continentName) throws EntityNotFoundException {
         Country l_country = new Country();
@@ -65,6 +66,7 @@ public class CountryService {
      * @param p_countryId   Value of the country id.
      * @param p_countryName Value of the country name.
      * @param p_continentId Value of the continent to which this country will be added.
+     * @throws EntityNotFoundException Throws if the either country not found.
      */
     public void add(Integer p_countryId, String p_countryName, Integer p_continentId) throws EntityNotFoundException {
         Country l_country = new Country(p_countryId);
@@ -86,6 +88,7 @@ public class CountryService {
      * Removes the country from the list using the name.
      *
      * @param p_countryName Value of the country name.
+     * @throws EntityNotFoundException Throws if the either country not found.
      */
     public void remove(String p_countryName) throws EntityNotFoundException {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);
