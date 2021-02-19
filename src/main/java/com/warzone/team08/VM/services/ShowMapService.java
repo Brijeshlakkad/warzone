@@ -1,6 +1,6 @@
 package com.warzone.team08.VM.services;
 
-import com.github.freva.asciitable.AsciiTable;
+import com.jakewharton.fliptables.FlipTable;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.engines.MapEditorEngine;
 import com.warzone.team08.VM.entities.Continent;
@@ -8,17 +8,14 @@ import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /** This class is used to show the content of current map on user console
  *
  * @author MILESH
  * @version 1.0
  */
-public class ShowMapService  implements SingleCommand {
+public class ShowMapService implements SingleCommand {
     MapEditorEngine d_mapEditorEngine=null;
     ContinentRepository d_continentRepository;
     CountryRepository d_countryRepository;
@@ -63,7 +60,8 @@ public class ShowMapService  implements SingleCommand {
             ArrayList<String> l_singleContinentContent = l_mapContent.get(i);
             l_continentMapMatrix[i] = l_singleContinentContent.toArray(new String[l_singleContinentContent.size()]);
         }
-        String l_continentMapTable = AsciiTable.getTable(l_header, l_continentMapMatrix);
+
+        String l_continentMapTable = FlipTable.of(l_header, l_continentMapMatrix);
         return l_continentMapTable;
     }
 
@@ -81,6 +79,7 @@ public class ShowMapService  implements SingleCommand {
         for (Country l_country : d_countrySet) {
             l_countryNames.add(l_country.getCountryName());
         }
+        l_neighbourCountryMatrix[0][0]="COUNTRIES";
 
         //for storing country names in first column of matrix
         for (int l_row = 0; l_row < l_neighbourCountryMatrix.length; l_row++) {
@@ -113,7 +112,13 @@ public class ShowMapService  implements SingleCommand {
                 p_e.printStackTrace();
             }
         }
-        String l_neighbourCountryTable = AsciiTable.getTable(l_neighbourCountryMatrix);
+
+        String[] l_countryCountHeader=new String[d_countrySet.size()+1];
+        for(int i=0;i<l_countryCountHeader.length;i++){
+            l_countryCountHeader[i]="C"+i;
+        }
+
+        String l_neighbourCountryTable = FlipTable.of(l_countryCountHeader,l_neighbourCountryMatrix);
         return l_neighbourCountryTable;
     }
 

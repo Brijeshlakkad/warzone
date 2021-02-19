@@ -103,13 +103,16 @@ public class EditMapService implements SingleCommand {
         String l_currentLine;
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
-                List<String> l_continentComponents = Arrays.asList(this.getModelComponents(l_currentLine));
-                if (!l_continentComponents.isEmpty()) {
-                    if (!(l_continentComponents.contains(null) || l_continentComponents.contains(""))
-                            && l_continentComponents.size() >= 2) {
-                        d_continentService.add(l_continentComponents.get(0), l_continentComponents.get(1));
-                    } else {
-                        throw new AbsentTagException("Missing continent value!");
+                String[] l_continentComponents = this.getModelComponents(l_currentLine);
+                if (l_continentComponents != null) {
+                    List<String> l_continentComponentList = Arrays.asList(l_continentComponents);
+                    if (!l_continentComponentList.isEmpty()) {
+                        if (!(l_continentComponentList.contains(null) || l_continentComponentList.contains(""))
+                                && l_continentComponentList.size() >= 2) {
+                            d_continentService.add(l_continentComponentList.get(0), l_continentComponentList.get(1));
+                        } else {
+                            throw new AbsentTagException("Missing continent value!");
+                        }
                     }
                 }
                 p_reader.mark(0);
@@ -134,13 +137,16 @@ public class EditMapService implements SingleCommand {
         String l_currentLine;
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
-                List<String> l_countryComponents = Arrays.asList(this.getModelComponents(l_currentLine));
-                if (!l_countryComponents.isEmpty()) {
-                    if (!(l_countryComponents.contains(null) || l_countryComponents.contains(""))
-                            && l_countryComponents.size() >= 3) {
-                        d_countryService.add(Integer.parseInt(l_countryComponents.get(0)), l_countryComponents.get(1), Integer.parseInt(l_countryComponents.get(1)));
-                    } else {
-                        throw new AbsentTagException("Missing country value!");
+                String[] l_countryComponents = this.getModelComponents(l_currentLine);
+                if (l_countryComponents != null) {
+                    List<String> l_countryComponentList = Arrays.asList(l_countryComponents);
+                    if (!l_countryComponentList.isEmpty()) {
+                        if (!(l_countryComponentList.contains(null) || l_countryComponentList.contains(""))
+                                && l_countryComponentList.size() >= 3) {
+                            d_countryService.add(Integer.parseInt(l_countryComponentList.get(0)), l_countryComponentList.get(1), Integer.parseInt(l_countryComponentList.get(2)));
+                        } else {
+                            throw new AbsentTagException("Missing country value!");
+                        }
                     }
                 }
                 p_reader.mark(0);
@@ -165,21 +171,24 @@ public class EditMapService implements SingleCommand {
         String l_currentLine;
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
-                List<String> l_borderComponents = Arrays.asList(this.getModelComponents(l_currentLine));
-                if (!l_borderComponents.isEmpty()) {
-                    if (!(l_borderComponents.contains(null) || l_borderComponents.contains(""))
-                            && l_borderComponents.size() > 1) {
-                        Country l_country = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponents.get(0)));
-                        if (l_country != null) {
-                            for (int i = 1; i < l_borderComponents.size(); i++) {
-                                Country l_neighbourCountry = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponents.get(i)));
-                                if (l_neighbourCountry != null) {
-                                    d_countryNeighborService.add(l_country, l_neighbourCountry);
+                String[] l_borderComponents = this.getModelComponents(l_currentLine);
+                if (l_borderComponents != null) {
+                    List<String> l_borderComponentList = Arrays.asList(l_borderComponents);
+                    if (!l_borderComponentList.isEmpty()) {
+                        if (!(l_borderComponentList.contains(null) || l_borderComponentList.contains(""))
+                                && l_borderComponentList.size() > 1) {
+                            Country l_country = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponentList.get(0)));
+                            if (l_country != null) {
+                                for (int i = 1; i < l_borderComponentList.size(); i++) {
+                                    Country l_neighbourCountry = d_countryRepository.findByCountryId(Integer.parseInt(l_borderComponentList.get(i)));
+                                    if (l_neighbourCountry != null) {
+                                        d_countryNeighborService.add(l_country, l_neighbourCountry);
+                                    }
                                 }
                             }
+                        } else {
+                            throw new AbsentTagException("Missing border value!");
                         }
-                    } else {
-                        throw new AbsentTagException("Missing border value!");
                     }
                 }
             }
@@ -225,7 +234,7 @@ public class EditMapService implements SingleCommand {
     }
 
     /**
-     * @inheritDoc
+     * @see SingleCommand#execute(List)
      */
     @Override
     public String execute(List<String> p_commandValues)
