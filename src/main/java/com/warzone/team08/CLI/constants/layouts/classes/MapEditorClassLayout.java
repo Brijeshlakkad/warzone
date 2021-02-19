@@ -24,6 +24,7 @@ public class MapEditorClassLayout implements ClassLayout {
         d_commandToClassMapper.put("editmap", "com.warzone.team08.VM.services.EditMapService");
         d_commandToClassMapper.put("validatemap", "com.warzone.team08.VM.services.ValidateMapService");
         d_commandToClassMapper.put("savemap", "com.warzone.team08.VM.services.SaveMapService");
+        d_commandToClassMapper.put("showmap", "com.warzone.team08.VM.services.ShowMapService");
     }
 
     /**
