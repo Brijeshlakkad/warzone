@@ -25,7 +25,6 @@ public class Application {
      */
     private static volatile boolean d_isRunning = true;
 
-
     /**
      * Connects interface with method APIs; An environment for the player to store the information.
      */
@@ -74,6 +73,15 @@ public class Application {
      */
     public static VirtualMachine VIRTUAL_MACHINE() {
         return d_virtualMachine;
+    }
+
+    /**
+     * Gets the state of the game
+     *
+     * @return Value of the game state
+     */
+    public static GameState getGameState() {
+        return VirtualMachine.getGameState();
     }
 
     /**
