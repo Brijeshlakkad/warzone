@@ -67,6 +67,8 @@ public class SaveMapService implements SingleCommand {
                 }
                 l_writer.write("\n");
             }
+            // Re-initialise map editor engine data
+            d_mapEditorEngine.initialise();
             return "File saved successfully";
         } catch (IOException p_ioException) {
             throw new InvalidInputException("Error while saving the file!");

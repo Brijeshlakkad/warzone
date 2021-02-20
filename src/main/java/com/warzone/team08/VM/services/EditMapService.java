@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * This file loads map file in the user console.
  * <p>
- * This service handles `loadmap` user command.
+ * This service handles `editmap` user command.
  *
  * @author Brijesh Lakkad
  * @author CHARIT
