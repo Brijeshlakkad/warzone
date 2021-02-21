@@ -14,7 +14,7 @@ public class VirtualMachine {
     /**
      * Keeps track of the game state
      */
-    private static GameState d_gameState = GameState.MAP_EDITOR;
+    private GameState d_gameState = GameState.NOT_STARTED;
 
     public VirtualMachine() {
 
@@ -25,7 +25,7 @@ public class VirtualMachine {
      *
      * @param p_gameState New value of Keeps track of the game state.
      */
-    public static void setGameState(GameState p_gameState) {
+    public void setGameState(GameState p_gameState) {
         d_gameState = p_gameState;
     }
 
@@ -34,8 +34,15 @@ public class VirtualMachine {
      *
      * @return Value of the game state
      */
-    public static GameState getGameState() {
+    public GameState getGameState() {
         return d_gameState;
+    }
+
+    /**
+     * Sets the game state to <code>GAME_PLAY</code>
+     */
+    public void setGameStatePlaying() {
+        this.setGameState(GameState.GAME_PLAY);
     }
 
     /**

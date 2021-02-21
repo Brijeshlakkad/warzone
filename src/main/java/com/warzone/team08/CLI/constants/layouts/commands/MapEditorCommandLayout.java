@@ -102,10 +102,18 @@ public class MapEditorCommandLayout implements CommandLayout {
         l_userCommand.setHeadCommand("validatemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
         d_userCommands.add(l_userCommand);
+
+        // Example of the below command:
+        // loadmap filename
+        l_userCommand = new UserCommand();
+        l_userCommand.setHeadCommand("loadmap");
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        d_userCommands.add(l_userCommand);
     }
 
     /**
      * {@inheritDoc}
+     *
      * @return Value of the list of user commands for this class.
      */
     @Override

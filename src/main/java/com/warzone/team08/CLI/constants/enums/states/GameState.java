@@ -1,14 +1,17 @@
 package com.warzone.team08.CLI.constants.enums.states;
 
 /**
- * This class represents the different state of the game.
- * It is also being used to validate the user command:
- * One command from one state can not be allowed to run on another state.
+ * This class represents the different state of the game. It is also being used to validate the user command: One
+ * command from one state can not be allowed to run on another state.
  *
  * @author Brijesh Lakkad
  * @version 1.0
  */
 public enum GameState {
+    /**
+     * When application is setting the environment for the game.
+     */
+    NOT_STARTED("not_started"),
     /**
      * Map editor state to let user interact with map
      */
@@ -16,7 +19,7 @@ public enum GameState {
     /**
      * States the user has started playing the game
      */
-    PLAYING("playing");
+    GAME_PLAY("game_play");
 
     public String d_jsonValue;
 
