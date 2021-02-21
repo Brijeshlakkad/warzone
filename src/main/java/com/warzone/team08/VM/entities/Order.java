@@ -1,4 +1,4 @@
-package com.warzone.team08.VM.game_play.entities;
+package com.warzone.team08.VM.entities;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.

@@ -1,8 +1,8 @@
-package com.warzone.team08.VM.map_editor.repositories;
+package com.warzone.team08.VM.repositories;
 
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
-import com.warzone.team08.VM.map_editor.entities.Continent;
+import com.warzone.team08.VM.entities.Continent;
 
 import java.util.List;
 import java.util.stream.Collectors;

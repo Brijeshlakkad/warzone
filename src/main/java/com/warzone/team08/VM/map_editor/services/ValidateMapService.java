@@ -1,10 +1,9 @@
 package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
-import com.warzone.team08.VM.map_editor.entities.Continent;
-import com.warzone.team08.VM.map_editor.entities.Country;
 import com.warzone.team08.VM.exceptions.InvalidMapException;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.entities.Continent;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ public class ValidateMapService implements SingleCommand {
     public ValidateMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
     }
-
 
 
     /**
@@ -96,7 +94,7 @@ public class ValidateMapService implements SingleCommand {
      * @param p_continentList Value of the total continent number.
      * @return True if the validation passes.
      */
-    private boolean validationControlValue(Set<Continent> p_continentList){
+    private boolean validationControlValue(Set<Continent> p_continentList) {
         boolean l_isInvalid = false;
         int p_continentCount = p_continentList.size();
         if (p_continentCount == 1 || p_continentCount == 2) {

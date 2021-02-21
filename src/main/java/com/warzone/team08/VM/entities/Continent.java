@@ -1,4 +1,4 @@
-package com.warzone.team08.VM.map_editor.entities;
+package com.warzone.team08.VM.entities;
 
 import java.util.HashSet;
 import java.util.Objects;
