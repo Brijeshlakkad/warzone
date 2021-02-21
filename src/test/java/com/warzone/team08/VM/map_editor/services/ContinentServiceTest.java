@@ -30,9 +30,7 @@ public class ContinentServiceTest {
      * Re-initializes the continent list before test case run.
      */
     @Before
-    public void beforeTestCase() {
-        MapEditorEngine.getInstance().initialise();
-    }
+    public void beforeTestCase() { MapEditorEngine.getInstance().initialise();}
 
     /**
      * Tests whether the wrong continent value is being shown or not.
