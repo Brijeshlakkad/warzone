@@ -1,7 +1,7 @@
 package com.warzone.team08.VM;
 
 import com.warzone.team08.CLI.constants.enums.states.GameState;
-import com.warzone.team08.VM.engines.MapEditorEngine;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
 
 /**
  * Handles the connection with different user interfaces. Creates an environment for the player to store the

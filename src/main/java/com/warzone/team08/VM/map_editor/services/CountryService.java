@@ -1,11 +1,11 @@
-package com.warzone.team08.VM.services;
+package com.warzone.team08.VM.map_editor.services;
 
-import com.warzone.team08.VM.engines.MapEditorEngine;
-import com.warzone.team08.VM.entities.Continent;
-import com.warzone.team08.VM.entities.Country;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.map_editor.entities.Continent;
+import com.warzone.team08.VM.map_editor.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.repositories.ContinentRepository;
-import com.warzone.team08.VM.repositories.CountryRepository;
+import com.warzone.team08.VM.map_editor.repositories.ContinentRepository;
+import com.warzone.team08.VM.map_editor.repositories.CountryRepository;
 
 import java.util.List;
 

@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class encompasses all the commands which can be entered by the user during the MAP_EDITOR game state.
+ * This class encompasses all the commands which can be entered by the user during the <code>MAP_EDITOR</code> game state.
  *
  * @author Brijesh Lakkad
  * @version 1.0
  */
 public class MapEditorCommandLayout implements CommandLayout {
     /**
-     * The list of user commands which can be entered at the MAP_EDITOR state of GameState
+     * The list of user commands which can be entered at the <code>MAP_EDITOR</code> state of GameState
      */
     List<UserCommand> d_userCommands;
 

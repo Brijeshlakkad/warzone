@@ -1,4 +1,6 @@
-package com.warzone.team08.VM.entities;
+package com.warzone.team08.VM.game_play.entities;
+
+import com.warzone.team08.VM.map_editor.entities.Country;
 
 import java.util.ArrayList;
 import java.util.List;
