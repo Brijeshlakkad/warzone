@@ -31,6 +31,7 @@ public class CountryRepository {
      *
      * @param p_countryName Value of the name of country.
      * @return Value of the first matched countries.
+     * @throws EntityNotFoundException Throws if the being searched entity has been not found.
      */
     public Country findFirstByCountryName(String p_countryName) throws EntityNotFoundException {
         List<Country> l_countryList = this.findByCountryName(p_countryName);

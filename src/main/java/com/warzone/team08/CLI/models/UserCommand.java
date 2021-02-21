@@ -77,9 +77,9 @@ public class UserCommand {
     }
 
     /**
-     * Adds element to the list of CommandArgument
+     * Adds element into the list of CommandArgument
      *
-     * @return the list of CommandArgument
+     * @param p_commandArgument argument key and its value object.
      */
     public void pushCommandArgument(CommandArgument p_commandArgument) {
         d_commandArgumentList.add(p_commandArgument);
@@ -95,9 +95,10 @@ public class UserCommand {
     }
 
     /**
-     * Adds element to the list of CommandArgument
+     * Adds element to the list of user argument mappings.
      *
-     * @return the list of CommandArgument
+     * @param argKey Value of argument key.
+     * @param values Value of the list of argument values.
      */
     public void pushUserArgument(String argKey, List<String> values) {
         d_userArguments.put(argKey, values);
@@ -115,9 +116,10 @@ public class UserCommand {
     }
 
     /**
-     * Matches and returns the argument key with the list of available arguments for this command
+     * Matches argument key with available arguments for this command.
      *
-     * @param p_argumentKey Value of matched argument with the provided key
+     * @param p_argumentKey Value of matched argument with the provided key.
+     * @return Value of the list of available arguments for this command
      */
     public CommandArgument matchCommandArgument(String p_argumentKey) {
         // Returns only one element

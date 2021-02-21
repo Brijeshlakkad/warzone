@@ -31,6 +31,7 @@ public class ContinentRepository {
      *
      * @param p_continentName Value of the name of continent.
      * @return Value of the first matched continents.
+     * @throws EntityNotFoundException Throws if the being searched entity has been not found.
      */
     public Continent findFirstByContinentName(String p_continentName) throws EntityNotFoundException {
         List<Continent> l_continentList = this.findByContinentName(p_continentName);

@@ -11,8 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * This class maps the command-layout classes to their game state.
- * The class can be used without creating any instance.
+ * This class maps the command-layout classes to their game state. The class can be used without creating any instance.
  *
  * @author Brijesh Lakkad
  * @version 1.0
@@ -39,9 +38,8 @@ public class UserCommandLayout {
     }
 
     /**
-     * Gets matched the user command
-     * It decides the which list of predefined command using the game state
-     * Then it matches the user command with the head of the command provided
+     * Gets matched the user command It decides the which list of predefined command using the game state Then it
+     * matches the user command with the head of the command provided
      *
      * @param p_headOfCommand head of the command which needs to be matched the list of predefined commands
      * @return Value of the user command which matched with p_headOfCommand
