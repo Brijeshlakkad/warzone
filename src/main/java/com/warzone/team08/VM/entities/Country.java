@@ -35,7 +35,7 @@ public class Country {
     }
 
     /**
-     * Sets the ID for the country.
+     * Gets the ID for the country.
      *
      * @return Value of the country ID.
      */
