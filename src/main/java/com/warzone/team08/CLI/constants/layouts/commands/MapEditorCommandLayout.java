@@ -105,7 +105,8 @@ public class MapEditorCommandLayout implements CommandLayout {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @return Value of the list of user commands for this class.
      */
     @Override
     public List<UserCommand> getUserCommands() {

@@ -26,11 +26,6 @@ public class Application {
     private static volatile boolean d_isRunning = true;
 
     /**
-     * Keeps track of the game state
-     */
-    private static GameState d_gameState = GameState.MAP_EDITOR;
-
-    /**
      * Connects interface with method APIs; An environment for the player to store the information.
      */
     private static VirtualMachine d_virtualMachine;
@@ -51,24 +46,6 @@ public class Application {
      */
     public static void setIsRunning(boolean d_isRunning) {
         d_isRunning = d_isRunning;
-    }
-
-    /**
-     * Sets new Keeps track of the game state.
-     *
-     * @param p_gameState New value of Keeps track of the game state.
-     */
-    public static void setGameState(GameState p_gameState) {
-        d_gameState = p_gameState;
-    }
-
-    /**
-     * Gets the state of the game
-     *
-     * @return Value of the game state
-     */
-    public static GameState getGameState() {
-        return d_gameState;
     }
 
     public static void main(String[] args) throws InterruptedException, IOException, URISyntaxException {
@@ -96,6 +73,15 @@ public class Application {
      */
     public static VirtualMachine VIRTUAL_MACHINE() {
         return d_virtualMachine;
+    }
+
+    /**
+     * Gets the state of the game
+     *
+     * @return Value of the game state
+     */
+    public static GameState getGameState() {
+        return VirtualMachine.getGameState();
     }
 
     /**

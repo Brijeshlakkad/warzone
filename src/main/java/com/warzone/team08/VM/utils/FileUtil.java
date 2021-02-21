@@ -30,6 +30,7 @@ public class FileUtil {
      * Checks whether the given file name is valid or not.
      *
      * @param p_filePath Value of the path to file.
+     * @return Value of File object for the file given with path.
      * @throws InvalidInputException     Throws if the file does not exist.
      * @throws ResourceNotFoundException Throws if file not found.
      */

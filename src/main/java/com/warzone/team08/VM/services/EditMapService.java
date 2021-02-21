@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * This file loads map file in the user console.
  * <p>
- * This service handles `loadmap` user command.
+ * This service handles `editmap` user command.
  *
  * @author Brijesh Lakkad
  * @author CHARIT
@@ -234,7 +234,7 @@ public class EditMapService implements SingleCommand {
     }
 
     /**
-     * @see SingleCommand#execute(List)
+     * {@inheritDoc}
      */
     @Override
     public String execute(List<String> p_commandValues)

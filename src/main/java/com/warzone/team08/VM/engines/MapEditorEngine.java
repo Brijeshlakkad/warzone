@@ -43,7 +43,7 @@ public class MapEditorEngine implements Engine {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public void initialise() {
         d_continentSet = new HashSet<>();

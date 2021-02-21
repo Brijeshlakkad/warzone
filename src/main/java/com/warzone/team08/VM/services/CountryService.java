@@ -42,8 +42,9 @@ public class CountryService {
      *
      * @param p_countryName   Value of the country name.
      * @param p_continentName Value of the continent to which this country will be added.
+     * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public void add(String p_countryName, String p_continentName) throws EntityNotFoundException {
+    public String add(String p_countryName, String p_continentName) throws EntityNotFoundException {
         Country l_country = new Country();
         l_country.setCountryName(p_countryName);
 
@@ -54,6 +55,8 @@ public class CountryService {
 
             // Save country to continent
             l_continent.addCountry(l_country);
+
+            return String.format("%s country added!", p_countryName);
         } else {
             throw new EntityNotFoundException(String.format("Continent with %s not found!", p_continentName));
         }
@@ -65,8 +68,9 @@ public class CountryService {
      * @param p_countryId   Value of the country id.
      * @param p_countryName Value of the country name.
      * @param p_continentId Value of the continent to which this country will be added.
+     * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public void add(Integer p_countryId, String p_countryName, Integer p_continentId) throws EntityNotFoundException {
+    public String add(Integer p_countryId, String p_countryName, Integer p_continentId) throws EntityNotFoundException {
         Country l_country = new Country(p_countryId);
         l_country.setCountryName(p_countryName);
 
@@ -77,6 +81,8 @@ public class CountryService {
 
             // Save country to continent
             l_continent.addCountry(l_country);
+
+            return String.format("%s country added!", p_countryName);
         } else {
             throw new EntityNotFoundException(String.format("Continent with %s id not found!", p_continentId));
         }
@@ -86,8 +92,9 @@ public class CountryService {
      * Removes the country from the list using the name.
      *
      * @param p_countryName Value of the country name.
+     * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public void remove(String p_countryName) throws EntityNotFoundException {
+    public String remove(String p_countryName) throws EntityNotFoundException {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);
         l_country.getContinent().removeCountry(l_country);
 
@@ -95,5 +102,7 @@ public class CountryService {
         for (Country l_neighborOfCountry : l_neighborOfCountryList) {
             l_neighborOfCountry.removeNeighbourCountry(l_country);
         }
+
+        return String.format("%s country added!", p_countryName);
     }
 }
