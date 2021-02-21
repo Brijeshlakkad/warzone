@@ -1,9 +1,9 @@
-package com.warzone.team08.VM.services;
+package com.warzone.team08.VM.map_editor.services;
 
-import com.warzone.team08.VM.engines.MapEditorEngine;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
@@ -45,21 +45,17 @@ public class CountryService {
      * @throws EntityNotFoundException Throws if the either country not found.
      */
     public String add(String p_countryName, String p_continentName) throws EntityNotFoundException {
-        Country l_country = new Country();
+        Country l_country = new Country(d_mapEditorEngine.getCountryList().size()+1);
         l_country.setCountryName(p_countryName);
 
         Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);
-        if (l_continent != null) {
-            // Two way mappings (one to many mappings)
-            l_country.setContinent(l_continent);
+        // Two way mappings (one to many mappings)
+        l_country.setContinent(l_continent);
 
-            // Save country to continent
-            l_continent.addCountry(l_country);
+        // Save country to continent
+        l_continent.addCountry(l_country);
 
-            return String.format("%s country added!", p_countryName);
-        } else {
-            throw new EntityNotFoundException(String.format("Continent with %s not found!", p_continentName));
-        }
+        return String.format("%s country added!", p_countryName);
     }
 
     /**
@@ -75,17 +71,14 @@ public class CountryService {
         l_country.setCountryName(p_countryName);
 
         Continent l_continent = d_continentRepository.findByContinentId(p_continentId);
-        if (l_continent != null) {
-            // Two way mappings (one to many mappings)
-            l_country.setContinent(l_continent);
 
-            // Save country to continent
-            l_continent.addCountry(l_country);
+        // Two way mappings (one to many mappings)
+        l_country.setContinent(l_continent);
 
-            return String.format("%s country added!", p_countryName);
-        } else {
-            throw new EntityNotFoundException(String.format("Continent with %s id not found!", p_continentId));
-        }
+        // Save country to continent
+        l_continent.addCountry(l_country);
+
+        return String.format("%s country added!", p_countryName);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.warzone.team08.CLI.mappers;
 
+import com.warzone.team08.Application;
 import com.warzone.team08.CLI.models.UserCommand;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +40,10 @@ public class UserCommandMapperTest {
         d_correctCommandWithValue = new UserCommand();
         d_correctCommandWithValue.setHeadCommand("savemap");
         d_correctCommandWithValue.setCommandValues(Collections.singletonList("filename"));
+
+        // Sets the game state to MAP_EDITOR
+        Application l_application = new Application();
+        l_application.handleApplicationStartup();
     }
 
     @Test

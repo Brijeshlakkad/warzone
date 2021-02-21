@@ -1,6 +1,6 @@
 package com.warzone.team08.VM.repositories;
 
-import com.warzone.team08.VM.engines.MapEditorEngine;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 
@@ -21,7 +21,7 @@ public class CountryRepository {
      * @return Value of the list of matched countries.
      */
     public List<Country> findByCountryName(String p_countryName) {
-        return MapEditorEngine.getInstance().getCountrySet().stream().filter(p_country ->
+        return MapEditorEngine.getInstance().getCountryList().stream().filter(p_country ->
                 p_country.getCountryName().equals(p_countryName)
         ).collect(Collectors.toList());
     }
@@ -47,7 +47,7 @@ public class CountryRepository {
      * @return Value of the first matched countries.
      */
     public Country findByCountryId(Integer p_countryId) {
-        List<Country> l_countries = MapEditorEngine.getInstance().getCountrySet().stream().filter(p_country ->
+        List<Country> l_countries = MapEditorEngine.getInstance().getCountryList().stream().filter(p_country ->
                 p_country.getCountryId().equals(p_countryId)
         ).collect(Collectors.toList());
         if (!l_countries.isEmpty()) {
@@ -64,7 +64,7 @@ public class CountryRepository {
      * @return List of the countries.
      */
     public List<Country> findByNeighbourOfCountries(Country p_country) {
-        return MapEditorEngine.getInstance().getCountrySet().stream().filter(p_l_country ->
+        return MapEditorEngine.getInstance().getCountryList().stream().filter(p_l_country ->
                 !p_l_country.equals(p_country) && p_l_country.getNeighbourCountries().contains(p_country)
         ).collect(Collectors.toList());
     }

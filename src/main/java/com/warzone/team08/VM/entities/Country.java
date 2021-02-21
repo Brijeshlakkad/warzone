@@ -118,6 +118,13 @@ public class Country {
     }
 
     /**
+     * Resets the serial number to zero. Used when the map engine is being reset.
+     */
+    public static void resetSerialNumber() {
+        serialNumber = 0;
+    }
+
+    /**
      * Checks if both objects are the same using both the country and continent of the object.
      *
      * @param l_p_o Value of the second element to be checked with.

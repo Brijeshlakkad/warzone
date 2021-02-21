@@ -1,7 +1,7 @@
-package com.warzone.team08.VM.services;
+package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
-import com.warzone.team08.VM.engines.MapEditorEngine;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
@@ -46,13 +46,13 @@ public class SaveMapService implements SingleCommand {
         try (Writer l_writer = new FileWriter(p_fileObject)) {
             l_writer.write("[" + "Continents" + "]\n");
 
-            for (Continent continents : d_mapEditorEngine.getContinentSet()) {
-                l_writer.write(continents.getContinentId() + " " + continents.getContinentName() + " " + continents.getContinentControlValue() + "\n");
+            for (Continent continents : d_mapEditorEngine.getContinentList()) {
+                l_writer.write(continents.getContinentName() + " " + continents.getContinentControlValue() + "\n");
             }
 
             l_writer.write("\n[" + "Countries" + "]\n");
 
-            for (Country country : d_mapEditorEngine.getCountrySet()) {
+            for (Country country : d_mapEditorEngine.getCountryList()) {
                 l_writer.write(country.getCountryId() + " " + country.getCountryName() + " " + country.getContinent().getContinentId() + "\n");
             }
 
