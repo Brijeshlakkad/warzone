@@ -2,10 +2,11 @@ package com.warzone.team08.VM.services;
 
 import com.jakewharton.fliptables.FlipTable;
 import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.utils.PathResolverUtil;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -21,10 +22,12 @@ public class ShowMapServiceTest {
      */
     @BeforeClass
     public static void beforeClass(){
+        URL d_testFilePath;
         EditMapService l_editMapService=new EditMapService();
-        String l_resolvedPathToFile = PathResolverUtil.resolveFilePath("testMap.map");
+        d_testFilePath = ShowMapServiceTest.class.getClassLoader().getResource("map_files/testMap.map");
+        //String l_resolvedPathToFile = PathResolverUtil.resolveFilePath("testMap.map");
         try {
-            String l_message=l_editMapService.handleLoadMap(l_resolvedPathToFile);
+            String l_message=l_editMapService.handleLoadMap(d_testFilePath.getPath());
         } catch (InvalidMapException | AbsentTagException | ResourceNotFoundException | InvalidInputException | EntityNotFoundException p_e) {
             p_e.printStackTrace();
         }
@@ -45,8 +48,8 @@ public class ShowMapServiceTest {
         String[] l_header = {"Continent Name", "Control Value", "Countries"};
         String[][] l_mapMatrix={
                 {"Earth","10","Earth-Atlantic,Earth-SouthAmerica,Earth-SouthPole"},
-                {"Mercury","6","Mercury-East,Mercury-North,Mercury-South,Mercury-West"},
                 {"Venus","8","Venus-East,Venus-South,Venus-Southwest"},
+                {"Mercury","6","Mercury-East,Mercury-North,Mercury-South,Mercury-West"}
         };
         String l_mapTable = FlipTable.of(l_header, l_mapMatrix);
         String l_mapData = d_showMapService.showContinentCountryContent();
@@ -57,20 +60,17 @@ public class ShowMapServiceTest {
     @Test
     public void showNeighbourCountriesTest() {
         String[][] l_neighbourMatrix={
-                {"COUNTRIES","Earth-Atlantic","Earth-SouthAmerica","Earth-SouthPole","Mercury-East","Mercury-North","Mercury-South","Mercury-West","Venus-East","Venus-South","Venus-Southwest"},
-                {"Earth-Atlantic","X","X","O","O","O","O","O","O","O","O"},
-                {"Earth-SouthAmerica","X","X","X","O","O","O","O","O","O","X"},
-                {"Earth-SouthPole","O","X","X","O","O","O","X","O","O","O"},
-                {"Mercury-East","O","O","O","X","X","X","X","O","O","O"},
-                {"Mercury-North","O","O","O","X","X","O","X","O","X","O"},
-                {"Mercury-South","O","O","O","X","O","X","X","O","O","O"},
-                {"Mercury-West","O","O","O","X","X","X","X","O","O","O"},
-                {"Venus-East","O","O","O","O","O","O","O","X","X","X"},
-                {"Venus-South","O","O","O","O","X","O","O","X","X","X"},
-                {"Venus-Southwest","O","O","O","O","O","O","O","X","X","X"},
-
-
-
+                {"COUNTRIES","Mercury-South","Mercury-East","Mercury-West","Mercury-North","Venus-South","Venus-East","Venus-Southwest","Earth-SouthPole","Earth-SouthAmerica","Earth-Atlantic"},
+                {"Mercury-South","X","X","X","O","O","O","O","O","O","O"},
+                {"Mercury-East","X","X","X","X","O","O","O","O","O","O"},
+                {"Mercury-West","X","X","X","X","O","O","O","O","O","O"},
+                {"Mercury-North","O","X","X","X","X","O","O","O","O","O"},
+                {"Venus-South","O","O","O","X","X","X","X","O","O","O"},
+                {"Venus-East","O","O","O","O","X","X","X","O","O","O"},
+                {"Venus-Southwest","O","O","O","O","X","X","X","O","O","O"},
+                {"Earth-SouthPole","O","O","X","O","O","O","O","X","X","O"},
+                {"Earth-SouthAmerica","O","O","O","O","O","O","X","X","X","X"},
+                {"Earth-Atlantic","O","O","O","O","O","O","O","O","X","X"}
 
         };
         String[] l_countryCountHeader=new String[l_neighbourMatrix.length];
@@ -80,6 +80,6 @@ public class ShowMapServiceTest {
         String l_countryData = d_showMapService.showNeighbourCountries();
         String l_countryTable = FlipTable.of(l_countryCountHeader,l_neighbourMatrix);
         assertNotNull(l_countryData);
-        assertEquals(l_countryTable,l_countryData);
+       assertEquals(l_countryTable,l_countryData);
     }
 }

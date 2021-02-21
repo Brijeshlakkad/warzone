@@ -19,14 +19,14 @@ public class ShowMapService implements SingleCommand {
     MapEditorEngine d_mapEditorEngine;
     ContinentRepository d_continentRepository;
     CountryRepository d_countryRepository;
-    Set<Continent> d_continentSet;
-    Set<Country> d_countrySet;
-    Map<String, Set<String>> d_continentCountryMap;
+    ArrayList<Continent> d_continentSet;
+    ArrayList<Country> d_countrySet;
+    Map<String, ArrayList<String>> d_continentCountryMap;
 
     public ShowMapService(){
         d_mapEditorEngine=MapEditorEngine.getInstance();
-        d_continentSet=d_mapEditorEngine.getContinentSet();
-        d_countrySet=d_mapEditorEngine.getCountrySet();
+        d_continentSet=d_mapEditorEngine.getContinentList();
+        d_countrySet=d_mapEditorEngine.getCountryList();
         d_continentCountryMap=d_mapEditorEngine.getContinentCountryMap();
         d_continentRepository=new ContinentRepository();
         d_countryRepository=new CountryRepository();
@@ -43,7 +43,7 @@ public class ShowMapService implements SingleCommand {
         String[] l_header = {"Continent Name", "Control Value", "Countries"};
         List<List<String>> l_mapContent = new ArrayList<>();
 
-        for (Map.Entry<String, Set<String>> l_entry : d_continentCountryMap.entrySet()) {
+        for (Map.Entry<String, ArrayList<String>> l_entry : d_continentCountryMap.entrySet()) {
             ArrayList<String> l_continentsList = new ArrayList<>();
             l_continentsList.add(l_entry.getKey());
             try {
@@ -64,12 +64,12 @@ public class ShowMapService implements SingleCommand {
         }
 
         //for sorting the continent table wrt to continent name
-        Collections.sort(l_mapContent, new Comparator<List<String>>() {
-            @Override
-            public int compare(List<String> o1, List<String> o2) {
-                return o1.get(0).compareTo(o2.get(0));
-            }
-        });
+//        Collections.sort(l_mapContent, new Comparator<List<String>>() {
+//            @Override
+//            public int compare(List<String> o1, List<String> o2) {
+//                return o1.get(0).compareTo(o2.get(0));
+//            }
+//        });
         //store continent data in 2d array
         String[][] l_continentMapMatrix = new String[l_mapContent.size()][];
         for (int i = 0; i < l_mapContent.size(); i++) {
@@ -94,7 +94,7 @@ public class ShowMapService implements SingleCommand {
             l_countryNames.add(l_country.getCountryName());
         }
         l_neighbourCountryMatrix[0][0]="COUNTRIES";
-        Collections.sort(l_countryNames);
+        //Collections.sort(l_countryNames);
 
         //for storing country names in first row and column of matrix
         for (int l_row = 1; l_row < l_neighbourCountryMatrix.length; l_row++) {

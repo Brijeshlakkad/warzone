@@ -6,7 +6,7 @@ import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 /**
@@ -57,11 +57,11 @@ public class ContinentService {
         Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);
         // We can check if the continent exists before filtering?
         // Filters the continent list using the continent name
-        Set<Continent> l_filteredContinentList = d_mapEditorEngine.getContinentSet().stream()
+        ArrayList<Continent> l_filteredContinentList = (ArrayList<Continent>) d_mapEditorEngine.getContinentList().stream()
                 .filter(p_continent -> p_continent.equals(l_continent)
-                ).collect(Collectors.toSet());
+                ).collect(Collectors.toList());
 
-        d_mapEditorEngine.setContinentSet(l_filteredContinentList);
+        d_mapEditorEngine.setContinentList(l_filteredContinentList);
         return String.format("%s continent removed!", p_continentName);
     }
 }

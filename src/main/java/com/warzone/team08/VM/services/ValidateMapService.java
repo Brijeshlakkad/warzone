@@ -6,6 +6,7 @@ import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.InvalidMapException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -76,11 +77,11 @@ public class ValidateMapService implements SingleCommand {
      */
     @Override
     public String execute(List<String> p_commandValues) throws InvalidMapException {
-        if (d_mapEditorEngine.getContinentSet().size() > 0) {
+        if (d_mapEditorEngine.getContinentList().size() > 0) {
 //            if (validationControlValue(d_mapEditorEngine.getContinentList())) {
-            Set<Country> l_countries = d_mapEditorEngine.getCountrySet();
+            ArrayList<Country> l_countries = d_mapEditorEngine.getCountryList();
             if (l_countries.size() > 1) {
-                if (l_countries.size() >= d_mapEditorEngine.getContinentSet().size()) {
+                if (l_countries.size() >= d_mapEditorEngine.getContinentList().size()) {
                     Map<Integer, Set<Integer>> l_neighbourList = d_mapEditorEngine.getCountryNeighbourMap();
                     int l_neighborCount = l_neighbourList.size();
                     int l_counter = 0;
@@ -91,10 +92,10 @@ public class ValidateMapService implements SingleCommand {
                     }
                     if (l_counter == l_neighborCount) {
                         int l_counter1 = 0;
-                        Map<String, Set<String>> p_continentCountryMap = d_mapEditorEngine.getContinentCountryMap();
+                        Map<String, ArrayList<String>> p_continentCountryMap = d_mapEditorEngine.getContinentCountryMap();
                         int p_continentCountrySize = p_continentCountryMap.size();
-                        for (Map.Entry<String, Set<String>> entry : p_continentCountryMap.entrySet()) {
-                            Set<String> l_countryList = entry.getValue();
+                        for (Map.Entry<String, ArrayList<String>> entry : p_continentCountryMap.entrySet()) {
+                            ArrayList<String> l_countryList = entry.getValue();
                             int l_countryCount = l_countryList.size();
                             if (l_countryCount > 0) {
                                 l_counter1++;

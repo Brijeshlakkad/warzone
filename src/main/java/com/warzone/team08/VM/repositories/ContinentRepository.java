@@ -21,7 +21,7 @@ public class ContinentRepository {
      * @return Value of the list of matched continents.
      */
     public List<Continent> findByContinentName(String p_continentName) {
-        return MapEditorEngine.getInstance().getContinentSet().stream().filter(p_continent ->
+        return MapEditorEngine.getInstance().getContinentList().stream().filter(p_continent ->
                 p_continent.getContinentName().equals(p_continentName)
         ).collect(Collectors.toList());
     }
@@ -47,7 +47,7 @@ public class ContinentRepository {
      * @return Value of the first matched continents.
      */
     public Continent findByContinentId(Integer p_continentId) {
-        List<Continent> l_continentList = MapEditorEngine.getInstance().getContinentSet().stream().filter(p_continent ->
+        List<Continent> l_continentList = MapEditorEngine.getInstance().getContinentList().stream().filter(p_continent ->
                 p_continent.getContinentId().equals(p_continentId)
         ).collect(Collectors.toList());
         if (!l_continentList.isEmpty()) {

@@ -1,8 +1,6 @@
 package com.warzone.team08.VM.entities;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.
@@ -18,7 +16,7 @@ public class Continent {
     private String d_continentName;
     private Integer d_continentControlValue;
     private String d_continentColor;
-    private Set<Country> d_countrySet;
+    private ArrayList<Country> d_countryList;
 
     /**
      * Used to keep the track of unique IDs for the continent.
@@ -27,7 +25,7 @@ public class Continent {
 
     public Continent() {
         this.d_continentId = ++serialNumber;
-        d_countrySet = new HashSet<>();
+        d_countryList = new ArrayList<>();
     }
 
     /**
@@ -80,8 +78,8 @@ public class Continent {
      *
      * @return Value of the list of countries
      */
-    public Set<Country> getCountrySet() {
-        return d_countrySet;
+    public ArrayList<Country> getCountryList() {
+        return d_countryList;
     }
 
     /**
@@ -89,8 +87,8 @@ public class Continent {
      *
      * @param p_countryList Value of the list.
      */
-    public void setCountrySet(Set<Country> p_countryList) {
-        d_countrySet = p_countryList;
+    public void setCountryList(ArrayList<Country> p_countryList) {
+        d_countryList = p_countryList;
     }
 
     /**
@@ -100,7 +98,7 @@ public class Continent {
      */
     public void addCountry(Country p_country) {
         // Set will not have any duplicate elements.
-        d_countrySet.add(p_country);
+        d_countryList.add(p_country);
     }
 
     /**
@@ -110,7 +108,7 @@ public class Continent {
      */
     public void removeCountry(Country p_country) {
         // Set will not have any duplicate elements.
-        d_countrySet.remove(p_country);
+        d_countryList.remove(p_country);
     }
 
     /**

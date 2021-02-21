@@ -45,7 +45,7 @@ public class CountryService {
      * @throws EntityNotFoundException Throws if the either country not found.
      */
     public String add(String p_countryName, String p_continentName) throws EntityNotFoundException {
-        Country l_country = new Country();
+        Country l_country = new Country(d_mapEditorEngine.getCountryList().size()+1);
         l_country.setCountryName(p_countryName);
 
         Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);

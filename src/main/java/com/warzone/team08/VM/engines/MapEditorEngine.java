@@ -3,10 +3,7 @@ package com.warzone.team08.VM.engines;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Manages player runtime data, such as: The continents, countries, and the neighbors.
@@ -21,7 +18,7 @@ public class MapEditorEngine implements Engine {
      */
     private static MapEditorEngine d_instance;
 
-    private Set<Continent> d_continentSet;
+    private ArrayList<Continent> d_continentList;
 
     /**
      * Gets the single instance of the class.
@@ -46,7 +43,7 @@ public class MapEditorEngine implements Engine {
      * {@inheritDoc}
      */
     public void initialise() {
-        d_continentSet = new HashSet<>();
+        d_continentList = new ArrayList<>();
     }
 
     /**
@@ -54,17 +51,17 @@ public class MapEditorEngine implements Engine {
      *
      * @return d_continentList List of continents.
      */
-    public Set<Continent> getContinentSet() {
-        return d_continentSet;
+    public ArrayList<Continent> getContinentList() {
+        return d_continentList;
     }
 
     /**
      * Sets the value of continent list.
      *
-     * @param p_continentSet list of continents.
+     * @param p_continentList list of continents.
      */
-    public void setContinentSet(Set<Continent> p_continentSet) {
-        d_continentSet = p_continentSet;
+    public void setContinentList(ArrayList<Continent> p_continentList) {
+        d_continentList = p_continentList;
     }
 
     /**
@@ -72,10 +69,14 @@ public class MapEditorEngine implements Engine {
      *
      * @return list of countries.
      */
-    public Set<Country> getCountrySet() {
-        Set<Country> l_countries = new HashSet<>();
-        for (Continent l_continent : d_continentSet) {
-            l_countries.addAll(l_continent.getCountrySet());
+    public ArrayList<Country> getCountryList() {
+        ArrayList<Country> l_countries = new ArrayList<>();
+        for (Continent l_continent : d_continentList) {
+            for(Country l_country:l_continent.getCountryList()){
+                if(!l_countries.contains(l_country)){
+                    l_countries.add(l_country);
+                }
+            }
         }
         return l_countries;
     }
@@ -87,7 +88,7 @@ public class MapEditorEngine implements Engine {
      */
     public Map<Integer, Set<Integer>> getCountryNeighbourMap() {
         Map<Integer, Set<Integer>> l_continentCountryMap = new HashMap<>();
-        Set<Country> l_countries = this.getCountrySet();
+        ArrayList<Country> l_countries = this.getCountryList();
         for (Country l_country : l_countries) {
             Set<Integer> l_neighborCountryIdList = new HashSet<>();
             for (Country l_neighborCountry : l_country.getNeighbourCountries()) {
@@ -105,16 +106,16 @@ public class MapEditorEngine implements Engine {
      *
      * @return map of continent and its member countries.
      */
-    public Map<String, Set<String>> getContinentCountryMap() {
-        Map<String, Set<String>> l_continentCountryMap = new HashMap<>();
-        for (Continent l_continent : d_continentSet) {
-            for (Country l_country : l_continent.getCountrySet()) {
+    public Map<String, ArrayList<String>> getContinentCountryMap() {
+        Map<String, ArrayList<String>> l_continentCountryMap = new HashMap<>();
+        for (Continent l_continent : d_continentList) {
+            for (Country l_country : l_continent.getCountryList()) {
                 String continentName = l_continent.getContinentName();
-                Set<String> l_countryNames;
+                ArrayList<String> l_countryNames;
                 if (l_continentCountryMap.containsKey(continentName)) {
                     l_countryNames = l_continentCountryMap.get(continentName);
                 } else {
-                    l_countryNames = new HashSet<>();
+                    l_countryNames = new ArrayList<>();
                 }
                 l_countryNames.add(l_country.getCountryName());
                 l_continentCountryMap.put(continentName, l_countryNames);
@@ -129,6 +130,6 @@ public class MapEditorEngine implements Engine {
      * @param p_continent Value of the element.
      */
     public void addContinent(Continent p_continent) {
-        d_continentSet.add(p_continent);
+        d_continentList.add(p_continent);
     }
 }
