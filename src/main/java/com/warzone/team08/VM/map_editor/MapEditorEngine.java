@@ -1,5 +1,6 @@
-package com.warzone.team08.VM.engines;
+package com.warzone.team08.VM.map_editor;
 
+import com.warzone.team08.VM.constants.interfaces.Engine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 
@@ -44,6 +45,9 @@ public class MapEditorEngine implements Engine {
      */
     public void initialise() {
         d_continentList = new ArrayList<>();
+        // resets serial information to start from zero again for the next iteration of loading the map.
+        Continent.resetSerialNumber();
+        Country.resetSerialNumber();
     }
 
     /**
@@ -72,8 +76,8 @@ public class MapEditorEngine implements Engine {
     public ArrayList<Country> getCountryList() {
         ArrayList<Country> l_countries = new ArrayList<>();
         for (Continent l_continent : d_continentList) {
-            for(Country l_country:l_continent.getCountryList()){
-                if(!l_countries.contains(l_country)){
+            for (Country l_country : l_continent.getCountryList()) {
+                if (!l_countries.contains(l_country)) {
                     l_countries.add(l_country);
                 }
             }
@@ -106,12 +110,12 @@ public class MapEditorEngine implements Engine {
      *
      * @return map of continent and its member countries.
      */
-    public Map<String, ArrayList<String>> getContinentCountryMap() {
-        Map<String, ArrayList<String>> l_continentCountryMap = new HashMap<>();
+    public Map<String, List<String>> getContinentCountryMap() {
+        Map<String, List<String>> l_continentCountryMap = new HashMap<>();
         for (Continent l_continent : d_continentList) {
             for (Country l_country : l_continent.getCountryList()) {
                 String continentName = l_continent.getContinentName();
-                ArrayList<String> l_countryNames;
+                List<String> l_countryNames;
                 if (l_continentCountryMap.containsKey(continentName)) {
                     l_countryNames = l_continentCountryMap.get(continentName);
                 } else {

@@ -1,6 +1,6 @@
 package com.warzone.team08.VM.repositories;
 
-import com.warzone.team08.VM.engines.MapEditorEngine;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 

@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.entities;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.
@@ -109,6 +110,13 @@ public class Continent {
     public void removeCountry(Country p_country) {
         // Set will not have any duplicate elements.
         d_countryList.remove(p_country);
+    }
+
+    /**
+     * Resets the serial number to zero. Used when the map engine is being reset.
+     */
+    public static void resetSerialNumber() {
+        serialNumber = 0;
     }
 
     /**

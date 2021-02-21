@@ -26,44 +26,33 @@ public class Application {
     private static volatile boolean d_isRunning = true;
 
     /**
+     * Command-line user interface; Responsible for taking input from a user.
+     */
+    private static CommandLineInterface d_commandLineInterface;
+
+    /**
      * Connects interface with method APIs; An environment for the player to store the information.
      */
     private static VirtualMachine d_virtualMachine;
 
-    /**
-     * Gets false if user is interacting, meaning user is playing the game; true otherwise.
-     *
-     * @return Value of false if user is interacting, meaning user is playing the game; true otherwise.
-     */
-    public static boolean isRunning() {
-        return d_isRunning;
-    }
-
-    /**
-     * Sets new false if user is interacting, meaning user is playing the game; true otherwise.
-     *
-     * @param d_isRunning New value of false if user is interacting, meaning user is playing the game; true otherwise.
-     */
-    public static void setIsRunning(boolean d_isRunning) {
-        d_isRunning = d_isRunning;
-    }
-
-    public static void main(String[] args) throws InterruptedException, IOException, URISyntaxException {
-        setIsRunning(true);
-        // Sets the environment for game.
-        onStartUp();
-
+    public Application() {
         // Starts the runtime engine (GameEngine) for the game.
         d_virtualMachine = new VirtualMachine();
 
         // Creates interface for user interaction.
         // Just a local variable as the instance is not being used/shared with any other class.
         // An instance of the virtual machine can be passed to the user interface?
-        CommandLineInterface l_commandLineInterface = new CommandLineInterface();
-        l_commandLineInterface.d_thread.start();
+        d_commandLineInterface = new CommandLineInterface();
+    }
 
-        // Wait till the game is over.
-        l_commandLineInterface.d_thread.join();
+    public static void main(String[] args) throws InterruptedException {
+        Application l_application = new Application();
+
+        // Sets the environment for game.
+        l_application.handleApplicationStartup();
+
+        // Starts the CLI
+        l_application.handleCLIStartUp();
     }
 
     /**
@@ -81,18 +70,29 @@ public class Application {
      * @return Value of the game state
      */
     public static GameState getGameState() {
-        return VirtualMachine.getGameState();
+        return d_virtualMachine.getGameState();
     }
 
     /**
      * Will be called when game starts.
      */
-    public static void onStartUp() {
+    public void handleApplicationStartup() {
+        setIsRunning(true);
         try {
             restoreMapFiles();
         } catch (IOException | URISyntaxException l_ignored) {
-
+            // ignore exceptions occurred during storing map files to user data directory.
         }
+        VIRTUAL_MACHINE().setGameState(GameState.MAP_EDITOR);
+    }
+
+    /**
+     * @throws InterruptedException If CLI interrupted by another thread.
+     */
+    public void handleCLIStartUp() throws InterruptedException {
+        d_commandLineInterface.d_thread.start();
+        // Wait till the game is over.
+        d_commandLineInterface.d_thread.join();
     }
 
     /**
@@ -101,12 +101,30 @@ public class Application {
      * @throws IOException        Throws if the directory can not be created. (because of permissions?)
      * @throws URISyntaxException Throws if the directory can not be found.
      */
-    public static void restoreMapFiles() throws IOException, URISyntaxException {
+    public void restoreMapFiles() throws IOException, URISyntaxException {
         // Download the files at user data directory.
         Path l_sourceMapFiles = Paths.get(Objects.requireNonNull(Application.class.getClassLoader().getResource("map_files")).toURI());
         Path l_userDataDirectory = PathResolverUtil.getUserDataDirectoryPath();
         Files.walk(l_sourceMapFiles)
                 .forEach(source -> FileUtil.copy(source, l_userDataDirectory.resolve(l_sourceMapFiles.relativize(source))));
+    }
+
+    /**
+     * Gets false if user is interacting, meaning user is playing the game; true otherwise.
+     *
+     * @return Value of false if user is interacting, meaning user is playing the game; true otherwise.
+     */
+    public static boolean isRunning() {
+        return d_isRunning;
+    }
+
+    /**
+     * Sets new false if user is interacting, meaning user is playing the game; true otherwise.
+     *
+     * @param d_isRunning New value of false if user is interacting, meaning user is playing the game; true otherwise.
+     */
+    public static void setIsRunning(boolean d_isRunning) {
+        d_isRunning = d_isRunning;
     }
 
     /**

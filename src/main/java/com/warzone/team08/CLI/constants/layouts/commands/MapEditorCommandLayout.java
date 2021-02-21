@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class encompasses all the commands which can be entered by the user during the MAP_EDITOR game state.
+ * This class encompasses all the commands which can be entered by the user during the <code>MAP_EDITOR</code> game state.
  *
  * @author Brijesh Lakkad
  * @version 1.0
  */
 public class MapEditorCommandLayout implements CommandLayout {
     /**
-     * The list of user commands which can be entered at the MAP_EDITOR state of GameState
+     * The list of user commands which can be entered at the <code>MAP_EDITOR</code> state of GameState
      */
     List<UserCommand> d_userCommands;
 
@@ -102,10 +102,18 @@ public class MapEditorCommandLayout implements CommandLayout {
         l_userCommand.setHeadCommand("validatemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
         d_userCommands.add(l_userCommand);
+
+        // Example of the below command:
+        // loadmap filename
+        l_userCommand = new UserCommand();
+        l_userCommand.setHeadCommand("loadmap");
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        d_userCommands.add(l_userCommand);
     }
 
     /**
      * {@inheritDoc}
+     *
      * @return Value of the list of user commands for this class.
      */
     @Override
