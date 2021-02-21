@@ -1,5 +1,6 @@
 package com.warzone.team08.CLI;
 
+import com.warzone.team08.Application;
 import com.warzone.team08.CLI.constants.enums.specifications.CommandSpecification;
 import com.warzone.team08.CLI.models.UserCommand;
 import org.junit.Test;
@@ -21,6 +22,9 @@ public class CommandLineInterfaceTest {
         d_userCommand.setCommandSpecification(CommandSpecification.AT_LEAST_ONE);
         d_userCommand.pushUserArgument("add",
                 Arrays.asList("continentID", "12"));
+
+        Application l_application = new Application();
+        l_application.handleApplicationStartup();
     }
 
     /**
