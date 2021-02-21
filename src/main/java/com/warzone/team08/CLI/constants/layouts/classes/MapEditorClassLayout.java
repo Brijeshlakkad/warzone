@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class includes all the classes for the command of <code>MAP_EDITOR</code> game state that can be entered by the user.
+ * This class includes all the classes for the command of <code>MAP_EDITOR</code> game state that can be entered by the
+ * user.
  *
  * @author Brijesh Lakkad
  * @version 1.0
