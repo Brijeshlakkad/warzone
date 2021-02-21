@@ -24,6 +24,7 @@ public class MapEditorClassLayout implements ClassLayout {
         d_commandToClassMapper.put("editneighbor", "com.warzone.team08.VM.map_editor.services.CountryNeighborService");
         d_commandToClassMapper.put("editmap", "com.warzone.team08.VM.map_editor.services.EditMapService");
         d_commandToClassMapper.put("validatemap", "com.warzone.team08.VM.map_editor.services.ValidateMapService");
+        d_commandToClassMapper.put("showmap", "com.warzone.team08.VM.map_editor.services.ShowMapService");
         d_commandToClassMapper.put("savemap", "com.warzone.team08.VM.map_editor.services.SaveMapService");
         // Inner-bridge between MAP_EDITOR and GAME_PLAY game states.
         d_commandToClassMapper.put("loadmap", "com.warzone.team08.VM.map_editor.services.LoadMapService");

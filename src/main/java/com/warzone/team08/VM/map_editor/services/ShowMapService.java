@@ -66,14 +66,7 @@ public class ShowMapService implements SingleCommand {
             }
         }
 
-        //for sorting the continent table wrt to continent name
-//        Collections.sort(l_mapContent, new Comparator<List<String>>() {
-//            @Override
-//            public int compare(List<String> o1, List<String> o2) {
-//                return o1.get(0).compareTo(o2.get(0));
-//            }
-//        });
-        //store continent data in 2d array
+        // store continent data in 2d array
         String[][] l_continentMapMatrix = new String[l_mapContent.size()][];
         for (int i = 0; i < l_mapContent.size(); i++) {
             List<String> l_singleContinentContent = l_mapContent.get(i);
