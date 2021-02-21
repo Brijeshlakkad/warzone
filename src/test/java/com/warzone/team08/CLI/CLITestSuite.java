@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
+ * Test suit for command-line interface package.
+ *
  * @author Brijesh Lakkad
  * @version 1.0
  */

@@ -1,7 +1,6 @@
 package com.warzone.team08.CLI.constants;
 
 import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.enums.states.GameState;
 import com.warzone.team08.CLI.constants.layouts.UserCommandLayout;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +35,8 @@ public class UserCommandTest {
         d_wrongArgKey = "-delete";
         // As the value of d_headOfCommand belongs to MAP_EDITOR
         // The below code will set the game state to it according¬ly
-        Application.setGameState(GameState.MAP_EDITOR);
+        Application l_application = new Application();
+        l_application.handleApplicationStartup();
     }
 
     /**

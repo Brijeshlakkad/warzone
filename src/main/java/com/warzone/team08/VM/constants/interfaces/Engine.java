@@ -1,4 +1,4 @@
-package com.warzone.team08.VM.engines;
+package com.warzone.team08.VM.constants.interfaces;
 
 /**
  * This class represents the various engines which stores the runtime information of players and the game.

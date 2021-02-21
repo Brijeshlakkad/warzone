@@ -1,9 +1,9 @@
-package com.warzone.team08.VM.services;
+package com.warzone.team08.VM.map_editor.services;
 
-import com.warzone.team08.VM.engines.MapEditorEngine;
-import com.warzone.team08.VM.entities.Country;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.map_editor.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.repositories.CountryRepository;
+import com.warzone.team08.VM.map_editor.repositories.CountryRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,10 +33,10 @@ public class CountryNeighborService {
      * @param p_neighborCountryName Value of the neighbour country to be set.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public void add(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
+    public String add(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);
         Country l_neighborCountry = d_countryRepository.findFirstByCountryName(p_neighborCountryName);
-        this.add(l_country, l_neighborCountry);
+        return this.add(l_country, l_neighborCountry);
     }
 
     /**
@@ -45,8 +45,9 @@ public class CountryNeighborService {
      * @param p_country         Value of the country entity which will have the neighbor country.
      * @param p_neighborCountry Value of the neighbour country entity.
      */
-    public void add(Country p_country, Country p_neighborCountry) {
+    public String add(Country p_country, Country p_neighborCountry) {
         p_country.addNeighbourCountry(p_neighborCountry);
+        return String.format("Neighbor %s country added for %s!", p_neighborCountry, p_country);
     }
 
     /**
@@ -56,11 +57,11 @@ public class CountryNeighborService {
      * @param p_neighborCountryName Value of the neighbor country.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public void remove(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
+    public String remove(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);
         Country l_neighborCountry = d_countryRepository.findFirstByCountryName(p_neighborCountryName);
 
-        this.remove(l_country, l_neighborCountry);
+        return this.remove(l_country, l_neighborCountry);
     }
 
     /**
@@ -69,11 +70,12 @@ public class CountryNeighborService {
      * @param p_country         Value of the country entity.
      * @param p_neighborCountry Value of the neighbor country entity.
      */
-    public void remove(Country p_country, Country p_neighborCountry) {
+    public String remove(Country p_country, Country p_neighborCountry) {
         List<Country> l_filteredCountry = p_country.getNeighbourCountries().stream().filter(i_p_country ->
                 i_p_country.equals(p_neighborCountry)
         ).collect(Collectors.toList());
 
         p_country.setNeighbourCountries(l_filteredCountry);
+        return String.format("Neighbor %s country removed from %s!", p_neighborCountry, p_country);
     }
 }

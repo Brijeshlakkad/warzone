@@ -1,7 +1,8 @@
-package com.warzone.team08.VM.engines;
+package com.warzone.team08.VM.map_editor;
 
-import com.warzone.team08.VM.entities.Continent;
-import com.warzone.team08.VM.entities.Country;
+import com.warzone.team08.VM.constants.interfaces.Engine;
+import com.warzone.team08.VM.map_editor.entities.Continent;
+import com.warzone.team08.VM.map_editor.entities.Country;
 
 import java.util.HashMap;
 import java.util.HashSet;

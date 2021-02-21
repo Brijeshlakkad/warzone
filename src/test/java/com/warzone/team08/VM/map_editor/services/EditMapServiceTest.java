@@ -1,4 +1,4 @@
-package com.warzone.team08.VM.services;
+package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.exceptions.AbsentTagException;
 import org.junit.Before;

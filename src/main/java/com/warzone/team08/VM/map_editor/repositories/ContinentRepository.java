@@ -1,8 +1,8 @@
-package com.warzone.team08.VM.repositories;
+package com.warzone.team08.VM.map_editor.repositories;
 
-import com.warzone.team08.VM.engines.MapEditorEngine;
-import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.map_editor.entities.Continent;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,15 +45,15 @@ public class ContinentRepository {
      *
      * @param p_continentId Value of the continent Id.
      * @return Value of the first matched continents.
+     * @throws EntityNotFoundException Throws if the being searched entity has been not found.
      */
-    public Continent findByContinentId(Integer p_continentId) {
+    public Continent findByContinentId(Integer p_continentId) throws EntityNotFoundException {
         List<Continent> l_continentList = MapEditorEngine.getInstance().getContinentSet().stream().filter(p_continent ->
                 p_continent.getContinentId().equals(p_continentId)
         ).collect(Collectors.toList());
         if (!l_continentList.isEmpty()) {
             return l_continentList.get(0);
-        } else {
-            return null;
         }
+        throw new EntityNotFoundException(String.format("Continent with %s id not found!", p_continentId));
     }
 }
