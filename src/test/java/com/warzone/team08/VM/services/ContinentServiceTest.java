@@ -24,6 +24,7 @@ public class ContinentServiceTest {
 
     /**
      * Tests whether the continent is successfully added or not.
+     * It passes if continent is added.
      * @throws InvalidInputException throws if input is invalid.
      */
     @Test//(expected = InvalidInputException.class)
@@ -34,6 +35,7 @@ public class ContinentServiceTest {
 
     /**
      * Tests whether the continent is successfully removed or not.
+     * It passes if continent is removed.
      * @throws EntityNotFoundException throws if continent if continent is not available in list.
      */
     @Test//(expected = InvalidInputException.class)
