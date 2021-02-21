@@ -1,46 +1,61 @@
 package com.warzone.team08.VM.services;
 
+import com.warzone.team08.VM.engines.MapEditorEngine;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class tests the add and remove operations on continent.
+ *
  * @author CHARIT
+ * @author Brijesh Lakkad
  */
 public class ContinentServiceTest {
     private static ContinentService d_continentService;
 
     /**
-     * This method runs before the test case class runs. This method initializes different objects required to perform test.
+     * Runs before the test case class runs; Initializes different objects required to perform test.
      */
     @BeforeClass
-    public static void before() {
+    public static void beforeClass() {
         d_continentService = new ContinentService();
     }
 
     /**
-     * Tests whether the continent is successfully added or not.
-     * It passes if continent is added.
-     * @throws InvalidInputException throws if input is invalid.
+     * Re-initializes the continent list before test case run.
      */
-    @Test//(expected = InvalidInputException.class)
-    public void testAddContinent() throws InvalidInputException {
-        String l_str = d_continentService.add("Asia", "10");
-        assertEquals("Asia continent added!", l_str);
+    @Before
+    public void beforeTestCase() {
+        MapEditorEngine.getInstance().initialise();
     }
 
     /**
-     * Tests whether the continent is successfully removed or not.
-     * It passes if continent is removed.
-     * @throws EntityNotFoundException throws if continent if continent is not available in list.
+     * Tests whether the wrong continent value is being shown or not.
+     *
+     * @throws InvalidInputException Throws if country value is not number.
      */
-    @Test//(expected = InvalidInputException.class)
-    public void testRemoveContinent() throws EntityNotFoundException {
-        String l_str = d_continentService.remove("Asia");
-        assertEquals("Asia continent removed!", l_str);
+    @Test(expected = InvalidInputException.class)
+    public void testWrongContinentValue() throws InvalidInputException {
+        d_continentService.add("Asia", "StringValue");
+    }
+
+    /**
+     * Tests whether the continent is successfully added and removed or not; Passes if continent is removed.
+     *
+     * @throws EntityNotFoundException Throws if continent is not available in list.
+     * @throws InvalidInputException   Throws if country value is not number.
+     */
+    @Test(expected = Test.None.class)
+    public void testAddAndRemoveContinent() throws EntityNotFoundException, InvalidInputException {
+        String l_responseOfAddOp = d_continentService.add("Asia", "10");
+        assertNotNull(l_responseOfAddOp);
+
+        String l_responseOfRemoveOp = d_continentService.remove("Asia");
+        assertNotNull(l_responseOfRemoveOp);
     }
 }
