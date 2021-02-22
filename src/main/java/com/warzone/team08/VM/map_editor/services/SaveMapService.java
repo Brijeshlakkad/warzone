@@ -42,7 +42,7 @@ public class SaveMapService implements SingleCommand {
      * @param p_fileObject File path to create if not exists and write into files.
      * @throws InvalidInputException Throws if the file write operation was not successful.
      */
-    private String saveToFile(File p_fileObject) throws InvalidInputException {
+    public String saveToFile(File p_fileObject) throws InvalidInputException {
         try (Writer l_writer = new FileWriter(p_fileObject)) {
             l_writer.write("[" + "Continents" + "]\n");
 
