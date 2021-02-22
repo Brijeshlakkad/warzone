@@ -19,6 +19,25 @@ public class Player {
     private int d_initialArmies;
     private int d_reinforcementArmies;
     private boolean d_canReinforce;
+    private int d_assignedCountryCount;
+
+    /**
+     * Getter method for assigned country count.
+     *
+     * @return assigned country count.
+     */
+    public int getAssignedCountryCount() {
+        return d_assignedCountryCount;
+    }
+
+    /**
+     * Setter method for assigned country count.
+     *
+     * @param p_assignedCountryCount assigned country count.
+     */
+    public void setAssignedCountryCount(int p_assignedCountryCount) {
+        d_assignedCountryCount = p_assignedCountryCount;
+    }
 
     /**
      * Getter method for reinforcement armies.
