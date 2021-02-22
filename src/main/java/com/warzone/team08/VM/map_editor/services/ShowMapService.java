@@ -21,8 +21,8 @@ public class ShowMapService implements SingleCommand {
     MapEditorEngine d_mapEditorEngine;
     ContinentRepository d_continentRepository;
     CountryRepository d_countryRepository;
-    ArrayList<Continent> d_continentList;
-    ArrayList<Country> d_countryList;
+    List<Continent> d_continentList;
+    List<Country> d_countryList;
     Map<String, List<String>> d_continentCountryMap;
 
     public ShowMapService() {
@@ -134,10 +134,9 @@ public class ShowMapService implements SingleCommand {
      */
     @Override
     public String execute(List<String> p_commandValues) throws EntityNotFoundException {
-        if(!this.d_continentCountryMap.isEmpty() || !this.d_countryList.isEmpty()){
+        if (!this.d_continentCountryMap.isEmpty() || !this.d_countryList.isEmpty()) {
             return this.showContinentCountryContent() + "\n" + this.showNeighbourCountries();
-        }
-        else{
+        } else {
             throw new EntityNotFoundException("Please select file to show");
         }
     }

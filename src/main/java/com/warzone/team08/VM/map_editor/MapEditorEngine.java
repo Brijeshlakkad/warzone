@@ -19,7 +19,7 @@ public class MapEditorEngine implements Engine {
      */
     private static MapEditorEngine d_instance;
 
-    private ArrayList<Continent> d_continentList;
+    private List<Continent> d_continentList;
 
     /**
      * Gets the single instance of the class.
@@ -55,7 +55,7 @@ public class MapEditorEngine implements Engine {
      *
      * @return d_continentList List of continents.
      */
-    public ArrayList<Continent> getContinentList() {
+    public List<Continent> getContinentList() {
         return d_continentList;
     }
 
@@ -64,7 +64,7 @@ public class MapEditorEngine implements Engine {
      *
      * @param p_continentList list of continents.
      */
-    public void setContinentList(ArrayList<Continent> p_continentList) {
+    public void setContinentList(List<Continent> p_continentList) {
         d_continentList = p_continentList;
     }
 

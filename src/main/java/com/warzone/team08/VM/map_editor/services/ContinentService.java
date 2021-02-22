@@ -6,7 +6,7 @@ import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -57,8 +57,8 @@ public class ContinentService {
         Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);
         // We can check if the continent exists before filtering?
         // Filters the continent list using the continent name
-        ArrayList<Continent> l_filteredContinentList = (ArrayList<Continent>) d_mapEditorEngine.getContinentList().stream()
-                .filter(p_continent -> p_continent.equals(l_continent)
+        List<Continent> l_filteredContinentList = d_mapEditorEngine.getContinentList().stream()
+                .filter(p_continent -> !p_continent.equals(l_continent)
                 ).collect(Collectors.toList());
 
         d_mapEditorEngine.setContinentList(l_filteredContinentList);
