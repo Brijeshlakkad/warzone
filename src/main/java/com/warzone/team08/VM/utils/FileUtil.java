@@ -78,7 +78,10 @@ public class FileUtil {
      */
     public static void copy(Path p_source, Path p_dest) {
         try {
-            Files.copy(p_source, p_dest, StandardCopyOption.ATOMIC_MOVE);
+            // Ignore if the file already exists.
+            if (!(new File(p_dest.toUri().getPath()).exists())) {
+                Files.copy(p_source, p_dest, StandardCopyOption.REPLACE_EXISTING);
+            }
         } catch (Exception l_ignored) {
             // Ignore the exception while copying.
         }
