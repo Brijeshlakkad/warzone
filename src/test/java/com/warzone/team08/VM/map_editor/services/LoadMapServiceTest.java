@@ -7,6 +7,8 @@ import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -39,8 +41,9 @@ public class LoadMapServiceTest {
      * @see EditMapService#handleLoadMap
      */
     @Test(expected = Test.None.class)
-    public void testLoadMapService() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
-        d_editMapService.handleLoadMap(d_testFilePath.getPath());
+    public void testLoadMapService() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
+        // In Windows, URL will create %20 for space. To avoid, use the below logic.
+        String l_url = new URI(d_testFilePath.getPath()).getPath();
         Application.VIRTUAL_MACHINE().setGameStatePlaying();
         assertEquals(Application.getGameState(), GameState.GAME_PLAY);
     }
