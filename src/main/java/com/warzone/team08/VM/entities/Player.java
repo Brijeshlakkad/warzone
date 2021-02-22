@@ -2,7 +2,6 @@ package com.warzone.team08.VM.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.
@@ -11,12 +10,12 @@ import java.util.Set;
  * @author Brijesh Lakkad
  */
 public class Player {
-    private Set<Country> d_countrySet;
-    private List<Order> d_orders = new ArrayList<>();
-    private int d_turnValue;
-    private List<Country> d_assignedCountries;
+    /**
+     * Represents the unique name of each player.
+     */
     private String d_name;
-    private int d_initialArmies;
+    private final List<Order> d_orders = new ArrayList<>();
+    private ArrayList<Country> d_assignedCountries;
     private int d_reinforcementArmies;
     private boolean d_canReinforce;
 
@@ -57,23 +56,8 @@ public class Player {
     }
 
     /**
-     * Getter method for initial armies.
-     * @return initial armies.
-     */
-    public int getInitialArmies() {
-        return d_initialArmies;
-    }
-
-    /**
-     * Setter method for initial armies.
-     * @param p_initialArmies initial armies.
-     */
-    public void setInitialArmies(int p_initialArmies) {
-        d_initialArmies = p_initialArmies;
-    }
-
-    /**
      * Getter method for player name.
+     *
      * @return player name.
      */
     public String getName() {
@@ -82,6 +66,7 @@ public class Player {
 
     /**
      * Setter method for player name.
+     *
      * @param p_name player name.
      */
     public void setName(String p_name) {
@@ -93,7 +78,7 @@ public class Player {
      *
      * @return list of assigned countries.
      */
-    public List<Country> getAssignedCountries() {
+    public ArrayList<Country> getAssignedCountries() {
         return d_assignedCountries;
     }
 
@@ -102,26 +87,8 @@ public class Player {
      *
      * @param p_assignedCountries list of assigned countries.
      */
-    public void setAssignedCountries(List<Country> p_assignedCountries) {
+    public void setAssignedCountries(ArrayList<Country> p_assignedCountries) {
         d_assignedCountries = p_assignedCountries;
-    }
-
-    /**
-     * Gets the turn value of the particular player.
-     *
-     * @return turn value.
-     */
-    public int getTurnValue() {
-        return d_turnValue;
-    }
-
-    /**
-     * Sets the turn value of the particular player.
-     *
-     * @param p_turnValue turn value.
-     */
-    public void setTurnValue(int p_turnValue) {
-        d_turnValue = p_turnValue;
     }
 
     /**

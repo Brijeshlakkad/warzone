@@ -1,4 +1,4 @@
-package com.warzone.team08.VM.services;
+package com.warzone.team08.VM.game_play.services;
 
 import com.warzone.team08.VM.entities.Player;
 
