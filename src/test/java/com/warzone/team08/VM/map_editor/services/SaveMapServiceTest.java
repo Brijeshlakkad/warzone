@@ -4,16 +4,15 @@ import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
-import com.warzone.team08.VM.utils.FileUtil;
-import com.warzone.team08.VM.utils.PathResolverUtil;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
-import java.net.URL;
+import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -29,10 +28,16 @@ public class SaveMapServiceTest {
     private String testFile = "testing_save_file.map";
 
     /**
+     * Create temporary folder for test case.
+     */
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
+
+    /**
      * This method runs before the test case runs. This method initializes different objects required to perform test.
      */
     @BeforeClass
-    public static void before(){
+    public static void before() {
         d_continentService = new ContinentService();
         d_countryService = new CountryService();
         d_countryNeighbourService = new CountryNeighborService();
@@ -50,8 +55,9 @@ public class SaveMapServiceTest {
     /**
      * This test will add content to Continent List, Country List and Neighbour List.
      *
-     * @throws InvalidInputException Any invalid input other than the reqired parameters will throw this error.
-     * @throws EntityNotFoundException Any Continent that is not found in the Continent List but added in the Country List will throw this error.
+     * @throws InvalidInputException   Any invalid input other than the reqired parameters will throw this error.
+     * @throws EntityNotFoundException Any Continent that is not found in the Continent List but added in the Country
+     *                                 List will throw this error.
      */
     @Before
     public void addContentToTheMapFile() throws InvalidInputException, EntityNotFoundException {
@@ -60,21 +66,24 @@ public class SaveMapServiceTest {
         d_countryService.add("Delhi", "Asia");
         d_countryService.add("Mumbai", "Asia");
         d_countryService.add("Melbourne", "Australia");
-        d_countryNeighbourService.add("Delhi","Mumbai");
-        d_countryNeighbourService.add("Mumbai","Delhi");
-        d_countryNeighbourService.add("Melbourne","Delhi");
+        d_countryNeighbourService.add("Delhi", "Mumbai");
+        d_countryNeighbourService.add("Mumbai", "Delhi");
+        d_countryNeighbourService.add("Melbourne", "Delhi");
     }
 
     /**
      * This test will save the content added in Continent, Country and Neighbour List into the .map file.
-     * @throws ResourceNotFoundException If the Target File where content is to be saved is not found then this exception will be raised.
+     *
+     * @throws ResourceNotFoundException If the Target File where content is to be saved is not found then this
+     *                                   exception will be raised.
      */
     @Test(expected = Test.None.class)
-    public void testSaveFile() throws ResourceNotFoundException, InvalidInputException {
-        String response = d_saveMapService.saveToFile(FileUtil.retrieveFile(testFile));
+    public void testSaveFile() throws ResourceNotFoundException, InvalidInputException, IOException {
+        // Create a temporary file.
+        final File testFileObject = tempFolder.newFile(testFile);
+        String response = d_saveMapService.saveToFile(testFileObject);
 
-        File createdFile = new File(PathResolverUtil.resolveFilePath(testFile));
-        assert createdFile.exists();
+        assert testFileObject.exists();
         assertNotNull(response);
     }
 
