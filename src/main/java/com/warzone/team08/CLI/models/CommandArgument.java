@@ -5,10 +5,8 @@ import com.warzone.team08.CLI.constants.enums.specifications.ArgumentSpecificati
 import java.util.Objects;
 
 /**
- * Predefined structure for the command arguments and its value(s)
- * It also provides the specification to:
- * 1. Validate the number of values provided by the user
- * 2. Validate each value with Regex
+ * Predefined structure for the command arguments and its value(s) It also provides the specification to: 1. Validate
+ * the number of values provided by the user 2. Validate each value with Regex
  *
  * @author Brijesh Lakkad
  * @version 1.0
