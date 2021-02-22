@@ -38,7 +38,7 @@ public class Player {
     /**
      * Setter method for assigned country count.
      *
-     * @param p_assignedCountryCount assigned country count.
+     * @param p_assignedCountryCount Assigned country count.
      */
     public void setAssignedCountryCount(int p_assignedCountryCount) {
         d_assignedCountryCount = p_assignedCountryCount;
