@@ -2,7 +2,6 @@ package com.warzone.team08.VM.utils;
 
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
-import com.warzone.team08.VM.exceptions.VMException;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -32,15 +31,16 @@ public class FileUtil {
      *
      * @param p_filePath Value of the path to file.
      * @return Value of File object for the file given with path.
-     * @throws VMException Throws if the file can not be created.
+     * @throws InvalidInputException     Throws if the file does not exist.
+     * @throws ResourceNotFoundException Throws if file can not be created.
      */
-    public static File retrieveFile(String p_filePath) throws VMException {
+    public static File retrieveFile(String p_filePath) throws ResourceNotFoundException, InvalidInputException {
         File l_file = new File(PathResolverUtil.resolveFilePath(p_filePath));
         String l_fileName = l_file.getName();
         try {
             l_file.createNewFile();
         } catch (Exception p_exception) {
-            throw new VMException("File can not be created");
+            throw new ResourceNotFoundException("File can not be created");
         }
 
         int l_index = l_fileName.lastIndexOf('.');
