@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public class Player {
     private Set<Country> d_countrySet;
-    private List<Order> d_orders = new ArrayList<>();
+    private List<Order> d_orders;
     private int d_turnValue;
     private List<Country> d_assignedCountries;
     private String d_name;
@@ -20,6 +20,11 @@ public class Player {
     private int d_reinforcementArmies;
     private boolean d_canReinforce;
     private int d_assignedCountryCount;
+
+    public Player() {
+        d_orders = new ArrayList<>();
+        d_assignedCountries = new ArrayList<>();
+    }
 
     /**
      * Getter method for assigned country count.
@@ -77,6 +82,7 @@ public class Player {
 
     /**
      * Getter method for initial armies.
+     *
      * @return initial armies.
      */
     public int getInitialArmies() {
@@ -85,6 +91,7 @@ public class Player {
 
     /**
      * Setter method for initial armies.
+     *
      * @param p_initialArmies initial armies.
      */
     public void setInitialArmies(int p_initialArmies) {
@@ -93,6 +100,7 @@ public class Player {
 
     /**
      * Getter method for player name.
+     *
      * @return player name.
      */
     public String getName() {
@@ -101,6 +109,7 @@ public class Player {
 
     /**
      * Setter method for player name.
+     *
      * @param p_name player name.
      */
     public void setName(String p_name) {
@@ -108,7 +117,7 @@ public class Player {
     }
 
     /**
-     * getter method to assign countries.
+     * Setter method to assign countries.
      *
      * @return list of assigned countries.
      */
@@ -117,12 +126,21 @@ public class Player {
     }
 
     /**
-     * setter method to assign countries.
+     * Setter method to assign countries.
      *
      * @param p_assignedCountries list of assigned countries.
      */
     public void setAssignedCountries(List<Country> p_assignedCountries) {
         d_assignedCountries = p_assignedCountries;
+    }
+
+    /**
+     * Adds assigned country to the list.
+     *
+     * @param p_assignedCountry Value of assigned countries.
+     */
+    public void addAssignedCountries(Country p_assignedCountry) {
+        d_assignedCountries.add(p_assignedCountry);
     }
 
     /**
