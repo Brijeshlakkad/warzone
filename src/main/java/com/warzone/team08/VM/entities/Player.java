@@ -11,10 +11,9 @@ import java.util.Set;
  * @author Brijesh Lakkad
  */
 public class Player {
-    private Set<Country> d_countrySet;
     private List<Order> d_orders = new ArrayList<>();
     private int d_turnValue;
-    private List<Country> d_assignedCountries;
+    private ArrayList<Country> d_assignedCountries;
     private String d_name;
     private int d_initialArmies;
     private int d_reinforcementArmies;
@@ -93,7 +92,7 @@ public class Player {
      *
      * @return list of assigned countries.
      */
-    public List<Country> getAssignedCountries() {
+    public ArrayList<Country> getAssignedCountries() {
         return d_assignedCountries;
     }
 
@@ -102,7 +101,7 @@ public class Player {
      *
      * @param p_assignedCountries list of assigned countries.
      */
-    public void setAssignedCountries(List<Country> p_assignedCountries) {
+    public void setAssignedCountries(ArrayList<Country> p_assignedCountries) {
         d_assignedCountries = p_assignedCountries;
     }
 
