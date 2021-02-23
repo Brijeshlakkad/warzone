@@ -7,6 +7,7 @@ import com.warzone.team08.VM.constants.interfaces.Engine;
 import com.warzone.team08.VM.entities.Order;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.game_play.services.AssignReinforcementService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,6 +186,9 @@ public class GamePlayEngine implements Engine {
             throw new GameLoopIllegalStateException("Illegal state transition!");
         }
         GamePlayEngine.setGameLoopState(GameLoopState.ASSIGN_REINFORCEMENTS);
+
+        AssignReinforcementService l_reinforcementService = new AssignReinforcementService();
+        l_reinforcementService.execute();
     }
 
     /**
