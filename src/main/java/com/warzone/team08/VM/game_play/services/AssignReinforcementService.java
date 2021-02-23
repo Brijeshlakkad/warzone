@@ -1,101 +1,94 @@
 package com.warzone.team08.VM.game_play.services;
 
 import com.warzone.team08.VM.entities.Continent;
+import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
-import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
-import com.warzone.team08.VM.map_editor.services.EditMapService;
-import com.warzone.team08.VM.services.DistributeCountriesService;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.lang.Math;
 
+/**
+ * This class will reinforce the army to respective players at each new turn.
+ *
+ * @author Rutwik
+ */
 public class AssignReinforcementService {
-    public static List<DistributeCountriesService> d_DistributedCountryService;
     public List<Player> d_playerList;
     public List<Continent> d_continentList;
-    public EditMapService d_editMapService;
     public MapEditorEngine d_mapEditorEngine;
-    public URL d_filePath;
     public static Map<String, List<String>> d_ContinentCountryList;
-    public DistributeCountriesService d_distributedCountriesService;
 
-    public AssignReinforcementService(List<Player> p_playerList) throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
-        d_editMapService = new EditMapService();
-        d_filePath = d_editMapService.getClass().getClassLoader().getResource("test_map_files/test_map.map");
-        d_editMapService.handleLoadMap(d_filePath.getPath());
+    /**
+     * This Method will set reinforcement army to each player. It will also check whether a player completely owns a continent or not.
+     * If yes then it will add Continent's control value to the reinforcement army as a part of bonus.
+     */
+    public AssignReinforcementService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentList = d_mapEditorEngine.getContinentList();
-        d_distributedCountriesService = new DistributeCountriesService();
-        // TODO GameEngine.getInstance().getPlayerList();
-        d_playerList = p_playerList;
-        // TODO d_DistributedCountryService.getAssignedCountryList();
+        d_playerList = GamePlayEngine.getInstance().getPlayerList();
     }
 
-    public int AssignArmy(){
+    public void AssignArmy() {
         d_ContinentCountryList = d_mapEditorEngine.getContinentCountryMap();
-        List<String> countryList = new ArrayList<>();
-        int l_continentValue = 0;
-        int reinforcementArmy = 0;
-        for (Player playerList : d_playerList){
-            for (Continent continent : d_continentList){
-                for (String entry: d_ContinentCountryList.get(continent.getContinentName())) {
-                    countryList.add(entry);
-                }
-                //Method call: It will check whether the player occupies all countries or not.
-                int l_returnContinentValue = checkPlayerOwnsContinent(playerList, countryList, continent);
-                l_continentValue = l_continentValue + l_returnContinentValue;
 
-                /*System.out.println(continent.getContinentName());
-                for (String a : countryList){
-                    System.out.println(a);
-                }*/
+
+        for (Player l_player : d_playerList) {
+            int l_continentValue = 0;
+            for (Continent l_continent : d_continentList) {
+                List<String> l_countryList = new ArrayList<>();
+
+                for (String entry : d_ContinentCountryList.get(l_continent.getContinentName())) {
+                    l_countryList.add(entry);
+                }
+                //Method Call: Here Control Value is assessed.
+                int l_returnContinentValue = checkPlayerOwnsContinent(l_player, l_countryList, l_continent);
+
+                l_continentValue = l_continentValue + l_returnContinentValue;
             }
             //Method Call: This will add reinforcement Army to the player at each turn.
-            int l_returnReinforcementArmy = addReinforcementArmy(playerList);
-            reinforcementArmy = l_returnReinforcementArmy + l_continentValue;
+            int l_returnReinforcementArmy = addReinforcementArmy(l_player, l_continentValue);
+            l_player.setReinforcementArmies(l_returnReinforcementArmy);
         }
-        return reinforcementArmy;
     }
 
-    private int addReinforcementArmy(Player p_playerList) {
-        int l_AssignedCountryCount = p_playerList.getAssignedCountries().size();
-        int l_reinforcementArmy = Math.max(3,(int) Math.ceil(l_AssignedCountryCount/3));
+    /**
+     * This Method calculate the exact amount of army to be reinforced.
+     *
+     * @param p_player         Player's object.
+     * @param p_continentValue It is the control value that has been added if a player owns a whole continent.
+     * @return Method will return the army to be reinforced to the player.
+     */
+    private int addReinforcementArmy(Player p_player, int p_continentValue) {
+        int l_AssignedCountryCount = p_player.getAssignedCountries().size();
+        int l_reinforcementArmy = Math.max(3, (int) Math.ceil(l_AssignedCountryCount / 3));
+
+        l_reinforcementArmy = l_reinforcementArmy + p_continentValue;
         return l_reinforcementArmy;
     }
 
+    /**
+     * This method will check whether a player owns a whole continent or not. If a player owns then control value of respective
+     * continent is returned otherwise zero will be returned.
+     *
+     * @param p_playerList  Player's Object.
+     * @param p_countryList List of Country of specific continent.
+     * @param p_continent   Continent whose country is selected.
+     * @return Method will return Continent's Control value if player owns whole continent otherwise return zero.
+     */
     private int checkPlayerOwnsContinent(Player p_playerList, List<String> p_countryList, Continent p_continent) {
-        boolean l_checkCountry = p_playerList.getAssignedCountries().equals(p_countryList);
-
-        if (l_checkCountry){
+        List<String> l_country = new ArrayList<>();
+        for (Country l_country1 : p_playerList.getAssignedCountries()) {
+            l_country.add(l_country1.getCountryName());
+        }
+        boolean l_checkCountry = l_country.equals(p_countryList);
+        if (l_checkCountry) {
             return p_continent.getContinentControlValue();
         } else {
             return 0;
         }
     }
-
-
-    public static void main(String[] args) throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
-        //Creation of player list
-        List<Player> d_playerList = new ArrayList<>();
-        Player player1 = new Player();
-        Player player2 = new Player();
-        Player player3 = new Player();
-
-        d_playerList.add(player1);
-        d_playerList.add(player2);
-        d_playerList.add(player3);
-
-
-        AssignReinforcementService assignReinforcementService = new AssignReinforcementService(d_playerList);
-        int armyRetrieved = assignReinforcementService.AssignArmy();
-
-
-
-
-    }
-
 }

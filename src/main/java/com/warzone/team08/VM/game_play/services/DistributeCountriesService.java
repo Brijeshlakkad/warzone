@@ -34,7 +34,7 @@ public class DistributeCountriesService implements SingleCommand {
     /**
      * Parameterized constructor for instantiating required objects.
      */
-    public DistributeCountriesService(List<Player> p_playerList) {
+    public DistributeCountriesService() {
 
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_ContinentList = d_mapEditorEngine.getContinentList();

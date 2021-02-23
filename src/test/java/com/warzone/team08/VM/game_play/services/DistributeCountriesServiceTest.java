@@ -39,7 +39,7 @@ public class DistributeCountriesServiceTest {
     @Before
     public void before() throws Exception {
         d_countryList = d_MapEditorEngine.getCountryList();
-        d_distributeCountriesService = new DistributeCountriesService(d_PlayerList);
+        d_distributeCountriesService = new DistributeCountriesService();
     }
 
     /**
