@@ -36,11 +36,11 @@ public class CountryServiceTest {
     /**
      * Re-initializes the continent list before test case run.
      *
-     * @throws AbsentTagException
-     * @throws InvalidMapException
-     * @throws ResourceNotFoundException
-     * @throws InvalidInputException
-     * @throws EntityNotFoundException
+     * @throws AbsentTagException         Throws if any tag is missing in map file.
+     * @throws InvalidMapException        Throws if map is invalid.
+     * @throws ResourceNotFoundException  Throws if file not found.
+     * @throws InvalidInputException      Throws if input is invalid.
+     * @throws EntityNotFoundException    Throws if entity not found.
      */
     @Before
     public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
