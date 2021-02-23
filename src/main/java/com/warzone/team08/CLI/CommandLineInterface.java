@@ -1,16 +1,19 @@
 package com.warzone.team08.CLI;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.enums.specifications.CommandSpecification;
-import com.warzone.team08.CLI.constants.enums.states.UserInteractionState;
-import com.warzone.team08.CLI.constants.layouts.UserClassLayout;
+import com.warzone.team08.CLI.constants.specifications.CommandSpecification;
+import com.warzone.team08.CLI.constants.states.UserInteractionState;
 import com.warzone.team08.CLI.exceptions.InvalidArgumentException;
 import com.warzone.team08.CLI.exceptions.InvalidCommandException;
+import com.warzone.team08.CLI.layouts.UserClassLayout;
 import com.warzone.team08.CLI.mappers.UserCommandMapper;
 import com.warzone.team08.CLI.models.UserCommand;
+import com.warzone.team08.UserInterfaceMiddleware;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,7 +30,7 @@ import java.util.Map;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public class CommandLineInterface implements Runnable {
+public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
     /**
      * Interprets user input text and converts it into the form which can be understood
      */
@@ -74,6 +77,15 @@ public class CommandLineInterface implements Runnable {
     public CommandLineInterface() {
         d_thread = new Thread(this);
         d_userCommandMapper = new UserCommandMapper();
+    }
+
+    /**
+     * <code>InputStream</code> channel for user to provide the input.
+     *
+     * @param p_inputStream Value of any <code>InputStream</code>
+     */
+    public void setIn(InputStream p_inputStream) {
+        System.setIn(p_inputStream);
     }
 
     /**
@@ -215,5 +227,44 @@ public class CommandLineInterface implements Runnable {
         } finally {
             this.setInteractionState(UserInteractionState.WAIT);
         }
+    }
+
+
+    /**
+     * Asks the user for command-input. Represented exchange messages in string for communication.
+     *
+     * @param p_message Message to be shown before asking for input.
+     * @return Value of interpreted user command;
+     */
+    @Override
+    public String askForUserInput(String p_message) {
+        try {
+            // Print the message if any.
+            if (p_message != null && !p_message.isEmpty()) {
+                System.out.println(p_message);
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(d_userCommandMapper.toUserCommand(this.waitForUserInput()));
+        } catch (IOException p_ioException) {
+            return "";
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param p_message Represents the message.
+     */
+    public void stdout(String p_message) {
+        System.out.println(p_message);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param p_message Represents the error message.
+     */
+    public void stderr(String p_message) {
+        System.out.println(p_message);
     }
 }

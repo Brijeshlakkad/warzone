@@ -1,6 +1,6 @@
-package com.warzone.team08.CLI.constants.layouts.classes;
+package com.warzone.team08.CLI.layouts.classes;
 
-import com.warzone.team08.CLI.constants.layouts.ClassLayout;
+import com.warzone.team08.CLI.layouts.ClassLayout;
 
 import java.util.HashMap;
 import java.util.Map;

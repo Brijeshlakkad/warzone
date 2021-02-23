@@ -1,4 +1,4 @@
-package com.warzone.team08.CLI.constants.enums.states;
+package com.warzone.team08.CLI.constants.states;
 
 /**
  * This class describes the different state of the user interaction:

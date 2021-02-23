@@ -4,12 +4,13 @@ import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.floor;
 
@@ -19,7 +20,12 @@ import static java.lang.Math.floor;
  * @author CHARIT
  */
 public class DistributeCountriesService implements SingleCommand {
-    public List<Country> d_countryList;
+    private List<Country> d_countryList;
+    /**
+     * Country repository to find the country(s) using the filters.
+     */
+    private CountryRepository d_countryRepository = new CountryRepository();
+
     private final GamePlayEngine d_gamePlayEngine;
 
     /**
@@ -81,7 +87,7 @@ public class DistributeCountriesService implements SingleCommand {
             Country selectedCountry = d_countryList.get(l_iterateCountryCount);
             if (selectedCountry.getOwnedBy() == null) {
                 selectedCountry.setOwnedBy(p_player);
-                l_groupOfCountries = findCountryNeighbors(selectedCountry);
+                l_groupOfCountries = d_countryRepository.findCountryNeighborsAndNotOwned(selectedCountry);
                 l_groupOfCountries.add(0, selectedCountry);
 
                 l_size = l_groupOfCountries.size();
@@ -116,28 +122,18 @@ public class DistributeCountriesService implements SingleCommand {
     }
 
     /**
-     * Finds the neighboring country of the given country.
-     *
-     * @param p_country Country object
-     * @return List of country object.
-     * @throws IllegalStateException Throws if returns an empty list.
-     */
-    public List<Country> findCountryNeighbors(Country p_country) throws IllegalStateException {
-        return p_country.getNeighbourCountries().stream().filter((p_l_country) ->
-                p_l_country.getOwnedBy() == null
-        ).collect(Collectors.toList());
-    }
-
-    /**
      * Calls the distributeCountries() method of the class and returns the result.
      *
      * @param p_commandValues Represents the values passed while running the command.
      * @return Success message if function runs without error, otherwise throws exception.
      * @throws InvalidInputException Throws if number of players are zero.
      * @throws IllegalStateException Throws if returns an empty list.
+     * @throws VMException           If any exception from while players in <code>GameLoop</code>.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws InvalidInputException, IllegalStateException {
-        return distributeCountries();
+    public String execute(List<String> p_commandValues) throws VMException, IllegalStateException {
+        String response = distributeCountries();
+        GamePlayEngine.getInstance().startGameLoop();
+        return response;
     }
 }

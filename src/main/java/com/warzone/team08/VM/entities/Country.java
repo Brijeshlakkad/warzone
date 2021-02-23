@@ -19,6 +19,7 @@ public class Country {
     private Continent d_continent;
     private List<Country> d_neighbourCountries;
     private Player d_ownedBy;
+    private int d_numberOfArmies;
 
     /**
      * Used to keep the track of unique IDs for the continent.
@@ -141,6 +142,24 @@ public class Country {
      */
     public void setOwnedBy(Player p_ownedBy) {
         d_ownedBy = p_ownedBy;
+    }
+
+    /**
+     * Gets the number of armies that are placed on this country by the player <code>getOwnedBy</code>
+     *
+     * @return Value of the count of armies.
+     */
+    public int getNumberOfArmies() {
+        return d_numberOfArmies;
+    }
+
+    /**
+     * Sets the number of armies for this country placed by the player.
+     *
+     * @param p_numberOfArmies Values of the count of armies.
+     */
+    public void setNumberOfArmies(int p_numberOfArmies) {
+        d_numberOfArmies = p_numberOfArmies;
     }
 
     /**

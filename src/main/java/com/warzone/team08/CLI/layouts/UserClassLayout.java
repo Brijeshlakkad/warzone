@@ -1,9 +1,9 @@
-package com.warzone.team08.CLI.constants.layouts;
+package com.warzone.team08.CLI.layouts;
 
 import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.enums.states.GameState;
-import com.warzone.team08.CLI.constants.layouts.classes.GamePlayClassLayout;
-import com.warzone.team08.CLI.constants.layouts.classes.MapEditorClassLayout;
+import com.warzone.team08.CLI.constants.states.GameState;
+import com.warzone.team08.CLI.layouts.classes.GamePlayClassLayout;
+import com.warzone.team08.CLI.layouts.classes.MapEditorClassLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,7 @@ public class UserClassLayout {
     private static Map<GameState, ClassLayout> d_gameStateListMap = new HashMap<>();
 
     /**
-     * The object which has its user commands for <code>Map_Editor</code> game state.
+     * The object which has its user commands for <code>MAP_EDITOR</code> game state.
      */
     private static final MapEditorClassLayout MAP_EDITOR_LAYOUT = new MapEditorClassLayout();
 

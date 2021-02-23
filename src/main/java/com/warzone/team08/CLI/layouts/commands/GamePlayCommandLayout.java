@@ -1,8 +1,8 @@
-package com.warzone.team08.CLI.constants.layouts.commands;
+package com.warzone.team08.CLI.layouts.commands;
 
-import com.warzone.team08.CLI.constants.enums.specifications.ArgumentSpecification;
-import com.warzone.team08.CLI.constants.enums.specifications.CommandSpecification;
-import com.warzone.team08.CLI.constants.layouts.CommandLayout;
+import com.warzone.team08.CLI.constants.specifications.ArgumentSpecification;
+import com.warzone.team08.CLI.constants.specifications.CommandSpecification;
+import com.warzone.team08.CLI.layouts.CommandLayout;
 import com.warzone.team08.CLI.models.CommandArgument;
 import com.warzone.team08.CLI.models.PredefinedUserCommand;
 

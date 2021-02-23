@@ -1,9 +1,9 @@
-package com.warzone.team08.CLI.constants.layouts;
+package com.warzone.team08.CLI.layouts;
 
 import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.enums.states.GameState;
-import com.warzone.team08.CLI.constants.layouts.commands.GamePlayCommandLayout;
-import com.warzone.team08.CLI.constants.layouts.commands.MapEditorCommandLayout;
+import com.warzone.team08.CLI.constants.states.GameState;
+import com.warzone.team08.CLI.layouts.commands.GamePlayCommandLayout;
+import com.warzone.team08.CLI.layouts.commands.MapEditorCommandLayout;
 import com.warzone.team08.CLI.exceptions.InvalidArgumentException;
 import com.warzone.team08.CLI.models.PredefinedUserCommand;
 

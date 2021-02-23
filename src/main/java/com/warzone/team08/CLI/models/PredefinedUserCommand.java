@@ -1,6 +1,6 @@
 package com.warzone.team08.CLI.models;
 
-import com.warzone.team08.CLI.constants.enums.specifications.CommandSpecification;
+import com.warzone.team08.CLI.constants.specifications.CommandSpecification;
 
 import java.util.ArrayList;
 import java.util.List;

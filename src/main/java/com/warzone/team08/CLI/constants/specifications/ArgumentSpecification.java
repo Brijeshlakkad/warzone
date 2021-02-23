@@ -1,4 +1,4 @@
-package com.warzone.team08.CLI.constants.enums.specifications;
+package com.warzone.team08.CLI.constants.specifications;
 
 /**
  * Specification types for the number of required values for the argument

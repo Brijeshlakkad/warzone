@@ -1,4 +1,4 @@
-package com.warzone.team08.CLI.constants.enums.states;
+package com.warzone.team08.CLI.constants.states;
 
 /**
  * This class represents the different state of the game. It is also being used to validate the user command: One

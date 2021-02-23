@@ -1,4 +1,4 @@
-package com.warzone.team08.CLI.constants.layouts;
+package com.warzone.team08.CLI.layouts;
 
 import java.util.Map;
 

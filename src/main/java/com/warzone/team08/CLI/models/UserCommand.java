@@ -1,5 +1,7 @@
 package com.warzone.team08.CLI.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.*;
 
 /**
@@ -17,7 +19,7 @@ public class UserCommand {
     /**
      * Represents the argument and its values
      */
-    private final Map<String, List<String>> d_userArguments;
+    private Map<String, List<String>> d_userArguments;
 
     /**
      * Value(s) of the head of the command if any
@@ -25,16 +27,35 @@ public class UserCommand {
     private List<String> d_commandValues;
 
     /**
-     * Represents the predefined command for this command.
+     * Represents the predefined command for this command. This property will be ignored while
+     * <code>ObjectMapper#writeValueAsString</code>
      */
     private PredefinedUserCommand d_predefinedUserCommand;
 
+    /**
+     * True if the user commands represents the <code>exit</code> command.
+     */
+    private boolean isExitCommand = false;
+
+    /**
+     * Parameterised constructor.
+     *
+     * @param p_predefinedUserCommand Value of predefined user command that will be used while interpreting the user
+     *                                text.
+     */
     public UserCommand(PredefinedUserCommand p_predefinedUserCommand) {
         setHeadCommand(p_predefinedUserCommand.getHeadCommand());
         d_predefinedUserCommand = p_predefinedUserCommand;
         // Initialise references
         d_userArguments = new HashMap<>();
         d_commandValues = new ArrayList<>();
+    }
+
+    /**
+     * When user wants to terminate the application.
+     */
+    public UserCommand() {
+
     }
 
     /**
@@ -62,6 +83,7 @@ public class UserCommand {
      *
      * @return Value of the list of argument key and its value(s)
      */
+    @JsonIgnore
     public Map<String, List<String>> getUserArguments() {
         return d_userArguments;
     }
@@ -100,6 +122,7 @@ public class UserCommand {
      *
      * @return Value of predefined command.
      */
+    @JsonIgnore
     public PredefinedUserCommand getPredefinedUserCommand() {
         return d_predefinedUserCommand;
     }
