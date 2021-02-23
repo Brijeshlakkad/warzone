@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public class CountryServiceTest {
 
-    private static CountryService d_countryService;
+    private static CountryService d_CountryService;
     private List<Continent> d_continentList;
     private EditMapService d_editMapService;
     private URL d_testFilePath;
@@ -30,7 +30,7 @@ public class CountryServiceTest {
      */
     @BeforeClass
     public static void beforeTestClass() {
-        d_countryService = new CountryService();
+        d_CountryService = new CountryService();
     }
 
     /**
@@ -57,7 +57,7 @@ public class CountryServiceTest {
      */
     @Test(expected = EntityNotFoundException.class)
     public void testInvalidContinentName() throws EntityNotFoundException {
-        d_countryService.add("India", "ABC");
+        d_CountryService.add("India", "ABC");
     }
 
     /**
@@ -70,10 +70,10 @@ public class CountryServiceTest {
             throws EntityNotFoundException {
 
         String l_continentName = d_continentList.get(0).getContinentName();
-        String l_responseStringAddOp = d_countryService.add("India", l_continentName);
+        String l_responseStringAddOp = d_CountryService.add("India", l_continentName);
         assertNotNull(l_responseStringAddOp);
 
-        String l_responseStringRemoveOp = d_countryService.remove("India");
+        String l_responseStringRemoveOp = d_CountryService.remove("India");
         assertNotNull(l_responseStringRemoveOp);
     }
 }

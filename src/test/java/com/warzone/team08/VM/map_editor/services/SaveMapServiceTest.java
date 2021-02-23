@@ -21,10 +21,10 @@ import static org.junit.Assert.assertNotNull;
  * @author Rutwik
  */
 public class SaveMapServiceTest {
-    private static ContinentService d_continentService;
-    private static CountryService d_countryService;
-    private static CountryNeighborService d_countryNeighbourService;
-    private static SaveMapService d_saveMapService;
+    private static ContinentService d_ContinentService;
+    private static CountryService d_CountryService;
+    private static CountryNeighborService d_CountryNeighbourService;
+    private static SaveMapService d_SaveMapService;
     private String testFile = "testing_save_file.map";
 
     /**
@@ -38,10 +38,10 @@ public class SaveMapServiceTest {
      */
     @BeforeClass
     public static void before() {
-        d_continentService = new ContinentService();
-        d_countryService = new CountryService();
-        d_countryNeighbourService = new CountryNeighborService();
-        d_saveMapService = new SaveMapService();
+        d_ContinentService = new ContinentService();
+        d_CountryService = new CountryService();
+        d_CountryNeighbourService = new CountryNeighborService();
+        d_SaveMapService = new SaveMapService();
     }
 
     /**
@@ -61,14 +61,14 @@ public class SaveMapServiceTest {
      */
     @Before
     public void addContentToTheMapFile() throws InvalidInputException, EntityNotFoundException {
-        d_continentService.add("Asia", "10");
-        d_continentService.add("Australia", "15");
-        d_countryService.add("Delhi", "Asia");
-        d_countryService.add("Mumbai", "Asia");
-        d_countryService.add("Melbourne", "Australia");
-        d_countryNeighbourService.add("Delhi", "Mumbai");
-        d_countryNeighbourService.add("Mumbai", "Delhi");
-        d_countryNeighbourService.add("Melbourne", "Delhi");
+        d_ContinentService.add("Asia", "10");
+        d_ContinentService.add("Australia", "15");
+        d_CountryService.add("Delhi", "Asia");
+        d_CountryService.add("Mumbai", "Asia");
+        d_CountryService.add("Melbourne", "Australia");
+        d_CountryNeighbourService.add("Delhi", "Mumbai");
+        d_CountryNeighbourService.add("Mumbai", "Delhi");
+        d_CountryNeighbourService.add("Melbourne", "Delhi");
     }
 
     /**
@@ -81,7 +81,7 @@ public class SaveMapServiceTest {
     public void testSaveFile() throws ResourceNotFoundException, InvalidInputException, IOException {
         // Create a temporary file.
         final File testFileObject = tempFolder.newFile(testFile);
-        String response = d_saveMapService.saveToFile(testFileObject);
+        String response = d_SaveMapService.saveToFile(testFileObject);
 
         assert testFileObject.exists();
         assertNotNull(response);

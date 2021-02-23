@@ -5,6 +5,7 @@ import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 
@@ -38,8 +39,7 @@ public class DistributeCountriesService implements SingleCommand {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_ContinentList = d_mapEditorEngine.getContinentList();
         d_countryList = d_mapEditorEngine.getCountryList();
-        // TODO GameEngine.getInstance().getPlayerList();
-        d_playerList = p_playerList;
+        d_playerList = GamePlayEngine.getInstance().getPlayerList();;
     }
 
     /**

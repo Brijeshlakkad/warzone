@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * Test suit for <code>MAP_EDITOR</code> test cases.
+ * Test suite for <code>MAP_EDITOR</code> test cases.
  *
  * @author Brijesh Lakkad
  * @version 1.0
