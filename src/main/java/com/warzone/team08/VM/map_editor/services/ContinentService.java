@@ -32,6 +32,7 @@ public class ContinentService {
      *
      * @param p_continentName Value of the continent name.
      * @param p_countryValue  Value of the control value of the continent.
+     * @return Value of response of the request.
      * @throws InvalidInputException Throws if the control value can not be parsed into Integer data type.
      */
     public String add(String p_continentName, String p_countryValue) throws InvalidInputException {
@@ -51,6 +52,7 @@ public class ContinentService {
      * Removes the continent from the list using the name.
      *
      * @param p_continentName Value of the continent name.
+     * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if continent is not present.
      */
     public String remove(String p_continentName) throws EntityNotFoundException {

@@ -1,35 +1,42 @@
 package com.warzone.team08.VM.game_play.services;
 
-import com.warzone.team08.VM.entities.Country;
+import com.warzone.team08.Application;
 import com.warzone.team08.VM.entities.Player;
-import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class tests various operations performed during distribution of countries among players.
  *
  * @author CHARIT
+ * @author Brijesh Lakkad
  */
 public class DistributeCountriesServiceTest {
-
-    private static MapEditorEngine d_MapEditorEngine;
-    private static EditMapService d_EditMapService;
+    private static Application d_Application;
     private static URL d_TestFilePath;
     private DistributeCountriesService d_distributeCountriesService;
-    private static List<Player> d_PlayerList;
-    private List<Country> d_countryList;
     private static GamePlayEngine d_GamePlayEngine;
+
+    /**
+     * Runs before the test case class runs; Initializes different objects required to perform test.
+     */
+    @BeforeClass
+    public static void createPlayersList() throws Exception {
+        d_Application = new Application();
+        d_Application.handleApplicationStartup();
+        d_GamePlayEngine = GamePlayEngine.getInstance();
+
+        d_TestFilePath = DistributeCountriesServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
+    }
 
     /**
      * Setting up the required objects before performing test.
@@ -38,16 +45,13 @@ public class DistributeCountriesServiceTest {
      */
     @Before
     public void before() throws Exception {
-        d_countryList = d_MapEditorEngine.getCountryList();
-        d_distributeCountriesService = new DistributeCountriesService(d_PlayerList);
-    }
+        // Loads the map
+        EditMapService l_editMapService = new EditMapService();
+        assert d_TestFilePath != null;
+        l_editMapService.handleLoadMap(d_TestFilePath.getPath());
 
-    /**
-     * Runs before the test case class runs; Initializes different objects required to perform test.
-     */
-    @BeforeClass
-    public static void createPlayersList() throws Exception {
-        d_PlayerList = new ArrayList<Player>();
+        // Creates players
+        d_GamePlayEngine.initialise();
         Player l_player1 = new Player();
         Player l_player2 = new Player();
         Player l_player3 = new Player();
@@ -56,20 +60,15 @@ public class DistributeCountriesServiceTest {
         l_player2.setName("Rutwik");
         l_player3.setName("Brijesh");
 
-        d_PlayerList.add(l_player1);
-        d_PlayerList.add(l_player2);
-        d_PlayerList.add(l_player3);
-        d_GamePlayEngine = GamePlayEngine.getInstance();
-        d_GamePlayEngine.setPlayerList((ArrayList<Player>) d_PlayerList);
-        d_MapEditorEngine = MapEditorEngine.getInstance();
-        d_EditMapService = new EditMapService();
-        d_TestFilePath = DistributeCountriesServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
-        d_EditMapService.handleLoadMap(d_TestFilePath.getPath());
+        d_GamePlayEngine.addPlayer(l_player1);
+        d_GamePlayEngine.addPlayer(l_player2);
+        d_GamePlayEngine.addPlayer(l_player3);
+
+        d_distributeCountriesService = new DistributeCountriesService();
     }
 
     /**
-     * Tests whether the player list is empty or not.
-     * Passes if list contains players objects, otherwise fails.
+     * Tests whether the player list is empty or not. Passes if list contains players objects, otherwise fails.
      */
     @Test(expected = Test.None.class)
     public void testNumberOfPlayer() throws InvalidInputException {
