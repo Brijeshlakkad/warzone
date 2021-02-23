@@ -29,8 +29,8 @@ public class ShowMapService implements SingleCommand{
     /**
      * Shows the information of countries owned by player with the army count on each country.
      *
+     * @param p_player player object for displaying its data
      * @return string of player information
-     * @param p_player
      */
     public String showPlayerContent(Player p_player){
         ArrayList<Country> l_countryList=p_player.getAssignedCountries();
@@ -56,14 +56,14 @@ public class ShowMapService implements SingleCommand{
      * Initiates all methods of ShowMapService file.
      *
      * @param p_commandValues Value of parameters entered by the user.
-     * @return Value of string of continent and neighbour country information.
+     * @return Value of string of player and its countries information.
      */
     @Override
     public String execute(List<String> p_commandValues) throws EntityNotFoundException {
         String l_playerContent="";
         if(!this.d_playerList.isEmpty()){
             for(Player l_player:d_playerList){
-                l_playerContent+=this.showPlayerContent(l_player);
+                l_playerContent+=this.showPlayerContent(l_player)+"\n";
             }
             return l_playerContent;
         }
