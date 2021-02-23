@@ -10,51 +10,38 @@ import java.util.List;
  * @author Brijesh Lakkad
  */
 public class Player {
+    /**
+     * Represents the unique name of each player.
+     */
     private String d_name;
-    private List<Order> d_orders;
+    private final List<Order> d_orders;
     private List<Country> d_assignedCountries;
-    private int d_reinforcementArmies;
+    private int d_reinforcementCount;
     private int d_assignedCountryCount;
 
     public Player() {
         d_orders = new ArrayList<>();
         d_assignedCountries = new ArrayList<>();
+        d_reinforcementCount = 0;
+        d_assignedCountryCount = 0;
     }
 
     /**
-     * Getter method for assigned country count.
-     *
-     * @return assigned country count.
-     */
-    public int getAssignedCountryCount() {
-        return d_assignedCountryCount;
-    }
-
-    /**
-     * Setter method for assigned country count.
-     *
-     * @param p_assignedCountryCount Assigned country count.
-     */
-    public void setAssignedCountryCount(int p_assignedCountryCount) {
-        d_assignedCountryCount = p_assignedCountryCount;
-    }
-
-    /**
-     * Getter method for reinforcement armies.
+     * Getter method to get the count of reinforcement armies.
      *
      * @return reinforcement armies.
      */
-    public int getReinforcementArmies() {
-        return d_reinforcementArmies;
+    public int getReinforcementCount() {
+        return d_reinforcementCount;
     }
 
     /**
-     * Setter method to assign reinforce armies.
+     * Setter method to assign reinforce armies count.
      *
      * @param p_reinforcementArmies reinforcement armies.
      */
     public void setReinforcementArmies(int p_reinforcementArmies) {
-        d_reinforcementArmies = p_reinforcementArmies;
+        d_reinforcementCount = p_reinforcementArmies;
     }
 
     /**
@@ -100,6 +87,24 @@ public class Player {
      */
     public void addAssignedCountries(Country p_assignedCountry) {
         d_assignedCountries.add(p_assignedCountry);
+    }
+
+    /**
+     * Gets the number of assigned countries for this player.
+     *
+     * @return Value of the count.
+     */
+    public int getAssignedCountryCount() {
+        return d_assignedCountryCount;
+    }
+
+    /**
+     * Sets the number of countries that will be assigned to this player.
+     *
+     * @param p_assignedCountryCount Value of the count to be set.
+     */
+    public void setAssignedCountryCount(int p_assignedCountryCount) {
+        d_assignedCountryCount = p_assignedCountryCount;
     }
 
     /**

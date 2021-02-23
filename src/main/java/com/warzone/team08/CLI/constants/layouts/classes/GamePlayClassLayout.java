@@ -20,6 +20,8 @@ public class GamePlayClassLayout implements ClassLayout {
 
     public GamePlayClassLayout() {
         d_commandToClassMapper.put("gameplayer", "com.warzone.team08.VM.game_play.services.PlayerService");
+        d_commandToClassMapper.put("assigncountries", "com.warzone.team08.VM.game_play.services.DistributeCountriesService");
+        d_commandToClassMapper.put("showmap", "com.warzone.team08.VM.game_play.services.ShowMapService");
     }
 
     /**

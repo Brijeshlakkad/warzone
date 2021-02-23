@@ -40,6 +40,7 @@ public class SaveMapService implements SingleCommand {
      * Reads from map editor engine and saves the data to file.
      *
      * @param p_fileObject File path to create if not exists and write into files.
+     * @return Value of response of the request.
      * @throws InvalidInputException Throws if the file write operation was not successful.
      */
     public String saveToFile(File p_fileObject) throws InvalidInputException {

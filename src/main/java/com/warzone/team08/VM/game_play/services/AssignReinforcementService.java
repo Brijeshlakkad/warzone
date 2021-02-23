@@ -9,7 +9,6 @@ import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.lang.Math;
 
 /**
  * This class will reinforce the army to respective players at each new turn.
@@ -17,33 +16,27 @@ import java.lang.Math;
  * @author Rutwik
  */
 public class AssignReinforcementService {
-    public List<Player> d_playerList;
-    public List<Continent> d_continentList;
     public MapEditorEngine d_mapEditorEngine;
-    public static Map<String, List<String>> d_ContinentCountryList;
+    public Map<String, List<String>> d_continentCountryList;
 
     /**
-     * This Method will set reinforcement army to each player. It will also check whether a player completely owns a continent or not.
-     * If yes then it will add Continent's control value to the reinforcement army as a part of bonus.
+     * This Method will set reinforcement army to each player. It will also check whether a player completely owns a
+     * continent or not. If yes then it will add Continent's control value to the reinforcement army as a part of
+     * bonus.
      */
     public AssignReinforcementService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
-        d_continentList = d_mapEditorEngine.getContinentList();
-        d_playerList = GamePlayEngine.getInstance().getPlayerList();
     }
 
     public void AssignArmy() {
-        d_ContinentCountryList = d_mapEditorEngine.getContinentCountryMap();
+        d_continentCountryList = d_mapEditorEngine.getContinentCountryMap();
 
 
-        for (Player l_player : d_playerList) {
+        for (Player l_player : GamePlayEngine.getInstance().getPlayerList()) {
             int l_continentValue = 0;
-            for (Continent l_continent : d_continentList) {
-                List<String> l_countryList = new ArrayList<>();
+            for (Continent l_continent : d_mapEditorEngine.getContinentList()) {
 
-                for (String entry : d_ContinentCountryList.get(l_continent.getContinentName())) {
-                    l_countryList.add(entry);
-                }
+                List<String> l_countryList = new ArrayList<>(d_continentCountryList.get(l_continent.getContinentName()));
                 //Method Call: Here Control Value is assessed.
                 int l_returnContinentValue = checkPlayerOwnsContinent(l_player, l_countryList, l_continent);
 
@@ -71,8 +64,8 @@ public class AssignReinforcementService {
     }
 
     /**
-     * This method will check whether a player owns a whole continent or not. If a player owns then control value of respective
-     * continent is returned otherwise zero will be returned.
+     * This method will check whether a player owns a whole continent or not. If a player owns then control value of
+     * respective continent is returned otherwise zero will be returned.
      *
      * @param p_playerList  Player's Object.
      * @param p_countryList List of Country of specific continent.
