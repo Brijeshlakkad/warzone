@@ -151,6 +151,15 @@ public class Player {
     }
 
     /**
+     * Reduces the reinforcements.
+     *
+     * @param d_usedReinforcementCount Number of armies the player used.
+     */
+    public void reduceReinforcementCount(int d_usedReinforcementCount) {
+        this.d_remainingReinforcementCount -= d_usedReinforcementCount;
+    }
+
+    /**
      * Calculates the number of remaining reinforcements for the player.
      * <p>Shows error if the player orders more than
      * reinforcements than in possession. This method also sets the remaining number of reinforcements left for the
@@ -171,7 +180,7 @@ public class Player {
         }
         this.d_remainingReinforcementCount = l_remainingReinforcementCount;
         // If the remaining reinforcement is zero, set d_canReinforce to false.
-        this.setCanReinforce(d_remainingReinforcementCount != 0);
+        this.setCanReinforce(d_remainingReinforcementCount > 0);
         return true;
     }
 
@@ -205,16 +214,23 @@ public class Player {
     public void issueOrder() throws
             ReinforcementOutOfBoundException, InvalidCommandException, EntityNotFoundException, ExecutionException, InterruptedException {
         // Requests user interface for input from user.
-        Future<String> l_responseVal = VirtualMachine.getInstance().askForUserInput(String.format("Issue order (%s player)", this.d_name));
+        String l_responseVal = "";
+        do {
+            Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Player: %s--------\nIssue Order:", this.d_name));
+            l_responseVal = l_responseOfFuture.get();
+        } while (l_responseVal.isEmpty());
         try {
             ObjectMapper l_objectMapper = new ObjectMapper();
-            CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal.get(), CommandResponse.class);
+            CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
             Order l_newOrder = Order.map(l_commandResponse);
             if (this.canPlayerReinforce(l_newOrder.getNumOfReinforcements())) {
                 l_newOrder.setOwner(this);
                 this.addOrder(l_newOrder);
             } else {
-                throw new ReinforcementOutOfBoundException("You don't have enough reinforce armies.");
+                if (this.getRemainingReinforcementCount() == 0) {
+                    this.setCanReinforce(false);
+                }
+                throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
             }
         } catch (IOException p_ioException) {
             throw new InvalidCommandException("Unrecognised input!");

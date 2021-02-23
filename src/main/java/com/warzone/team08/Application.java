@@ -136,5 +136,6 @@ public class Application {
     public static void exit() {
         Application.setIsRunning(false);
         VirtualMachine.exit();
+        System.exit(0);
     }
 }

@@ -33,8 +33,7 @@ public class VirtualMachine {
      */
     private UserInterfaceMiddleware d_userInterfaceMiddleware;
 
-    private ExecutorService d_executor
-            = Executors.newSingleThreadExecutor();
+    private ExecutorService d_executor = Executors.newFixedThreadPool(10);
 
     /**
      * Creates the single instance of the <code>VirtualMachine</code> class.
@@ -43,6 +42,7 @@ public class VirtualMachine {
      */
     public static VirtualMachine newInstance() {
         D_Instance = new VirtualMachine();
+        // Default exception handler.
         ExceptionHandler l_exceptionHandler = new ExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(l_exceptionHandler);
         return D_Instance;
@@ -54,6 +54,7 @@ public class VirtualMachine {
     public static void exit() {
         MAP_EDITOR_ENGINE().shutdown();
         GAME_PLAY_ENGINE().shutdown();
+        VirtualMachine.getInstance().stdout("Shutting down...");
     }
 
     /**

@@ -207,7 +207,11 @@ public class GamePlayEngine implements Engine {
         this.currentPlayerTurn = this.currentPlayerForIssuePhase;
 
         while (finishedIssuingOrders.size() != d_playerList.size()) {
-            Player l_currentPlayer = this.getCurrentPlayer();
+            // Find player who has reinforcements.
+            Player l_currentPlayer;
+            do {
+                l_currentPlayer = this.getCurrentPlayer();
+            } while (finishedIssuingOrders.contains(l_currentPlayer));
 
             // Until player issues the valid order.
             boolean l_invalidPreviousOrder;
@@ -221,15 +225,18 @@ public class GamePlayEngine implements Engine {
 
                     // Send exception message to CLI.
                     VirtualMachine.getInstance().stderr(p_e.getMessage());
-                } catch (InterruptedException | ExecutionException p_e) {
 
+                    if (!l_currentPlayer.isCanReinforce()) {
+                        break;
+                    }
+                } catch (InterruptedException | ExecutionException p_e) {
                     // If interruption occurred while issuing the order.
                     l_invalidPreviousOrder = true;
                 }
-            } while (l_invalidPreviousOrder);
+            } while (l_invalidPreviousOrder && l_currentPlayer.isCanReinforce());
 
             // If all of its reinforcements have been placed, don't ask the player again.
-            if (l_currentPlayer.isCanReinforce()) {
+            if (!l_currentPlayer.isCanReinforce()) {
                 finishedIssuingOrders.add(l_currentPlayer);
             }
         }
@@ -246,7 +253,7 @@ public class GamePlayEngine implements Engine {
      * @throws GameLoopIllegalStateException Throws if the engine tries to jump to illegal state.
      */
     public void onStartExecuteOrderPhase() throws GameLoopIllegalStateException {
-        if (GamePlayEngine.getGameLoopState() != GameLoopState.ASSIGN_REINFORCEMENTS) {
+        if (GamePlayEngine.getGameLoopState() != GameLoopState.ISSUE_ORDER) {
             throw new GameLoopIllegalStateException("Illegal state transition!");
         }
         GamePlayEngine.setGameLoopState(GameLoopState.EXECUTE_ORDER);
@@ -255,12 +262,17 @@ public class GamePlayEngine implements Engine {
         this.currentPlayerTurn = this.currentPlayerForExecutionPhase;
 
         while (finishedExecutingOrders.size() != d_playerList.size()) {
-            Player l_currentPlayer = this.getCurrentPlayer();
+            // Find player who has remaining orders to execute.
+            Player l_currentPlayer;
+            do {
+                l_currentPlayer = this.getCurrentPlayer();
+            } while (finishedExecutingOrders.contains(l_currentPlayer));
             try {
-                // Get the order
+                // Get the next order
                 Order l_currentOrder = l_currentPlayer.nextOrder();
 
                 if (l_currentOrder.getOrderType() == OrderType.deploy) {
+                    l_currentPlayer.reduceReinforcementCount(l_currentOrder.getNumOfReinforcements());
                     l_currentOrder.getCountry().setNumberOfArmies(l_currentOrder.getNumOfReinforcements());
                 }
 
@@ -270,7 +282,7 @@ public class GamePlayEngine implements Engine {
                     finishedExecutingOrders.add(l_currentPlayer);
                 }
             } catch (OrderOutOfBoundException p_e) {
-                p_e.printStackTrace();
+                VirtualMachine.getInstance().stderr(p_e.getMessage());
                 finishedExecutingOrders.add(l_currentPlayer);
             }
         }

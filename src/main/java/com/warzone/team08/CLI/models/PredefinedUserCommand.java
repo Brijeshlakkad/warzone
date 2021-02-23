@@ -34,6 +34,11 @@ public class PredefinedUserCommand {
      */
     private CommandSpecification d_commandSpecification;
 
+    /**
+     * <code>GameEngine</code> command represents that <code>GameEngine</code> is had requested CLI for user input.
+     */
+    private boolean isGameEngineCommand = false;
+
     public PredefinedUserCommand() {
         // Initialise references
         d_commandArgumentList = new ArrayList<>();
@@ -128,6 +133,25 @@ public class PredefinedUserCommand {
      */
     public CommandSpecification getCommandSpecification() {
         return d_commandSpecification;
+    }
+
+    /**
+     * <code>VM#GameEngine</code> needs input from user.
+     *
+     * @return True if the <code>VM#GameEngine</code> had requested.
+     */
+    public boolean isGameEngineCommand() {
+        return isGameEngineCommand;
+    }
+
+    /**
+     * Sets if the <code>VM#GameEngine</code> can ask input from user.
+     *
+     * @param p_gameEngineCommand Value of true if only <code>VM#GameEngine</code> can ask for this type of user
+     *                            command.
+     */
+    public void setGameEngineCommand(boolean p_gameEngineCommand) {
+        isGameEngineCommand = p_gameEngineCommand;
     }
 
     /**

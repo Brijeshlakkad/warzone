@@ -3,6 +3,7 @@ package com.warzone.team08.VM.game_play.services;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
@@ -132,8 +133,14 @@ public class DistributeCountriesService implements SingleCommand {
      */
     @Override
     public String execute(List<String> p_commandValues) throws VMException, IllegalStateException {
-        String response = distributeCountries();
-        GamePlayEngine.getInstance().startGameLoop();
-        return response;
+        // Check if players have been added.
+        // What if only one player is available?
+        if (!GamePlayEngine.getInstance().getPlayerList().isEmpty()) {
+            String response = distributeCountries();
+            GamePlayEngine.getInstance().startGameLoop();
+            return response;
+        } else {
+            throw new EntityNotFoundException("Please, add players to show game status!");
+        }
     }
 }

@@ -1,8 +1,10 @@
 package com.warzone.team08.VM.exceptions;
 
 
+import com.warzone.team08.VM.VirtualMachine;
+
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     public void uncaughtException(Thread t, Throwable e) {
-        System.out.print("Unhandled exception caught!");
+        VirtualMachine.getInstance().stderr("Something went wrong!");
     }
 }

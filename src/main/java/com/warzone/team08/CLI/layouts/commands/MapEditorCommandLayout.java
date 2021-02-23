@@ -26,7 +26,7 @@ public class MapEditorCommandLayout implements CommandLayout {
         d_userCommands = new ArrayList<>();
 
         // Example of the below command:
-        // editcontinent -add continentID continentvalue -remove continentID
+        // > editcontinent -add continentID continentvalue -remove continentID
         PredefinedUserCommand l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("editcontinent");
         l_userCommand.setCommandSpecification(CommandSpecification.AT_LEAST_ONE);
@@ -43,7 +43,7 @@ public class MapEditorCommandLayout implements CommandLayout {
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
-        // editcountry -add countryID continentID -remove countryID
+        // > editcountry -add countryID continentID -remove countryID
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("editcountry");
         l_userCommand.setCommandSpecification(CommandSpecification.AT_LEAST_ONE);
@@ -60,7 +60,7 @@ public class MapEditorCommandLayout implements CommandLayout {
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
-        // editneighbor -add countryID neighborcountryID -remove countryID neighborcountryID
+        // > editneighbor -add countryID neighborcountryID -remove countryID neighborcountryID
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("editneighbor");
         l_userCommand.setCommandSpecification(CommandSpecification.AT_LEAST_ONE);
@@ -77,35 +77,35 @@ public class MapEditorCommandLayout implements CommandLayout {
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
-        // showmap
+        // > showmap
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("showmap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
-        // savemap filename
+        // > savemap filename
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("savemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
-        // editmap filename
+        // > editmap filename
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("editmap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
-        // validatemap
+        // > validatemap
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("validatemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
-        // loadmap filename
+        // > loadmap filename
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("loadmap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);

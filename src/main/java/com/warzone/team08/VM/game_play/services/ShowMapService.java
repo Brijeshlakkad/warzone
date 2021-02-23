@@ -58,6 +58,7 @@ public class ShowMapService implements SingleCommand {
      *
      * @param p_commandValues Value of parameters entered by the user.
      * @return Value of string of continent and neighbour country information.
+     * @throws EntityNotFoundException If no player is available.
      */
     @Override
     public String execute(List<String> p_commandValues) throws EntityNotFoundException {
@@ -68,7 +69,7 @@ public class ShowMapService implements SingleCommand {
             }
             return l_playerContent.toString();
         } else {
-            throw new EntityNotFoundException("Please add players to show game status");
+            throw new EntityNotFoundException("Please, add players to show game status!");
         }
     }
 }

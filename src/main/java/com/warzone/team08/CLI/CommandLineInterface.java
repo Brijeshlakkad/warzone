@@ -17,8 +17,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * <pre>
@@ -74,6 +76,8 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
      */
     public final Thread d_thread;
 
+    private Queue<UserCommand> d_userCommandQueue = new LinkedList<>();
+
     public CommandLineInterface() {
         d_thread = new Thread(this);
         d_userCommandMapper = new UserCommandMapper();
@@ -114,14 +118,20 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
                         try {
                             // Takes user input and interprets it for further processing
                             UserCommand l_userCommand = d_userCommandMapper.toUserCommand(this.waitForUserInput());
-
+                            if (l_userCommand.getPredefinedUserCommand().isGameEngineCommand()) {
+                                throw new InvalidCommandException("Invalid command!");
+                            }
                             this.setInteractionState(UserInteractionState.IN_PROGRESS);
-
                             // Takes action according to command instructions.
                             this.takeAction(l_userCommand);
                         } catch (IOException p_e) {
                             p_e.printStackTrace();
                         }
+                    }
+                    if (!d_userCommandQueue.isEmpty()) {
+                        UserCommand l_userCommand = d_userCommandQueue.poll();
+                        // Takes action according to command instructions.
+                        this.takeAction(l_userCommand);
                     }
                 } catch (InvalidArgumentException | InvalidCommandException p_exception) {
                     // Show exception message
@@ -137,11 +147,12 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
      * the suggested function is the same as the argument key provided by the user, and its values are the argument to
      * be passed to the function call. (Mappings for this can be created if the both are not the same?)
      *
-     * @param p_userCommand Value of the object (instance) which is equivalent to the user text input
-     * @throws InvalidArgumentException Raised if the command not found
+     * @param p_userCommand  Value of the object (instance) which is equivalent to the user text input.
+     * @param isGameEngineOn True if this action was taken while user was asked for input from <code>GameEngine</code>.
+     * @throws InvalidArgumentException Raised if the command not found.
      * @throws InvalidCommandException  Raised if the argument key(s) not found or its value(s) are not provided.
      */
-    public void takeAction(UserCommand p_userCommand) throws InvalidArgumentException, InvalidCommandException {
+    public void takeAction(UserCommand p_userCommand, boolean isGameEngineOn) throws InvalidArgumentException, InvalidCommandException {
         try {
             // Gets the mapped class of the command and calls its function; With arguments, if any.
             Class<?> l_class = Class.forName(UserClassLayout.matchAndGetClassName(p_userCommand.getHeadCommand()));
@@ -174,7 +185,24 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
             } else {
                 throw new InvalidArgumentException("Unrecognized argument and/or its values");
             }
+        } finally {
+            if (!isGameEngineOn) {
+                // Before returning, set interaction state to WAIT.
+                this.setInteractionState(UserInteractionState.WAIT);
+            }
         }
+    }
+
+    /**
+     * {@link CommandLineInterface#takeAction(UserCommand, boolean)} Overloading function.
+     *
+     * @param p_userCommand Value of the object (instance) which is equivalent to the user text input.
+     * @throws InvalidArgumentException Raised if the command not found.
+     * @throws InvalidCommandException  Raised if the argument key(s) not found or its value(s) are not provided.
+     */
+    public void takeAction(UserCommand p_userCommand) throws InvalidArgumentException, InvalidCommandException {
+        // By default, pass variable indicating that the game engine is not on.
+        this.takeAction(p_userCommand, false);
     }
 
     /**
@@ -224,8 +252,6 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
         } catch (
                 Exception l_ignored) {
             // Ignore exception if the object does not represent the String value.
-        } finally {
-            this.setInteractionState(UserInteractionState.WAIT);
         }
     }
 
@@ -244,7 +270,13 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
                 System.out.println(p_message);
             }
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(d_userCommandMapper.toUserCommand(this.waitForUserInput()));
+            UserCommand l_userCommand = d_userCommandMapper.toUserCommand(this.waitForUserInput());
+            if (l_userCommand.getPredefinedUserCommand().isGameEngineCommand()) {
+                return mapper.writeValueAsString(l_userCommand);
+            } else {
+                d_userCommandQueue.add(l_userCommand);
+            }
+            return "";
         } catch (IOException p_ioException) {
             return "";
         }

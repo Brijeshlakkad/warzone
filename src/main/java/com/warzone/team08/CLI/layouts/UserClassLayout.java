@@ -2,6 +2,8 @@ package com.warzone.team08.CLI.layouts;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.CLI.constants.states.GameState;
+import com.warzone.team08.CLI.exceptions.InvalidCommandException;
+import com.warzone.team08.CLI.layouts.classes.CommonClassLayout;
 import com.warzone.team08.CLI.layouts.classes.GamePlayClassLayout;
 import com.warzone.team08.CLI.layouts.classes.MapEditorClassLayout;
 
@@ -20,6 +22,11 @@ public class UserClassLayout {
      * The list of all classes across each GameState (A state of the game).
      */
     private static Map<GameState, ClassLayout> d_gameStateListMap = new HashMap<>();
+
+    /**
+     * The object which has its user commands that can be entered during any <code>GAME_STATE</code>.
+     */
+    private static final CommonClassLayout COMMON_CLASS_LAYOUT = new CommonClassLayout();
 
     /**
      * The object which has its user commands for <code>MAP_EDITOR</code> game state.
@@ -51,10 +58,18 @@ public class UserClassLayout {
      *
      * @param p_headOfCommand Value of the head of the command for which class name has to locate.
      * @return Value of the class name which matched with <code>p_headOfCommand</code>
+     * @throws InvalidCommandException If no command had found matching the provided head of the command.
      */
-    public static String matchAndGetClassName(String p_headOfCommand) {
-        // Gets the class name for the command using the game state.
-        return d_gameStateListMap.get(Application.getGameState()).getMappings().get(p_headOfCommand);
+    public static String matchAndGetClassName(String p_headOfCommand) throws InvalidCommandException {
+        try {
+            // Gets the class name for the command using the game state.
+            // If the command exists in COMMON_CLASS_LAYOUT, return that class name from that.
+            return COMMON_CLASS_LAYOUT.getMappings().containsKey(p_headOfCommand) ?
+                    COMMON_CLASS_LAYOUT.getMappings().get(p_headOfCommand) :
+                    d_gameStateListMap.get(Application.getGameState()).getMappings().get(p_headOfCommand);
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+            throw new InvalidCommandException("Unrecognized command!");
+        }
     }
 
     /**
