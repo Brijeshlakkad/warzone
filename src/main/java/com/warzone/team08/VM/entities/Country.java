@@ -19,6 +19,7 @@ public class Country {
     private Continent d_continent;
     private List<Country> d_neighbourCountries;
     private Player d_ownedBy;
+    private int d_armyCount;
 
     /**
      * Used to keep the track of unique IDs for the continent.
@@ -144,11 +145,30 @@ public class Country {
     }
 
     /**
+     * Gets the army count in country
+     * @return number of armies
+     */
+    public int getArmyCount() {
+        return d_armyCount;
+    }
+
+    /**
+     * Sets army count value
+     * @param p_armyCount number of armies
+     */
+    public void setArmyCount(int p_armyCount) {
+        d_armyCount = p_armyCount;
+    }
+
+    /**
      * Checks if both objects are the same using both the country and continent of the object.
      *
      * @param l_p_o Value of the second element to be checked with.
      * @return True if the both are same.
      */
+
+
+
     @Override
     public boolean equals(Object l_p_o) {
         if (this == l_p_o) return true;
