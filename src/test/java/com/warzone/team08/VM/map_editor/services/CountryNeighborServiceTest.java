@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -14,9 +15,9 @@ import static org.junit.Assert.assertNotNull;
  * This class tests the add and remove operations of neighbours of the country.
  *
  * @author CHARIT
+ * @author Brijesh Lakkad
  */
 public class CountryNeighborServiceTest {
-
     private static CountryNeighborService d_CountryNeighbourService;
     private EditMapService d_editMapService;
     private URL d_testFilePath;
@@ -32,10 +33,10 @@ public class CountryNeighborServiceTest {
     /**
      * Re-initializes the continent list before test case run.
      *
-     * @throws Exception IOException
+     * @throws VMException Exception generated during execution.
      */
     @Before
-    public void beforeTestCase() throws Exception {
+    public void beforeTestCase() throws VMException {
         MapEditorEngine.getInstance().initialise();
         d_editMapService = new EditMapService();
         d_testFilePath = getClass().getClassLoader().getResource("test_map_files/test_map.map");
@@ -68,10 +69,12 @@ public class CountryNeighborServiceTest {
      */
     @Test(expected = Test.None.class)
     public void testAdd() throws EntityNotFoundException {
+
         String l_addResponse = d_CountryNeighbourService.add("Mercury-South", "Mercury-West");
         assertNotNull(l_addResponse);
 
         String l_removeResponse = d_CountryNeighbourService.remove("Mercury-South", "Mercury-West");
+
         assertNotNull(l_removeResponse);
     }
 }

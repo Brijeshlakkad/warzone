@@ -3,6 +3,7 @@ package com.warzone.team08.VM.game_play.services;
 import com.warzone.team08.Application;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import org.junit.Before;
@@ -41,10 +42,10 @@ public class DistributeCountriesServiceTest {
     /**
      * Setting up the required objects before performing test.
      *
-     * @throws Exception Exception generated during execution.
+     * @throws VMException Exception generated during execution.
      */
     @Before
-    public void before() throws Exception {
+    public void before() throws VMException {
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assert d_TestFilePath != null;
