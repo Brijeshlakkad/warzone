@@ -6,7 +6,7 @@ import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +32,7 @@ public class ContinentService {
      *
      * @param p_continentName Value of the continent name.
      * @param p_countryValue  Value of the control value of the continent.
+     * @return Value of response of the request.
      * @throws InvalidInputException Throws if the control value can not be parsed into Integer data type.
      */
     public String add(String p_continentName, String p_countryValue) throws InvalidInputException {
@@ -51,14 +52,15 @@ public class ContinentService {
      * Removes the continent from the list using the name.
      *
      * @param p_continentName Value of the continent name.
+     * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if continent is not present.
      */
     public String remove(String p_continentName) throws EntityNotFoundException {
         Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);
         // We can check if the continent exists before filtering?
         // Filters the continent list using the continent name
-        ArrayList<Continent> l_filteredContinentList = (ArrayList<Continent>) d_mapEditorEngine.getContinentList().stream()
-                .filter(p_continent -> p_continent.equals(l_continent)
+        List<Continent> l_filteredContinentList = d_mapEditorEngine.getContinentList().stream()
+                .filter(p_continent -> !p_continent.equals(l_continent)
                 ).collect(Collectors.toList());
 
         d_mapEditorEngine.setContinentList(l_filteredContinentList);

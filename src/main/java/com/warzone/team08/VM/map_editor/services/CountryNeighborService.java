@@ -1,8 +1,8 @@
 package com.warzone.team08.VM.map_editor.services;
 
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.List;
@@ -31,6 +31,7 @@ public class CountryNeighborService {
      *
      * @param p_countryName         Value of the country name.
      * @param p_neighborCountryName Value of the neighbour country to be set.
+     * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
     public String add(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
@@ -44,6 +45,7 @@ public class CountryNeighborService {
      *
      * @param p_country         Value of the country entity which will have the neighbor country.
      * @param p_neighborCountry Value of the neighbour country entity.
+     * @return Value of response of the request.
      */
     public String add(Country p_country, Country p_neighborCountry) {
         p_country.addNeighbourCountry(p_neighborCountry);
@@ -55,6 +57,7 @@ public class CountryNeighborService {
      *
      * @param p_countryName         Value of the country name.
      * @param p_neighborCountryName Value of the neighbor country.
+     * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
     public String remove(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
@@ -69,6 +72,7 @@ public class CountryNeighborService {
      *
      * @param p_country         Value of the country entity.
      * @param p_neighborCountry Value of the neighbor country entity.
+     * @return Value of response of the request.
      */
     public String remove(Country p_country, Country p_neighborCountry) {
         List<Country> l_filteredCountry = p_country.getNeighbourCountries().stream().filter(i_p_country ->

@@ -1,9 +1,9 @@
 package com.warzone.team08.VM.map_editor.services;
 
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
@@ -42,10 +42,11 @@ public class CountryService {
      *
      * @param p_countryName   Value of the country name.
      * @param p_continentName Value of the continent to which this country will be added.
+     * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
     public String add(String p_countryName, String p_continentName) throws EntityNotFoundException {
-        Country l_country = new Country(d_mapEditorEngine.getCountryList().size()+1);
+        Country l_country = new Country(d_mapEditorEngine.getCountryList().size() + 1);
         l_country.setCountryName(p_countryName);
 
         Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);
@@ -64,6 +65,7 @@ public class CountryService {
      * @param p_countryId   Value of the country id.
      * @param p_countryName Value of the country name.
      * @param p_continentId Value of the continent to which this country will be added.
+     * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
     public String add(Integer p_countryId, String p_countryName, Integer p_continentId) throws EntityNotFoundException {
@@ -85,6 +87,7 @@ public class CountryService {
      * Removes the country from the list using the name.
      *
      * @param p_countryName Value of the country name.
+     * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
     public String remove(String p_countryName) throws EntityNotFoundException {
@@ -96,6 +99,6 @@ public class CountryService {
             l_neighborOfCountry.removeNeighbourCountry(l_country);
         }
 
-        return String.format("%s country added!", p_countryName);
+        return String.format("%s country removed!", p_countryName);
     }
 }
