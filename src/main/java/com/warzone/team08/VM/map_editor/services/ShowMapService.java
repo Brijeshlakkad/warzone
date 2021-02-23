@@ -21,14 +21,14 @@ public class ShowMapService implements SingleCommand {
     MapEditorEngine d_mapEditorEngine;
     ContinentRepository d_continentRepository;
     CountryRepository d_countryRepository;
-    List<Continent> d_continentSet;
-    List<Country> d_countrySet;
+    List<Continent> d_continentList;
+    List<Country> d_countryList;
     Map<String, List<String>> d_continentCountryMap;
 
     public ShowMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
-        d_continentSet = d_mapEditorEngine.getContinentList();
-        d_countrySet = d_mapEditorEngine.getCountryList();
+        d_continentList = d_mapEditorEngine.getContinentList();
+        d_countryList = d_mapEditorEngine.getCountryList();
         d_continentCountryMap = d_mapEditorEngine.getContinentCountryMap();
         d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
@@ -83,10 +83,10 @@ public class ShowMapService implements SingleCommand {
      */
     public String showNeighbourCountries() {
         LinkedList<String> l_countryNames = new LinkedList<>();
-        String[][] l_neighbourCountryMatrix = new String[d_countrySet.size() + 1][d_countrySet.size() + 1];
+        String[][] l_neighbourCountryMatrix = new String[d_countryList.size() + 1][d_countryList.size() + 1];
 
         //for adding all country names
-        for (Country l_country : d_countrySet) {
+        for (Country l_country : d_countryList) {
             l_countryNames.add(l_country.getCountryName());
         }
         l_neighbourCountryMatrix[0][0] = "COUNTRIES";
@@ -133,7 +133,11 @@ public class ShowMapService implements SingleCommand {
      * @return Value of string of continent and neighbour country information.
      */
     @Override
-    public String execute(List<String> p_commandValues) {
-        return this.showContinentCountryContent() + "\n" + this.showNeighbourCountries();
+    public String execute(List<String> p_commandValues) throws EntityNotFoundException {
+        if (!this.d_continentCountryMap.isEmpty() || !this.d_countryList.isEmpty()) {
+            return this.showContinentCountryContent() + "\n" + this.showNeighbourCountries();
+        } else {
+            throw new EntityNotFoundException("Please select file to show");
+        }
     }
 }

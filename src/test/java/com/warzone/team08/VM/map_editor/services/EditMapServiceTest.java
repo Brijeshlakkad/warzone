@@ -4,6 +4,7 @@ import com.warzone.team08.VM.exceptions.AbsentTagException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -32,6 +33,8 @@ public class EditMapServiceTest {
      */
     @Test(expected = AbsentTagException.class)
     public void testLoadCorruptedMap() throws Exception {
-        d_editMapService.handleLoadMap(d_testFilePath.getPath());
+        // In Windows, URL will create %20 for space. To avoid, use the below logic.
+        String l_url = new URI(d_testFilePath.getPath()).getPath();
+        d_editMapService.handleLoadMap(l_url);
     }
 }

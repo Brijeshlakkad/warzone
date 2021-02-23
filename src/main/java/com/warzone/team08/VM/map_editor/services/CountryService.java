@@ -1,9 +1,9 @@
 package com.warzone.team08.VM.map_editor.services;
 
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
@@ -45,7 +45,7 @@ public class CountryService {
      * @throws EntityNotFoundException Throws if the either country not found.
      */
     public String add(String p_countryName, String p_continentName) throws EntityNotFoundException {
-        Country l_country = new Country(d_mapEditorEngine.getCountryList().size()+1);
+        Country l_country = new Country(d_mapEditorEngine.getCountryList().size() + 1);
         l_country.setCountryName(p_countryName);
 
         Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);
@@ -96,6 +96,6 @@ public class CountryService {
             l_neighborOfCountry.removeNeighbourCountry(l_country);
         }
 
-        return String.format("%s country added!", p_countryName);
+        return String.format("%s country removed!", p_countryName);
     }
 }

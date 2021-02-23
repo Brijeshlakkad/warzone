@@ -2,7 +2,6 @@ package com.warzone.team08.VM.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.
@@ -11,14 +10,10 @@ import java.util.Set;
  * @author Brijesh Lakkad
  */
 public class Player {
-    private Set<Country> d_countrySet;
-    private List<Order> d_orders;
-    private int d_turnValue;
-    private List<Country> d_assignedCountries;
     private String d_name;
-    private int d_initialArmies;
+    private List<Order> d_orders;
+    private List<Country> d_assignedCountries;
     private int d_reinforcementArmies;
-    private boolean d_canReinforce;
     private int d_assignedCountryCount;
 
     public Player() {
@@ -60,42 +55,6 @@ public class Player {
      */
     public void setReinforcementArmies(int p_reinforcementArmies) {
         d_reinforcementArmies = p_reinforcementArmies;
-    }
-
-    /**
-     * getter method to check can reinforce.
-     *
-     * @return true, if player can reinforce armies, otherwise false.
-     */
-    public boolean isCanReinforce() {
-        return d_canReinforce;
-    }
-
-    /**
-     * Setter method to assign reinforce value.
-     *
-     * @param p_canReinforce true/false value according to player can reinforcement or not.
-     */
-    public void setCanReinforce(boolean p_canReinforce) {
-        d_canReinforce = p_canReinforce;
-    }
-
-    /**
-     * Getter method for initial armies.
-     *
-     * @return initial armies.
-     */
-    public int getInitialArmies() {
-        return d_initialArmies;
-    }
-
-    /**
-     * Setter method for initial armies.
-     *
-     * @param p_initialArmies initial armies.
-     */
-    public void setInitialArmies(int p_initialArmies) {
-        d_initialArmies = p_initialArmies;
     }
 
     /**
@@ -141,24 +100,6 @@ public class Player {
      */
     public void addAssignedCountries(Country p_assignedCountry) {
         d_assignedCountries.add(p_assignedCountry);
-    }
-
-    /**
-     * Gets the turn value of the particular player.
-     *
-     * @return turn value.
-     */
-    public int getTurnValue() {
-        return d_turnValue;
-    }
-
-    /**
-     * Sets the turn value of the particular player.
-     *
-     * @param p_turnValue turn value.
-     */
-    public void setTurnValue(int p_turnValue) {
-        d_turnValue = p_turnValue;
     }
 
     /**

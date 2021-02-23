@@ -1,8 +1,11 @@
 package com.warzone.team08.CLI;
 
 import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.enums.specifications.CommandSpecification;
+import com.warzone.team08.CLI.constants.layouts.UserCommandLayout;
 import com.warzone.team08.CLI.models.UserCommand;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -14,12 +17,24 @@ import java.util.Arrays;
  * @version 1.0
  */
 public class CommandLineInterfaceTest {
-    private final UserCommand d_userCommand;
+    private UserCommand d_userCommand;
 
-    public CommandLineInterfaceTest() {
-        d_userCommand = new UserCommand();
-        d_userCommand.setHeadCommand("editcontinent");
-        d_userCommand.setCommandSpecification(CommandSpecification.AT_LEAST_ONE);
+    /**
+     * Sets the application context
+     */
+    @BeforeClass
+    public static void beforeClass() {
+        Application l_application = new Application();
+        l_application.handleApplicationStartup();
+    }
+
+    @Before
+    public void before() {
+        MapEditorEngine.getInstance().initialise();
+
+        d_userCommand = new UserCommand(UserCommandLayout.matchAndGetUserCommand("editcontinent"));
+
+        // When user enters editcontinent -add continentID 12
         d_userCommand.pushUserArgument("add",
                 Arrays.asList("continentID", "12"));
 

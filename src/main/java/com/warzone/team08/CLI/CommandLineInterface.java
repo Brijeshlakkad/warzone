@@ -96,21 +96,26 @@ public class CommandLineInterface implements Runnable {
      */
     public void run() {
         while (Application.isRunning()) {
-            try {
-                if (this.getInteractionState() == UserInteractionState.WAIT) {
-                    try {
-                        // Takes user input and interprets it for further processing
-                        UserCommand l_userCommand = d_userCommandMapper.toUserCommand(this.waitForUserInput());
-                        // Takes action according to command instructions.
-                        this.takeAction(l_userCommand);
-                    } catch (IOException p_e) {
-                        p_e.printStackTrace();
+            synchronized (this) {
+                try {
+                    if (this.getInteractionState() == UserInteractionState.WAIT) {
+                        try {
+                            // Takes user input and interprets it for further processing
+                            UserCommand l_userCommand = d_userCommandMapper.toUserCommand(this.waitForUserInput());
+
+                            this.setInteractionState(UserInteractionState.IN_PROGRESS);
+
+                            // Takes action according to command instructions.
+                            this.takeAction(l_userCommand);
+                        } catch (IOException p_e) {
+                            p_e.printStackTrace();
+                        }
                     }
+                } catch (InvalidArgumentException | InvalidCommandException p_exception) {
+                    // Show exception message
+                    // In Graphical User Interface, we can show different modals respective to the exception.
+                    System.out.println(p_exception.getMessage());
                 }
-            } catch (InvalidArgumentException | InvalidCommandException p_exception) {
-                // Show exception message
-                // In Graphical User Interface, we can show different modals respective to the exception.
-                System.out.println(p_exception.getMessage());
             }
         }
     }
@@ -131,7 +136,8 @@ public class CommandLineInterface implements Runnable {
             Object l_object = l_class.getDeclaredConstructor().newInstance();
 
             // If the command does not have any argument keys
-            if (p_userCommand.getCommandSpecification() != CommandSpecification.AT_LEAST_ONE) {
+            if (p_userCommand.getPredefinedUserCommand().getCommandSpecification()
+                    != CommandSpecification.AT_LEAST_ONE) {
                 // Call the default method of the instance with the arguments
                 this.handleMethodInvocation(l_object, DEFAULT_METHOD_NAME, p_userCommand.getCommandValues(), true);
             } else {
@@ -206,6 +212,8 @@ public class CommandLineInterface implements Runnable {
         } catch (
                 Exception l_ignored) {
             // Ignore exception if the object does not represent the String value.
+        } finally {
+            this.setInteractionState(UserInteractionState.WAIT);
         }
     }
 }

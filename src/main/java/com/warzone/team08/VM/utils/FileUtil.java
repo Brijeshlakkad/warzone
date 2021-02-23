@@ -32,12 +32,16 @@ public class FileUtil {
      * @param p_filePath Value of the path to file.
      * @return Value of File object for the file given with path.
      * @throws InvalidInputException     Throws if the file does not exist.
-     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws ResourceNotFoundException Throws if file can not be created.
      */
-    public static File retrieveFile(String p_filePath) throws InvalidInputException, ResourceNotFoundException {
+    public static File retrieveFile(String p_filePath) throws ResourceNotFoundException, InvalidInputException {
         File l_file = new File(PathResolverUtil.resolveFilePath(p_filePath));
         String l_fileName = l_file.getName();
-        checkIfFileExists(l_file);
+        try {
+            l_file.createNewFile();
+        } catch (Exception p_exception) {
+            throw new ResourceNotFoundException("File can not be created");
+        }
 
         int l_index = l_fileName.lastIndexOf('.');
         if (l_index > 0) {
@@ -74,7 +78,10 @@ public class FileUtil {
      */
     public static void copy(Path p_source, Path p_dest) {
         try {
-            Files.copy(p_source, p_dest, StandardCopyOption.ATOMIC_MOVE);
+            // Ignore if the file already exists.
+            if (!(new File(p_dest.toUri().getPath()).exists())) {
+                Files.copy(p_source, p_dest, StandardCopyOption.REPLACE_EXISTING);
+            }
         } catch (Exception l_ignored) {
             // Ignore the exception while copying.
         }

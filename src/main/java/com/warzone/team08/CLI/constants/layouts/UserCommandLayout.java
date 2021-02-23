@@ -5,7 +5,7 @@ import com.warzone.team08.CLI.constants.enums.states.GameState;
 import com.warzone.team08.CLI.constants.layouts.commands.GamePlayCommandLayout;
 import com.warzone.team08.CLI.constants.layouts.commands.MapEditorCommandLayout;
 import com.warzone.team08.CLI.exceptions.InvalidArgumentException;
-import com.warzone.team08.CLI.models.UserCommand;
+import com.warzone.team08.CLI.models.PredefinedUserCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class UserCommandLayout {
      * @param p_headOfCommand head of the command which needs to be matched the list of predefined commands
      * @return Value of the user command which matched with p_headOfCommand
      */
-    public static UserCommand matchAndGetUserCommand(String p_headOfCommand) {
+    public static PredefinedUserCommand matchAndGetUserCommand(String p_headOfCommand) {
         // Gets the list of command from the layout, and then it is being streamed over to filter the list
         try {
             return d_gameStateListMap.get(Application.getGameState()).getUserCommands()

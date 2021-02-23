@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -25,14 +27,16 @@ public class ShowMapServiceTest {
      * Setting up the context by loading the map file before testing the class methods.
      */
     @BeforeClass
-    public static void beforeClass() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
+    public static void beforeClass() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
         EditMapService l_editMapService = new EditMapService();
         // Re-initialise map editor engine.
         MapEditorEngine.getInstance().initialise();
 
         URL d_testFilePath = ShowMapServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
         assertNotNull(d_testFilePath);
-        l_editMapService.handleLoadMap(d_testFilePath.getPath());
+        // In Windows, URL will create %20 for space. To avoid, use the below logic.
+        String l_url = new URI(d_testFilePath.getPath()).getPath();
+        l_editMapService.handleLoadMap(l_url);
     }
 
     /**

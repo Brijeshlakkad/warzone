@@ -1,12 +1,12 @@
 package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.InvalidMapException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.utils.FileUtil;
 
 import java.io.File;
@@ -42,7 +42,7 @@ public class SaveMapService implements SingleCommand {
      * @param p_fileObject File path to create if not exists and write into files.
      * @throws InvalidInputException Throws if the file write operation was not successful.
      */
-    private String saveToFile(File p_fileObject) throws InvalidInputException {
+    public String saveToFile(File p_fileObject) throws InvalidInputException {
         try (Writer l_writer = new FileWriter(p_fileObject)) {
             l_writer.write("[" + "Continents" + "]\n");
 
@@ -80,13 +80,12 @@ public class SaveMapService implements SingleCommand {
      *
      * @param p_commandValues Value of parameters entered by the user.
      * @return Value of string acknowledging user that the file is saved or not.
-     * @throws InvalidInputException Throws if the file write operation was not successful.
-     * @throws InvalidMapException   Throws if the map was not valid.
+     * @throws InvalidInputException     Throws if the file write operation was not successful.
+     * @throws InvalidMapException       Throws if the map was not valid.
+     * @throws ResourceNotFoundException Throws if the file resource not found or can not be created.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws InvalidInputException,
-            InvalidMapException,
-            ResourceNotFoundException {
+    public String execute(List<String> p_commandValues) throws InvalidInputException, InvalidMapException, ResourceNotFoundException {
         // Validates the map before saving the file.
         ValidateMapService d_validateObj = new ValidateMapService();
         d_validateObj.execute(null);
