@@ -2,7 +2,6 @@ package com.warzone.team08.VM.game_play;
 
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.GameLoopState;
-import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.constants.interfaces.Engine;
 import com.warzone.team08.VM.entities.Order;
 import com.warzone.team08.VM.entities.Player;
@@ -171,6 +170,9 @@ public class GamePlayEngine implements Engine {
                 }
             } catch (VMException p_vmException) {
                 VirtualMachine.getInstance().stderr(p_vmException.getMessage());
+            } finally {
+                // Set CLI#UserInteractionState to WAIT
+                VirtualMachine.getInstance().stdout("GAME_ENGINE_TO_WAIT");
             }
         });
         l_thread.start();
@@ -182,13 +184,15 @@ public class GamePlayEngine implements Engine {
      * @throws GameLoopIllegalStateException Throws if the engine tries to jump to illegal state.
      */
     public void onAssignReinforcementPhase() throws GameLoopIllegalStateException {
-        if (GamePlayEngine.getGameLoopState() != GameLoopState.NOT_AVAILABLE) {
+        if (GamePlayEngine.getGameLoopState() == GameLoopState.NOT_AVAILABLE ||
+                GamePlayEngine.getGameLoopState() == GameLoopState.EXECUTE_ORDER) {
+            GamePlayEngine.setGameLoopState(GameLoopState.ASSIGN_REINFORCEMENTS);
+
+            AssignReinforcementService l_reinforcementService = new AssignReinforcementService();
+            l_reinforcementService.execute();
+        } else {
             throw new GameLoopIllegalStateException("Illegal state transition!");
         }
-        GamePlayEngine.setGameLoopState(GameLoopState.ASSIGN_REINFORCEMENTS);
-
-        AssignReinforcementService l_reinforcementService = new AssignReinforcementService();
-        l_reinforcementService.execute();
     }
 
     /**
@@ -274,13 +278,9 @@ public class GamePlayEngine implements Engine {
             try {
                 // Get the next order
                 Order l_currentOrder = l_currentPlayer.nextOrder();
-
-                if (l_currentOrder.getOrderType() == OrderType.deploy) {
-                    l_currentPlayer.reduceReinforcementCount(l_currentOrder.getNumOfReinforcements());
-                    l_currentOrder.getCountry().setNumberOfArmies(l_currentOrder.getNumOfReinforcements());
-                }
-
-                l_currentPlayer.addExecutedOrder(l_currentOrder);
+                // TODO Show which player's order is being executed
+                // Use VirtualMachine.stdout()
+                l_currentOrder.execute();
                 // If the current player does not have any orders left.
                 if (!l_currentPlayer.hasOrders()) {
                     finishedExecutingOrders.add(l_currentPlayer);

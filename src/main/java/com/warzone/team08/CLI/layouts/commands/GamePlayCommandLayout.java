@@ -55,6 +55,7 @@ public class GamePlayCommandLayout implements CommandLayout {
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("assigncountries");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
+        l_userCommand.setGameEngineStartCommand(true);
         d_userCommands.add(l_userCommand);
 
         // Example of the command:

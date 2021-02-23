@@ -71,7 +71,6 @@ public class AssignReinforcementService {
     public void execute() {
         d_continentCountryList = d_mapEditorEngine.getContinentCountryMap();
 
-
         for (Player l_player : GamePlayEngine.getInstance().getPlayerList()) {
             int l_continentValue = 0;
             for (Continent l_continent : d_mapEditorEngine.getContinentList()) {
@@ -82,7 +81,7 @@ public class AssignReinforcementService {
 
                 l_continentValue = l_continentValue + l_returnContinentValue;
             }
-            //Method Call: This will add reinforcement Army to the player at each turn.
+            // Method Call: This will add reinforcement Army to the player at each turn.
             int l_returnReinforcementArmy = addReinforcementArmy(l_player, l_continentValue);
             l_player.setReinforcementCount(l_returnReinforcementArmy);
         }

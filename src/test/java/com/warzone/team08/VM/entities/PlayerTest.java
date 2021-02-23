@@ -59,7 +59,6 @@ public class PlayerTest {
         // Set the game state to GAME_PLAY
         Application.VIRTUAL_MACHINE().setGameStatePlaying();
 
-        // TODO Assign countries
         List<Country> l_assignedCountries = MapEditorEngine.getInstance().getCountryList().subList(0, Math.min(4, MapEditorEngine.getInstance().getCountryList().size()));
         d_player = new Player();
         d_player.setName("Brijesh");

@@ -135,7 +135,11 @@ public class Order {
     /**
      * Executes the order during <code>GameLoopState#EXECUTE_ORDER</code>
      */
-    void execute() {
-        // TODO DEEP PATEL
+    public void execute() {
+        if (this.getOrderType() == OrderType.deploy) {
+            this.getOwner().reduceReinforcementCount(this.getNumOfReinforcements());
+            this.getCountry().setNumberOfArmies(this.getNumOfReinforcements());
+        }
+        this.getOwner().addExecutedOrder(this);
     }
 }

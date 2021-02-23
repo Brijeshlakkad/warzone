@@ -1,8 +1,9 @@
-package com.warzone.team08.CLI;
+package com.warzone.team08.CLI.services;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.CLI.layouts.UserCommandLayout;
 import com.warzone.team08.CLI.models.UserCommand;
+import com.warzone.team08.CLI.services.RequestService;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,7 +17,7 @@ import java.util.Arrays;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public class CommandLineInterfaceTest {
+public class RequestServiceTest {
     private UserCommand d_userCommand;
 
     /**
@@ -48,8 +49,7 @@ public class CommandLineInterfaceTest {
     @Test(expected = Test.None.class /* no exception expected */)
     public void testTakeAction() {
         // If the method call completes without any raised exception, then the call was successful
-        CommandLineInterface l_commandLineInterface = new CommandLineInterface();
-        l_commandLineInterface.d_thread.start();
-        l_commandLineInterface.takeAction(d_userCommand);
+        RequestService l_requestService = new RequestService();
+        l_requestService.takeAction(d_userCommand);
     }
 }
