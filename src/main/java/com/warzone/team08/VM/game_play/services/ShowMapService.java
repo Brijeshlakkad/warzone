@@ -33,7 +33,7 @@ public class ShowMapService implements SingleCommand{
      * @param p_player
      */
     public String showPlayerContent(Player p_player){
-        ArrayList<Country> l_countryList=p_player.getAssignedCountries();
+        List<Country> l_countryList=p_player.getAssignedCountries();
         LinkedList<String> l_countryNames=new LinkedList<>();
         for(Country l_country:l_countryList){
             l_countryNames.add(l_country.getCountryName());

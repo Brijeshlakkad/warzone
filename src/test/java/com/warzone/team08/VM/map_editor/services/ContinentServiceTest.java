@@ -16,23 +16,21 @@ import static org.junit.Assert.assertNotNull;
  * @author Brijesh Lakkad
  */
 public class ContinentServiceTest {
-    private static ContinentService d_continentService;
+    private static ContinentService d_ContinentService;
 
     /**
      * Runs before the test case class runs; Initializes different objects required to perform test.
      */
     @BeforeClass
     public static void beforeClass() {
-        d_continentService = new ContinentService();
+        d_ContinentService = new ContinentService();
     }
 
     /**
      * Re-initializes the continent list before test case run.
      */
     @Before
-    public void beforeTestCase() {
-        MapEditorEngine.getInstance().initialise();
-    }
+    public void beforeTestCase() { MapEditorEngine.getInstance().initialise();}
 
     /**
      * Tests whether the wrong continent value is being shown or not.
@@ -41,7 +39,7 @@ public class ContinentServiceTest {
      */
     @Test(expected = InvalidInputException.class)
     public void testWrongContinentValue() throws InvalidInputException {
-        d_continentService.add("Asia", "StringValue");
+        d_ContinentService.add("Asia", "StringValue");
     }
 
     /**
@@ -52,10 +50,10 @@ public class ContinentServiceTest {
      */
     @Test(expected = Test.None.class)
     public void testAddAndRemoveContinent() throws EntityNotFoundException, InvalidInputException {
-        String l_responseOfAddOp = d_continentService.add("Asia", "10");
+        String l_responseOfAddOp = d_ContinentService.add("Asia", "10");
         assertNotNull(l_responseOfAddOp);
 
-        String l_responseOfRemoveOp = d_continentService.remove("Asia");
+        String l_responseOfRemoveOp = d_ContinentService.remove("Asia");
         assertNotNull(l_responseOfRemoveOp);
     }
 }

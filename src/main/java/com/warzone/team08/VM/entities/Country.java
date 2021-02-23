@@ -18,6 +18,7 @@ public class Country {
     private String d_countryName;
     private Continent d_continent;
     private List<Country> d_neighbourCountries;
+    private Player d_ownedBy;
 
     /**
      * Used to keep the track of unique IDs for the continent.
@@ -122,6 +123,24 @@ public class Country {
      */
     public static void resetSerialNumber() {
         serialNumber = 0;
+    }
+
+    /**
+     * Getter method to determine country owner.
+     *
+     * @return country owner object.
+     */
+    public Player getOwnedBy() {
+        return d_ownedBy;
+    }
+
+    /**
+     * Setter method for country owner.
+     *
+     * @param p_ownedBy Country owner object.
+     */
+    public void setOwnedBy(Player p_ownedBy) {
+        d_ownedBy = p_ownedBy;
     }
 
     /**
