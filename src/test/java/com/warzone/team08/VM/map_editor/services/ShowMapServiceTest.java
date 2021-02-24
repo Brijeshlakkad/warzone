@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * This test class tests the ShowSelectedMap class functions
+ * This test class tests the ShowMapService class functions
  *
  * @author MILESH
  * @author Brijesh Lakkad

@@ -1,7 +1,7 @@
 package com.warzone.team08.CLI.constants;
 
 import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.layouts.UserCommandLayout;
+import com.warzone.team08.CLI.layouts.UserCommandLayout;
 import org.junit.Before;
 import org.junit.Test;
 

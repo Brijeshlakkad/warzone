@@ -1,7 +1,7 @@
 package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.enums.states.GameState;
+import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;

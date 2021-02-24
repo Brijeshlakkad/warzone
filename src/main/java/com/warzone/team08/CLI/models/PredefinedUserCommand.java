@@ -1,6 +1,6 @@
 package com.warzone.team08.CLI.models;
 
-import com.warzone.team08.CLI.constants.enums.specifications.CommandSpecification;
+import com.warzone.team08.CLI.constants.specifications.CommandSpecification;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,16 @@ public class PredefinedUserCommand {
      * Includes the command specification
      */
     private CommandSpecification d_commandSpecification;
+
+    /**
+     * Command represents that <code>GameEngine</code> is had requested CLI for user input.
+     */
+    private boolean d_isGameEngineCommand = false;
+
+    /**
+     * This command represents that <code>GameEngine</code> will start.
+     */
+    private boolean d_isGameEngineStartCommand = false;
 
     public PredefinedUserCommand() {
         // Initialise references
@@ -128,6 +138,44 @@ public class PredefinedUserCommand {
      */
     public CommandSpecification getCommandSpecification() {
         return d_commandSpecification;
+    }
+
+    /**
+     * <code>VM#GameEngine</code> needs input from user.
+     *
+     * @return True if the <code>VM#GameEngine</code> had requested.
+     */
+    public boolean isGameEngineCommand() {
+        return d_isGameEngineCommand;
+    }
+
+    /**
+     * Sets if the <code>VM#GameEngine</code> can ask input from user.
+     *
+     * @param p_gameEngineCommand Value of true if only <code>VM#GameEngine</code> can ask for this type of user
+     *                            command.
+     */
+    public void setGameEngineCommand(boolean p_gameEngineCommand) {
+        d_isGameEngineCommand = p_gameEngineCommand;
+    }
+
+    /**
+     * <code>VM#GameEngine</code> needs input from user.
+     *
+     * @return True if the <code>VM#GameEngine</code> had requested.
+     */
+    public boolean isGameEngineStartCommand() {
+        return d_isGameEngineStartCommand;
+    }
+
+    /**
+     * Sets if the <code>VM#GameEngine</code> can ask input from user.
+     *
+     * @param p_gameEngineStartCommand Value of true if only <code>VM#GameEngine</code> can ask for this type of user
+     *                                 command.
+     */
+    public void setGameEngineStartCommand(boolean p_gameEngineStartCommand) {
+        d_isGameEngineStartCommand = p_gameEngineStartCommand;
     }
 
     /**

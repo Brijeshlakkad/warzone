@@ -8,7 +8,10 @@ import com.warzone.team08.VM.exceptions.InvalidMapException;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * This class contains methods for the validation of the map and handles `validatemap` user command.
@@ -38,9 +41,9 @@ public class ValidateMapService implements SingleCommand {
             String l_continentName;
             List<String> l_countriesIntoContinent;
             CountryRepository l_countryRepository = new CountryRepository();
-            Country l_countryName = null;
             int l_totalContinent = d_mapEditorEngine.getContinentList().size();
             int l_compareTotalContinent = 0;
+            Country l_foundCountry = null;
 
             Map<String, List<String>> l_continentCountryMap = d_mapEditorEngine.getContinentCountryMap();
             for (Map.Entry<String, List<String>> entry : l_continentCountryMap.entrySet()) {
@@ -49,14 +52,17 @@ public class ValidateMapService implements SingleCommand {
                 l_countriesIntoContinent = entry.getValue();
                 int l_otherContinentNeighbour = 0;
 
-                //Checks that atleast 1 neighbour from other continent
+                //Checks that at least 1 neighbour from other continent
                 for (String l_countryNameCompare : l_countriesIntoContinent) {
                     try {
-                        l_countryName = l_countryRepository.findFirstByCountryName(l_countryNameCompare);
+                        l_foundCountry = l_countryRepository.findFirstByCountryName(l_countryNameCompare);
                     } catch (EntityNotFoundException e) {
                         e.printStackTrace();
                     }
-                    List<Country> l_neighbourCountries = l_countryName.getNeighbourCountries();
+                    if (l_foundCountry == null) {
+                        continue;
+                    }
+                    List<Country> l_neighbourCountries = l_foundCountry.getNeighbourCountries();
 
                     for (Country l_country : l_neighbourCountries) {
                         Continent l_continent = l_country.getContinent();

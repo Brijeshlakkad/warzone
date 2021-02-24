@@ -1,7 +1,7 @@
 package com.warzone.team08.CLI.mappers;
 
 import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.layouts.UserCommandLayout;
+import com.warzone.team08.CLI.layouts.UserCommandLayout;
 import com.warzone.team08.CLI.models.UserCommand;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;

@@ -16,4 +16,9 @@ public interface Engine {
      * Initialise the engine and all its data members.
      */
     void initialise();
+
+    /**
+     * Stop and exit from all the threads  of <code>Engine</code>.
+     */
+    void shutdown();
 }

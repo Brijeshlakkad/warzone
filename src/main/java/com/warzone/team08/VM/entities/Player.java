@@ -1,8 +1,18 @@
 package com.warzone.team08.VM.entities;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.warzone.team08.CLI.exceptions.InvalidCommandException;
+import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.OrderOutOfBoundException;
+import com.warzone.team08.VM.exceptions.ReinforcementOutOfBoundException;
+import com.warzone.team08.VM.responses.CommandResponse;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.
@@ -11,68 +21,57 @@ import java.util.Set;
  * @author Brijesh Lakkad
  */
 public class Player {
-    private List<Order> d_orders = new ArrayList<>();
-    private int d_turnValue;
-    private ArrayList<Country> d_assignedCountries;
+    /**
+     * Represents the unique name of each player.
+     */
     private String d_name;
-    private int d_initialArmies;
-    private int d_reinforcementArmies;
+    /**
+     * List of orders issued by the player.
+     */
+    private final List<Order> d_orders;
+    /**
+     * List of orders executed by the <code>GameEngine</code>.
+     */
+    private final List<Order> d_executedOrders;
+    private List<Country> d_assignedCountries;
+    private int d_reinforcementsCount;
+    private int d_remainingReinforcementCount;
     private boolean d_canReinforce;
+    private int d_assignedCountryCount;
+
+    public Player() {
+        d_orders = new ArrayList<>();
+        d_executedOrders = new ArrayList<>();
+        d_assignedCountries = new ArrayList<>();
+        d_reinforcementsCount = 0;
+        d_remainingReinforcementCount = 0;
+        d_canReinforce = false;
+        d_assignedCountryCount = 0;
+    }
 
     /**
      * Getter method for reinforcement armies.
      *
      * @return reinforcement armies.
      */
-    public int getReinforcementArmies() {
-        return d_reinforcementArmies;
+    public int getReinforcementCount() {
+        return d_reinforcementsCount;
     }
 
     /**
      * Setter method to assign reinforce armies.
      *
-     * @param p_reinforcementArmies reinforcement armies.
+     * @param p_reinforcementsCount reinforcement armies.
      */
-    public void setReinforcementArmies(int p_reinforcementArmies) {
-        d_reinforcementArmies = p_reinforcementArmies;
-    }
-
-    /**
-     * getter method to check can reinforce.
-     *
-     * @return true, if player can reinforce armies, otherwise false.
-     */
-    public boolean isCanReinforce() {
-        return d_canReinforce;
-    }
-
-    /**
-     * Setter method to assign reinforce value.
-     *
-     * @param p_canReinforce true/false value according to player can reinforcement or not.
-     */
-    public void setCanReinforce(boolean p_canReinforce) {
-        d_canReinforce = p_canReinforce;
-    }
-
-    /**
-     * Getter method for initial armies.
-     * @return initial armies.
-     */
-    public int getInitialArmies() {
-        return d_initialArmies;
-    }
-
-    /**
-     * Setter method for initial armies.
-     * @param p_initialArmies initial armies.
-     */
-    public void setInitialArmies(int p_initialArmies) {
-        d_initialArmies = p_initialArmies;
+    public void setReinforcementCount(int p_reinforcementsCount) {
+        d_reinforcementsCount = p_reinforcementsCount;
+        // Sets the count for remaining number of reinforcements as well.
+        d_remainingReinforcementCount = p_reinforcementsCount;
     }
 
     /**
      * Getter method for player name.
+     *
      * @return player name.
      */
     public String getName() {
@@ -81,6 +80,7 @@ public class Player {
 
     /**
      * Setter method for player name.
+     *
      * @param p_name player name.
      */
     public void setName(String p_name) {
@@ -88,55 +88,193 @@ public class Player {
     }
 
     /**
-     * getter method to assign countries.
+     * Setter method to assign countries.
      *
      * @return list of assigned countries.
      */
-    public ArrayList<Country> getAssignedCountries() {
+    public List<Country> getAssignedCountries() {
         return d_assignedCountries;
     }
 
     /**
-     * setter method to assign countries.
+     * Setter method to assign countries.
      *
      * @param p_assignedCountries list of assigned countries.
      */
-    public void setAssignedCountries(ArrayList<Country> p_assignedCountries) {
+    public void setAssignedCountries(List<Country> p_assignedCountries) {
         d_assignedCountries = p_assignedCountries;
     }
 
     /**
-     * Gets the turn value of the particular player.
+     * Adds assigned country to the list.
      *
-     * @return turn value.
+     * @param p_assignedCountry Value of assigned countries.
      */
-    public int getTurnValue() {
-        return d_turnValue;
+    public void addAssignedCountries(Country p_assignedCountry) {
+        d_assignedCountries.add(p_assignedCountry);
     }
 
     /**
-     * Sets the turn value of the particular player.
+     * Gets the number of assigned countries for this player.
      *
-     * @param p_turnValue turn value.
+     * @return Value of the count.
      */
-    public void setTurnValue(int p_turnValue) {
-        d_turnValue = p_turnValue;
+    public int getAssignedCountryCount() {
+        return d_assignedCountryCount;
+    }
+
+    /**
+     * Sets the number of countries that will be assigned to this player.
+     *
+     * @param p_assignedCountryCount Value of the count to be set.
+     */
+    public void setAssignedCountryCount(int p_assignedCountryCount) {
+        d_assignedCountryCount = p_assignedCountryCount;
+    }
+
+    /**
+     * Adds the order to the list of player's orders.
+     *
+     * @param p_order Order to be added.
+     */
+    public void addOrder(Order p_order) {
+        d_orders.add(p_order);
+    }
+
+    /**
+     * Gets the number of remaining reinforcements.
+     *
+     * @return Total number of remaining reinforcements.
+     */
+    public int getRemainingReinforcementCount() {
+        return d_remainingReinforcementCount;
+    }
+
+    /**
+     * Reduces the reinforcements.
+     *
+     * @param d_usedReinforcementCount Number of armies the player used.
+     */
+    public void reduceReinforcementCount(int d_usedReinforcementCount) {
+        this.d_remainingReinforcementCount -= d_usedReinforcementCount;
+    }
+
+    /**
+     * Calculates the number of remaining reinforcements for the player.
+     * <p>Shows error if the player orders more than
+     * reinforcements than in possession. This method also sets the remaining number of reinforcements left for the
+     * future use.
+     *
+     * @param p_usedReinforcementCount Total number of used reinforcements.
+     * @return True if the player can reinforce the armies; false otherwise.
+     */
+    public boolean canPlayerReinforce(int p_usedReinforcementCount) {
+        if (this.getRemainingReinforcementCount() == 0) {
+            this.setCanReinforce(false);
+            return false;
+        }
+        int l_remainingReinforcementCount = this.getRemainingReinforcementCount() - p_usedReinforcementCount;
+        if (l_remainingReinforcementCount < 0) {
+            this.setCanReinforce(false);
+            return false;
+        }
+        this.d_remainingReinforcementCount = l_remainingReinforcementCount;
+        // If the remaining reinforcement is zero, set d_canReinforce to false.
+        this.setCanReinforce(d_remainingReinforcementCount > 0);
+        return true;
+    }
+
+    /**
+     * If player can issue the order or not.
+     *
+     * @return True if the player can issue the order.
+     */
+    public boolean isCanReinforce() {
+        return d_canReinforce;
+    }
+
+    /**
+     * Sets the value for indicating that if player can issue the order.
+     *
+     * @param p_canReinforce Value of true if the player can issue the order.
+     */
+    public void setCanReinforce(boolean p_canReinforce) {
+        d_canReinforce = p_canReinforce;
     }
 
     /**
      * Gets order from the user and stores the order for the player.
+     *
+     * @throws ReinforcementOutOfBoundException If the player doesn't have enough reinforcement to issue the order.
+     * @throws InvalidCommandException          If there is an error while preprocessing the user command.
+     * @throws EntityNotFoundException          If the target country not found.
+     * @throws ExecutionException               If any error while processing concurrent thread.
+     * @throws InterruptedException             If scheduled thread was interrupted.
      */
-    void issueOrder() {
-        // TODO Brijesh Lakkad Get an order from user
+    public void issueOrder() throws
+            ReinforcementOutOfBoundException, InvalidCommandException, EntityNotFoundException, ExecutionException, InterruptedException {
+        // Requests user interface for input from user.
+        String l_responseVal = "";
+        do {
+            Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Player: %s--------Issue Order:", this.d_name));
+            l_responseVal = l_responseOfFuture.get();
+        } while (l_responseVal.isEmpty());
+        try {
+            ObjectMapper l_objectMapper = new ObjectMapper();
+            CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
+            Order l_newOrder = Order.map(l_commandResponse);
+            if (this.canPlayerReinforce(l_newOrder.getNumOfReinforcements())) {
+                l_newOrder.setOwner(this);
+                this.addOrder(l_newOrder);
+            } else {
+                if (this.getRemainingReinforcementCount() == 0) {
+                    this.setCanReinforce(false);
+                }
+                throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
+            }
+        } catch (IOException p_ioException) {
+            throw new InvalidCommandException("Unrecognised input!");
+        }
+    }
+
+    /**
+     * Adds the order to the list of player's executed orders.
+     *
+     * @param p_executedOrder Executed order to be added.
+     */
+    public void addExecutedOrder(Order p_executedOrder) {
+        d_executedOrders.add(p_executedOrder);
+    }
+
+    /**
+     * Gets the list of executed orders.
+     *
+     * @return Value of the list of orders.
+     */
+    public List<Order> getExecutedOrders() {
+        return d_executedOrders;
+    }
+
+    /**
+     * Checks if the player has any order for execution.
+     *
+     * @return Value of true if the player has one or more orders.
+     */
+    public boolean hasOrders() {
+        return d_orders.size() > 0;
     }
 
     /**
      * Gets the first order from the order list and removes the order from the list before returning it.
      *
      * @return Value of order to be executed.
+     * @throws OrderOutOfBoundException If the player does not have any order.
      */
-    Order nextOrder() {
-        // TODO Deep Patel get the order for execution
-        return new Order();
+    public Order nextOrder() throws OrderOutOfBoundException {
+        if (this.hasOrders())
+            return d_orders.remove(0);
+        else {
+            throw new OrderOutOfBoundException("No order left for execution.");
+        }
     }
 }

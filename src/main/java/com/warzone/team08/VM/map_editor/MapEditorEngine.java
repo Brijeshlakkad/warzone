@@ -136,4 +136,11 @@ public class MapEditorEngine implements Engine {
     public void addContinent(Continent p_continent) {
         d_continentList.add(p_continent);
     }
+
+    /**
+     * {@inheritDoc} Shuts the <code>MapEditorEngine</code>.
+     */
+    public void shutdown() {
+        // No threads created by MapEditorEngine.
+    }
 }

@@ -68,4 +68,17 @@ public class CountryRepository {
                 !p_l_country.equals(p_country) && p_l_country.getNeighbourCountries().contains(p_country)
         ).collect(Collectors.toList());
     }
+
+    /**
+     * Finds the neighboring country of the given country.
+     *
+     * @param p_country Country object
+     * @return List of country object.
+     * @throws IllegalStateException Throws if returns an empty list.
+     */
+    public List<Country> findCountryNeighborsAndNotOwned(Country p_country) throws IllegalStateException {
+        return p_country.getNeighbourCountries().stream().filter((p_l_country) ->
+                p_l_country.getOwnedBy() == null
+        ).collect(Collectors.toList());
+    }
 }

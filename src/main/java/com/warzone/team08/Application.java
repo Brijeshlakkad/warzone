@@ -1,7 +1,7 @@
 package com.warzone.team08;
 
 import com.warzone.team08.CLI.CommandLineInterface;
-import com.warzone.team08.CLI.constants.enums.states.GameState;
+import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.utils.FileUtil;
 import com.warzone.team08.VM.utils.PathResolverUtil;
@@ -36,13 +36,16 @@ public class Application {
     private static VirtualMachine d_virtualMachine;
 
     public Application() {
-        // Starts the runtime engine (GameEngine) for the game.
-        d_virtualMachine = new VirtualMachine();
-
         // Creates interface for user interaction.
         // Just a local variable as the instance is not being used/shared with any other class.
-        // An instance of the virtual machine can be passed to the user interface?
         d_commandLineInterface = new CommandLineInterface();
+
+        // Starts the runtime engine for the game.
+        // Virtual Machine will have the UI middleware.
+        d_virtualMachine = VirtualMachine.newInstance();
+
+        // Attaches the CLI (stub) to VM.
+        d_virtualMachine.attachUIMiddleware(d_commandLineInterface);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -132,5 +135,7 @@ public class Application {
      */
     public static void exit() {
         Application.setIsRunning(false);
+        VirtualMachine.exit();
+        System.exit(0);
     }
 }

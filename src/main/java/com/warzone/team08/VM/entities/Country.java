@@ -18,6 +18,8 @@ public class Country {
     private String d_countryName;
     private Continent d_continent;
     private List<Country> d_neighbourCountries;
+    private Player d_ownedBy;
+    private int d_numberOfArmies;
 
     /**
      * Used to keep the track of unique IDs for the continent.
@@ -125,11 +127,49 @@ public class Country {
     }
 
     /**
+     * Getter method to determine country owner.
+     *
+     * @return country owner object.
+     */
+    public Player getOwnedBy() {
+        return d_ownedBy;
+    }
+
+    /**
+     * Setter method for country owner.
+     *
+     * @param p_ownedBy Country owner object.
+     */
+    public void setOwnedBy(Player p_ownedBy) {
+        d_ownedBy = p_ownedBy;
+    }
+
+    /**
+     * Gets the number of armies that are placed on this country by the player <code>getOwnedBy</code>
+     *
+     * @return Value of the count of armies.
+     */
+    public int getNumberOfArmies() {
+        return d_numberOfArmies;
+    }
+
+    /**
+     * Sets the number of armies for this country placed by the player.
+     *
+     * @param p_numberOfArmies Values of the count of armies.
+     */
+    public void setNumberOfArmies(int p_numberOfArmies) {
+        d_numberOfArmies = p_numberOfArmies;
+    }
+
+    /**
      * Checks if both objects are the same using both the country and continent of the object.
      *
      * @param l_p_o Value of the second element to be checked with.
      * @return True if the both are same.
      */
+
+
     @Override
     public boolean equals(Object l_p_o) {
         if (this == l_p_o) return true;

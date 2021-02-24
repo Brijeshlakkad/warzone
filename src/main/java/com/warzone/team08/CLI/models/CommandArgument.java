@@ -1,6 +1,6 @@
 package com.warzone.team08.CLI.models;
 
-import com.warzone.team08.CLI.constants.enums.specifications.ArgumentSpecification;
+import com.warzone.team08.CLI.constants.specifications.ArgumentSpecification;
 
 import java.util.Objects;
 

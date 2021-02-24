@@ -1,10 +1,10 @@
 package com.warzone.team08.CLI.mappers;
 
-import com.warzone.team08.CLI.constants.enums.specifications.ArgumentSpecification;
-import com.warzone.team08.CLI.constants.enums.specifications.CommandSpecification;
-import com.warzone.team08.CLI.constants.layouts.UserCommandLayout;
+import com.warzone.team08.CLI.constants.specifications.ArgumentSpecification;
+import com.warzone.team08.CLI.constants.specifications.CommandSpecification;
 import com.warzone.team08.CLI.exceptions.InvalidArgumentException;
 import com.warzone.team08.CLI.exceptions.InvalidCommandException;
+import com.warzone.team08.CLI.layouts.UserCommandLayout;
 import com.warzone.team08.CLI.models.CommandArgument;
 import com.warzone.team08.CLI.models.PredefinedUserCommand;
 import com.warzone.team08.CLI.models.UserCommand;
