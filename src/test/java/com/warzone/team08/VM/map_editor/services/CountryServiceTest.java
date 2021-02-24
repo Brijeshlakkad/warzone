@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class CountryServiceTest {
      * @throws EntityNotFoundException    Throws if entity not found.
      */
     @Before
-    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
+    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException{
         d_editMapService = new EditMapService();
         d_testFilePath = getClass().getClassLoader().getResource("test_map_files/test_map.map");
         d_editMapService.handleLoadMap(d_testFilePath.getPath());

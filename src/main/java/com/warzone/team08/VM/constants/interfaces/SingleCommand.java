@@ -2,6 +2,7 @@ package com.warzone.team08.VM.constants.interfaces;
 
 import com.warzone.team08.VM.exceptions.VMException;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -21,5 +22,5 @@ public interface SingleCommand {
      * @return Value of the string to be shown to the user.
      * @throws VMException Throws the base class if there is invalid input or IOException
      */
-    String execute(List<String> p_commandValues) throws VMException;
+    String execute(List<String> p_commandValues) throws VMException, IOException;
 }

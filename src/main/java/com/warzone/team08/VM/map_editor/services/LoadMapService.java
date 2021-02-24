@@ -4,6 +4,7 @@ import com.warzone.team08.Application;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.exceptions.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class LoadMapService implements SingleCommand {
             ResourceNotFoundException,
             InvalidInputException,
             AbsentTagException,
-            EntityNotFoundException {
+            EntityNotFoundException, IOException {
         EditMapService l_editMapService = new EditMapService();
         String response = l_editMapService.execute(p_commandValues);
         /*

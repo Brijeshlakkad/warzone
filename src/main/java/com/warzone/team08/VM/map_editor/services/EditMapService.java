@@ -7,9 +7,11 @@ import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
+import com.warzone.team08.VM.utils.FileUtil;
 import com.warzone.team08.VM.utils.PathResolverUtil;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,33 +65,39 @@ public class EditMapService implements SingleCommand {
             ResourceNotFoundException,
             InvalidInputException,
             EntityNotFoundException {
-        // (Re) initialise engine.
-        d_mapEditorEngine.initialise();
-        try {
-            // Will throw exception if the file path is not valid
-            BufferedReader l_reader = new BufferedReader(new FileReader(p_filePath));
+        if (new File(p_filePath).exists() && FileUtil.checksIfFileHasRequiredExtension(p_filePath)) {
+            // (Re) initialise engine.
+            d_mapEditorEngine.initialise();
+            try {
+                // Will throw exception if the file path is not valid
+                BufferedReader l_reader = new BufferedReader(new FileReader(p_filePath));
 
-            // The value of the current line
-            String l_currentLine;
-            while ((l_currentLine = l_reader.readLine()) != null) {
-                if (l_currentLine.startsWith("[")) {
-                    // Parsing the [continents] portion of the map file
-                    if (this.doLineHasModelData(l_currentLine, MapModelType.CONTINENT)) {
-                        readContinents(l_reader);
-                    } else if (this.doLineHasModelData(l_currentLine, MapModelType.COUNTRY)) {
-                        // Parsing the [countries] portion of the map file
-                        readCountries(l_reader);
-                    } else if (this.doLineHasModelData(l_currentLine, MapModelType.BORDER)) {
-                        // Parsing the [borders] portion of the map file
-                        readNeighbours(l_reader);
+                // The value of the current line
+                String l_currentLine;
+                while ((l_currentLine = l_reader.readLine()) != null) {
+                    if (l_currentLine.startsWith("[")) {
+                        // Parsing the [continents] portion of the map file
+                        if (this.doLineHasModelData(l_currentLine, MapModelType.CONTINENT)) {
+                            readContinents(l_reader);
+                        } else if (this.doLineHasModelData(l_currentLine, MapModelType.COUNTRY)) {
+                            // Parsing the [countries] portion of the map file
+                            readCountries(l_reader);
+                        } else if (this.doLineHasModelData(l_currentLine, MapModelType.BORDER)) {
+                            // Parsing the [borders] portion of the map file
+                            readNeighbours(l_reader);
+                        }
                     }
                 }
+                return "File loaded successfully!";
+            } catch (IOException p_ioException) {
+                throw new ResourceNotFoundException("File not found!");
             }
-            return "File loaded successfully!";
-        } catch (IOException p_ioException) {
-            throw new ResourceNotFoundException("File not found!");
+        } else {
+            FileUtil.createFileIfNotExists(p_filePath);
+            return "New file created!";
         }
     }
+
 
     /**
      * This method is used to read continent data from map file. It reads the continent name, control value, and color
@@ -251,7 +259,7 @@ public class EditMapService implements SingleCommand {
             ResourceNotFoundException,
             InvalidInputException,
             AbsentTagException,
-            EntityNotFoundException {
+            EntityNotFoundException, IOException {
         if (!p_commandValues.isEmpty()) {
             // Resolve file path using absolute path of user data directory.
             String resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));

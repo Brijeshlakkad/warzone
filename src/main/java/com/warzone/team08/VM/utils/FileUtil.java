@@ -43,17 +43,49 @@ public class FileUtil {
             throw new ResourceNotFoundException("File can not be created");
         }
 
+        try {
+            if (checksIfFileHasRequiredExtension(l_fileName)) {
+                return l_file;
+            }
+        } catch (InvalidInputException p_invalidInputException) {
+            throw p_invalidInputException;
+        }
+
+        throw new InvalidInputException("Invalid file!");
+    }
+
+    /**
+     * Checks whether file has required extension or not.
+     * @param l_fileName name of a file
+     * @return True if file has requires argument; otherwise false.
+     * @throws InvalidInputException Throws if filename is invalid.
+     */
+    public static boolean checksIfFileHasRequiredExtension(String l_fileName) throws InvalidInputException {
         int l_index = l_fileName.lastIndexOf('.');
         if (l_index > 0) {
             String l_extension = l_fileName.substring(l_index + 1);
             if (!l_extension.equalsIgnoreCase(FileUtil.getFileExtension())) {
                 throw new InvalidInputException("File doesn't exist!");
-            } else {
-                return l_file;
             }
-        } else {
-            throw new InvalidInputException("File must have an extension!");
+            return true;
         }
+        throw new InvalidInputException("File must have an extension!");
+    }
+
+    /**
+     * Creates a file if it does not exist.
+     * @param p_filePath file path
+     * @return File object of new file
+     * @throws ResourceNotFoundException Throws if file not found
+     */
+    public static File createFileIfNotExists(String p_filePath) throws ResourceNotFoundException {
+        File l_file = new File(PathResolverUtil.resolveFilePath(p_filePath));
+        try {
+            l_file.createNewFile();
+        } catch (Exception p_exception) {
+            throw new ResourceNotFoundException("File can not be created!");
+        }
+        return l_file;
     }
 
     /**

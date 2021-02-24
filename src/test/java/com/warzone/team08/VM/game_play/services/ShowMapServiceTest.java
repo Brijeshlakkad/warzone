@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -27,35 +28,47 @@ public class ShowMapServiceTest {
     ShowMapService d_showMapService;
     DistributeCountriesService d_distributeCountriesService;
     PlayerService d_playerService;
-    GamePlayEngine d_gamePlayEngine;
+    static GamePlayEngine d_GamePlayEngine;
     List<Player> d_playerList;
+    static EditMapService d_editMapService;
 
     /**
      * Setting up the context by loading the map file before testing the class methods.
+     * @throws URISyntaxException Throws if file name could not be parsed as a URI reference.
+     * @throws AbsentTagException Throws if tag is absent in .map file.
+     * @throws InvalidMapException Throws if map file is invalid.
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException Throws if provided argument and its value(s) are not valid.
+     * @throws EntityNotFoundException Throws if entity not found while searching.
+     * @throws IOException IOException
      */
     @BeforeClass
-    public static void beforeClass() throws URISyntaxException, AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
-        EditMapService l_editMapService = new EditMapService();
+    public static void beforeClass() throws URISyntaxException, AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, IOException {
+         d_editMapService = new EditMapService();
+
         MapEditorEngine.getInstance().initialise();
         URL d_testFilePath = ShowMapServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
         assertNotNull(d_testFilePath);
         String l_url = new URI(d_testFilePath.getPath()).getPath();
-        l_editMapService.handleLoadMap(l_url);
+        d_editMapService.handleLoadMap(l_url);
+        d_GamePlayEngine =GamePlayEngine.getInstance();
     }
 
     /**
      * This method will initialise the ShowMapService object before running each test cases.
+     * @throws InvalidInputException Throws if provided argument and its value(s) are not valid.
+     * @throws EntityNotFoundException Throws if entity not found while searching.
      */
     @Before
-    public void before() throws InvalidInputException {
+    public void before() throws InvalidInputException, EntityNotFoundException {
         d_showMapService = new ShowMapService();
         d_playerService = new PlayerService();
-        d_gamePlayEngine = GamePlayEngine.getInstance();
+        d_GamePlayEngine.initialise();
         d_distributeCountriesService = new DistributeCountriesService();
         d_playerService.add("xyz");
         d_playerService.add("abc");
         d_distributeCountriesService.distributeCountries();
-        d_playerList = d_gamePlayEngine.getPlayerList();
+        d_playerList = d_GamePlayEngine.getPlayerList();
     }
 
     /**

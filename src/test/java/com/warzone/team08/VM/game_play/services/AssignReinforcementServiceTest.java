@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -41,9 +42,16 @@ public class AssignReinforcementServiceTest {
 
     /**
      * Setting up the required Objects before test run.
+     *
+     * @throws InvalidInputException Throws if provided argument and its value(s) are not valid.
+     * @throws AbsentTagException Throws if tag is absent in .map file.
+     * @throws InvalidMapException Throws if map file is invalid.
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws EntityNotFoundException Throws if entity not found while searching.
+     * @throws IOException IOException
      */
     @Before
-    public void before() throws InvalidInputException, AbsentTagException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException {
+    public void before() throws InvalidInputException, AbsentTagException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException, IOException {
         d_GamePlayEngine.initialise();
         d_MapEditorEngine.initialise();
         d_MapEditorEngine.getCountryList();
@@ -51,11 +59,9 @@ public class AssignReinforcementServiceTest {
 
         Player l_player1 = new Player();
         Player l_player2 = new Player();
-        Player l_player3 = new Player();
 
         d_GamePlayEngine.addPlayer(l_player1);
         d_GamePlayEngine.addPlayer(l_player2);
-        d_GamePlayEngine.addPlayer(l_player3);
 
         d_EditMapService = new EditMapService();
         d_EditMapService.handleLoadMap(d_testFile.getPath());
@@ -75,17 +81,16 @@ public class AssignReinforcementServiceTest {
 
     /**
      * This Test will test the re-calculate reinforced army. It checks whether the army is reinforced properly or not.
+     *
+     * @throws EntityNotFoundException Throws if entity not found while searching.
      */
     @Test
-    public void testingCalculatedReinforcedArmyValue() {
+    public void testingCalculatedReinforcedArmyValue() throws EntityNotFoundException {
         d_AssignReinforcementService.execute();
         int l_reinforcementArmies = GamePlayEngine.getInstance().getPlayerList().get(0).getReinforcementCount();
         assertEquals(9, l_reinforcementArmies);
 
         int l_reinforcementArmies1 = GamePlayEngine.getInstance().getPlayerList().get(1).getReinforcementCount();
-        assertEquals(11, l_reinforcementArmies1);
-
-        int l_reinforcementArmies2 = GamePlayEngine.getInstance().getPlayerList().get(2).getReinforcementCount();
-        assertEquals(13, l_reinforcementArmies2);
+        assertEquals(13, l_reinforcementArmies1);
     }
 }

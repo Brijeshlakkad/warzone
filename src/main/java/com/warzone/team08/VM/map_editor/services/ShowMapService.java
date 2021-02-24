@@ -25,7 +25,7 @@ public class ShowMapService implements SingleCommand {
     List<Country> d_countryList;
     Map<String, List<String>> d_continentCountryMap;
 
-    public ShowMapService() {
+    public ShowMapService() throws EntityNotFoundException {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentList = d_mapEditorEngine.getContinentList();
         d_countryList = d_mapEditorEngine.getCountryList();
@@ -131,6 +131,7 @@ public class ShowMapService implements SingleCommand {
      *
      * @param p_commandValues Value of parameters entered by the user.
      * @return Value of string of continent and neighbour country information.
+     * @throws EntityNotFoundException Throws if file not found.
      */
     @Override
     public String execute(List<String> p_commandValues) throws EntityNotFoundException {

@@ -3,6 +3,7 @@ package com.warzone.team08.VM.game_play.services;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 
@@ -57,7 +58,7 @@ public class AssignReinforcementService {
         for (Country l_country1 : p_playerList.getAssignedCountries()) {
             l_country.add(l_country1.getCountryName());
         }
-        boolean l_checkCountry = l_country.equals(p_countryList);
+        boolean l_checkCountry = l_country.containsAll(p_countryList);
         if (l_checkCountry) {
             return p_continent.getContinentControlValue();
         } else {
@@ -67,8 +68,10 @@ public class AssignReinforcementService {
 
     /**
      * Assigns each player the correct number of reinforcement armies according to the Warzone rules.
+     *
+     * @throws EntityNotFoundException Throws if player is not available.
      */
-    public void execute() {
+    public void execute() throws EntityNotFoundException {
         d_continentCountryList = d_mapEditorEngine.getContinentCountryMap();
 
         for (Player l_player : GamePlayEngine.getInstance().getPlayerList()) {

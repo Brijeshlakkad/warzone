@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -25,9 +26,17 @@ public class ShowMapServiceTest {
 
     /**
      * Setting up the context by loading the map file before testing the class methods.
+     *
+     * @throws AbsentTagException Throws if tag is absent in .map file.
+     * @throws InvalidMapException Throws if map file is invalid.
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException Throws if provided argument and its value(s) are not valid.
+     * @throws EntityNotFoundException Throws if entity not found while searching.
+     * @throws URISyntaxException Throws if file name could not be parsed as a URI reference.
+     * @throws IOException IOException
      */
     @BeforeClass
-    public static void beforeClass() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
+    public static void beforeClass() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException, IOException {
         EditMapService l_editMapService = new EditMapService();
         // Re-initialise map editor engine.
         MapEditorEngine.getInstance().initialise();
@@ -43,7 +52,7 @@ public class ShowMapServiceTest {
      * This method will initialise the ShowMapService object before running each test cases.
      */
     @Before
-    public void before() {
+    public void before() throws EntityNotFoundException {
         d_showMapService = new ShowMapService();
     }
 

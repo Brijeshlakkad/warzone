@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -44,7 +45,7 @@ public class PlayerTest {
      * @see EditMapService#handleLoadMap If any exception thrown.
      */
     @Before
-    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
+    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, IOException {
         // User input text.
         d_orderInput = "deploy Mercury-South 5";
         d_commandLineInterface = new CommandLineInterface();

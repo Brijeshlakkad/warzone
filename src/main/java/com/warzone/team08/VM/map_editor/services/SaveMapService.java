@@ -3,6 +3,7 @@ package com.warzone.team08.VM.map_editor.services;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.InvalidMapException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
@@ -86,7 +87,7 @@ public class SaveMapService implements SingleCommand {
      * @throws ResourceNotFoundException Throws if the file resource not found or can not be created.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws InvalidInputException, InvalidMapException, ResourceNotFoundException {
+    public String execute(List<String> p_commandValues) throws InvalidInputException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException {
         // Validates the map before saving the file.
         ValidateMapService d_validateObj = new ValidateMapService();
         d_validateObj.execute(null);

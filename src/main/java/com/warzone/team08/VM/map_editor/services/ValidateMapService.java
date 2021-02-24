@@ -34,8 +34,9 @@ public class ValidateMapService implements SingleCommand {
      * Checks that continent is a connected subgraph.
      *
      * @return True if validation passes.
+     * @throws EntityNotFoundException Throws if continent not found.
      */
-    public boolean isContinentConnectedSubgraph() {
+    public boolean isContinentConnectedSubgraph() throws EntityNotFoundException {
         if (d_mapEditorEngine.getContinentList().size() > 1) {
             boolean l_isInvalid = false;
             String l_continentName;
@@ -138,38 +139,20 @@ public class ValidateMapService implements SingleCommand {
     }
 
     /**
-     * Checks the bonus number(Control Value) of the territories as per the warzone game rules.
+     * Checks that Continent has correct control value.
      *
-     * @param p_continentList Value of the total continent number.
+     * @param p_continentList contains the list of all the continents.
      * @return True if the validation passes.
      */
     private boolean validationControlValue(List<Continent> p_continentList) {
-        boolean l_isValid = false;
-        int p_continentCount = p_continentList.size();
-        if (p_continentCount == 1 || p_continentCount == 2) {
-            for (Continent l_continent : p_continentList) {
-                if (l_continent.getContinentControlValue() == 0) {
-                    l_isValid = true;
-                    break;
-                }
+        boolean l_isValid = true;
+
+        for (Continent l_continent:p_continentList) {
+            if(l_continent.getContinentControlValue()<0)
+            {
+                l_isValid = false;
+                break;
             }
-        } else if (p_continentCount == 3 || p_continentCount == 4 || p_continentCount == 5) {
-            for (Continent l_continent : p_continentList) {
-                if (l_continent.getContinentControlValue() == p_continentCount - 1) {
-                    l_isValid = true;
-                    break;
-                }
-            }
-        } else if (p_continentCount > 5) {
-            for (Continent l_continent : p_continentList) {
-                if (l_continent.getContinentControlValue() == p_continentCount - 1
-                        || l_continent.getContinentControlValue() == p_continentCount - 2) {
-                    l_isValid = true;
-                    break;
-                }
-            }
-        } else {
-            return false;
         }
         return l_isValid;
     }
@@ -181,7 +164,7 @@ public class ValidateMapService implements SingleCommand {
      * @return Value of the response.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws InvalidMapException {
+    public String execute(List<String> p_commandValues) throws InvalidMapException, EntityNotFoundException {
         //Checks map has atleast 1 continent
         if (d_mapEditorEngine.getContinentList().size() > 0) {
             //Control value should be as per the warzone rules
@@ -208,7 +191,7 @@ public class ValidateMapService implements SingleCommand {
                     throw new InvalidMapException("At least one country required!");
                 }
             } else {
-                throw new InvalidMapException("ControlValue is not as per the warzone rules");
+                throw new InvalidMapException("ControlValue is not valid");
             }
         } else {
             throw new InvalidMapException("At least one continent required!");
