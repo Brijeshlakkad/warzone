@@ -29,4 +29,16 @@ public class PlayerRepository {
             return l_filteredPlayerList.get(0);
         throw new EntityNotFoundException(String.format("'%s' player not found", p_playerName));
     }
+
+    /**
+     * Checks whether the player having same name already exists or not.
+     *
+     * @param p_playerName Player name.
+     * @return True if player with same name already exists in the list of joined players; Otherwise false.
+     */
+    public boolean existByPlayerName(String p_playerName) {
+        return GamePlayEngine.getInstance().getPlayerList().stream().filter(p_player ->
+                p_player.getName().equals(p_playerName)
+        ).count() == 1;
+    }
 }
