@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
         LoadMapServiceTest.class,
         ShowMapServiceTest.class,
         ContinentServiceTest.class,
+        ValidateMapServiceTest.class,
         CountryServiceTest.class,
         CountryNeighborServiceTest.class
 })
