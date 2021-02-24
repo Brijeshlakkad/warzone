@@ -6,6 +6,8 @@ import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import java.util.List;
 
 /**
+ * This class handles the request to handle <code>exit</code> request for this application.
+ *
  * @author Brijesh Lakkad
  * @version 1.0
  */

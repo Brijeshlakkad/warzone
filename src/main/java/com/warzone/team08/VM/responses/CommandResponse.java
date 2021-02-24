@@ -3,6 +3,9 @@ package com.warzone.team08.VM.responses;
 import java.util.List;
 
 /**
+ * This class represents the interpreted command received from <code>CLI</code> while in
+ * <code>GAME_STATE#GAME_PLAY</code> state.
+ *
  * @author Brijesh Lakkad
  * @version 1.0
  */

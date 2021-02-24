@@ -35,12 +35,12 @@ public class FileUtil {
      * @throws ResourceNotFoundException Throws if file can not be created.
      */
     public static File retrieveFile(String p_filePath) throws ResourceNotFoundException, InvalidInputException {
-        File l_file = new File(PathResolverUtil.resolveFilePath(p_filePath));
+        File l_file = new File(p_filePath);
         String l_fileName = l_file.getName();
         try {
             l_file.createNewFile();
         } catch (Exception p_exception) {
-            throw new ResourceNotFoundException("File can not be created");
+            throw new ResourceNotFoundException("Can not create a file due to file permission!");
         }
 
         try {
@@ -56,6 +56,7 @@ public class FileUtil {
 
     /**
      * Checks whether file has required extension or not.
+     *
      * @param l_fileName name of a file
      * @return True if file has requires argument; otherwise false.
      * @throws InvalidInputException Throws if filename is invalid.
@@ -74,12 +75,13 @@ public class FileUtil {
 
     /**
      * Creates a file if it does not exist.
+     *
      * @param p_filePath file path
      * @return File object of new file
      * @throws ResourceNotFoundException Throws if file not found
      */
     public static File createFileIfNotExists(String p_filePath) throws ResourceNotFoundException {
-        File l_file = new File(PathResolverUtil.resolveFilePath(p_filePath));
+        File l_file = new File(p_filePath);
         try {
             l_file.createNewFile();
         } catch (Exception p_exception) {

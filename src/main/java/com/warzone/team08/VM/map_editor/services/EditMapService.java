@@ -65,10 +65,12 @@ public class EditMapService implements SingleCommand {
             ResourceNotFoundException,
             InvalidInputException,
             EntityNotFoundException {
-        if (new File(p_filePath).exists() && FileUtil.checksIfFileHasRequiredExtension(p_filePath)) {
-            // (Re) initialise engine.
-            d_mapEditorEngine.initialise();
+        // (Re) initialise engine.
+        d_mapEditorEngine.initialise();
+        if (new File(p_filePath).exists()) {
             try {
+                // Try to retrieve the file
+                FileUtil.retrieveFile(p_filePath);
                 // Will throw exception if the file path is not valid
                 BufferedReader l_reader = new BufferedReader(new FileReader(p_filePath));
 
@@ -93,6 +95,9 @@ public class EditMapService implements SingleCommand {
                 throw new ResourceNotFoundException("File not found!");
             }
         } else {
+            // Throws exception if file doesn't have required extension.
+            FileUtil.checksIfFileHasRequiredExtension(p_filePath);
+
             FileUtil.createFileIfNotExists(p_filePath);
             return "New file created!";
         }
