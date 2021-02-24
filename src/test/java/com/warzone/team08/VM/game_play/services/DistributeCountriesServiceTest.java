@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +32,7 @@ public class DistributeCountriesServiceTest {
      * Runs before the test case class runs; Initializes different objects required to perform test.
      */
     @BeforeClass
-    public static void createPlayersList() throws Exception {
+    public static void createPlayersList() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
         d_GamePlayEngine = GamePlayEngine.getInstance();
@@ -43,9 +44,10 @@ public class DistributeCountriesServiceTest {
      * Setting up the required objects before performing test.
      *
      * @throws VMException Exception generated during execution.
+     * @throws IOException IOException
      */
     @Before
-    public void before() throws VMException {
+    public void before() throws VMException, IOException {
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assert d_TestFilePath != null;
@@ -56,7 +58,7 @@ public class DistributeCountriesServiceTest {
         Player l_player1 = new Player();
         Player l_player2 = new Player();
 
-        l_player1.setName("Charit");
+        l_player1.setName("XYZ");
         l_player2.setName("Rutwik");
 
         d_GamePlayEngine.addPlayer(l_player1);
@@ -67,6 +69,7 @@ public class DistributeCountriesServiceTest {
 
     /**
      * Tests whether the player list is empty or not. Passes if list contains players objects, otherwise fails.
+     * @throws InvalidInputException Throws if invalid player count.
      */
     @Test(expected = Test.None.class)
     public void testNumberOfPlayer() throws InvalidInputException {

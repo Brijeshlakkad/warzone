@@ -3,6 +3,7 @@ package com.warzone.team08.VM.map_editor;
 import com.warzone.team08.VM.constants.interfaces.Engine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 
 import java.util.*;
 
@@ -109,20 +110,26 @@ public class MapEditorEngine implements Engine {
      * continent as a value.
      *
      * @return map of continent and its member countries.
+     * @throws EntityNotFoundException If requested entity not found.
      */
-    public Map<String, List<String>> getContinentCountryMap() {
+    public Map<String, List<String>> getContinentCountryMap() throws EntityNotFoundException {
         Map<String, List<String>> l_continentCountryMap = new HashMap<>();
         for (Continent l_continent : d_continentList) {
-            for (Country l_country : l_continent.getCountryList()) {
-                String continentName = l_continent.getContinentName();
-                List<String> l_countryNames;
-                if (l_continentCountryMap.containsKey(continentName)) {
-                    l_countryNames = l_continentCountryMap.get(continentName);
-                } else {
-                    l_countryNames = new ArrayList<>();
+            if(!l_continent.getCountryList().isEmpty()){
+                for (Country l_country : l_continent.getCountryList()) {
+                    String continentName = l_continent.getContinentName();
+                    List<String> l_countryNames;
+                    if (l_continentCountryMap.containsKey(continentName)) {
+                        l_countryNames = l_continentCountryMap.get(continentName);
+                    } else {
+                        l_countryNames = new ArrayList<>();
+                    }
+                    l_countryNames.add(l_country.getCountryName());
+                    l_continentCountryMap.put(continentName, l_countryNames);
                 }
-                l_countryNames.add(l_country.getCountryName());
-                l_continentCountryMap.put(continentName, l_countryNames);
+            }
+            else{
+                throw new EntityNotFoundException("add minimum 1 country in a continent");
             }
         }
         return l_continentCountryMap;

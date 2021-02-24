@@ -156,6 +156,15 @@ public class Player {
     }
 
     /**
+     * Sets the remaining reinforcement army
+     * @param p_remainingReinforcementCount reinforcement count
+     */
+    public void setRemainingReinforcementCount(int p_remainingReinforcementCount) {
+        d_remainingReinforcementCount = p_remainingReinforcementCount;
+    }
+
+    /**
+     * Reduces the reinforcements.
      * Checks if the player has already deployed the reinforcements.
      *
      * @return True if the player has deployed the reinforcements.
@@ -188,6 +197,7 @@ public class Player {
             return false;
         }
         int l_remainingReinforcementCount = this.getRemainingReinforcementCount() - p_usedReinforcementCount;
+        this.setRemainingReinforcementCount(l_remainingReinforcementCount);
         if (l_remainingReinforcementCount < 0) {
             this.setCanReinforce(false);
             return false;

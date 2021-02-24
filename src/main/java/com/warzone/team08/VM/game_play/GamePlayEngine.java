@@ -184,8 +184,9 @@ public class GamePlayEngine implements Engine {
      * Assigns each player the correct number of reinforcement armies according to the Warzone rules.
      *
      * @throws GameLoopIllegalStateException Throws if the engine tries to jump to illegal state.
+     * @throws EntityNotFoundException Throws if invalid phase.
      */
-    public void onAssignReinforcementPhase() throws GameLoopIllegalStateException {
+    public void onAssignReinforcementPhase() throws GameLoopIllegalStateException, EntityNotFoundException {
         if (GamePlayEngine.getGameLoopState() == GameLoopState.NOT_AVAILABLE ||
                 GamePlayEngine.getGameLoopState() == GameLoopState.EXECUTE_ORDER) {
             GamePlayEngine.setGameLoopState(GameLoopState.ASSIGN_REINFORCEMENTS);

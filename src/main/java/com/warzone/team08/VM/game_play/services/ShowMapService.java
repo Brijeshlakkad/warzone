@@ -6,8 +6,6 @@ import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
-
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class ShowMapService implements SingleCommand {
     List<Player> d_playerList;
     com.warzone.team08.VM.map_editor.services.ShowMapService d_showMapService;
 
-    public ShowMapService() {
+    public ShowMapService() throws EntityNotFoundException {
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_playerList = d_gamePlayEngine.getPlayerList();
         d_showMapService=new com.warzone.team08.VM.map_editor.services.ShowMapService();
@@ -78,6 +76,7 @@ public class ShowMapService implements SingleCommand {
         if (!this.d_playerList.isEmpty()) {
             for (Player l_player : d_playerList) {
                 l_playerContent.append("Player "+(++l_playerCount)+"\n");
+                l_playerContent.append("Reinforcement Army: "+l_player.getReinforcementCount()+"\n");
                 l_playerContent.append(this.showPlayerContent(l_player));
             }
             return l_playerContent.toString()+"\n"+"CONNECTIVITY"+"\n"+d_showMapService.showNeighbourCountries();
