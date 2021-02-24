@@ -44,7 +44,7 @@ public class ContinentService {
             d_mapEditorEngine.addContinent(l_continent);
             return String.format("%s continent added!", p_continentName);
         } catch (Exception e) {
-            throw new InvalidInputException("Continent value is not valid");
+            throw new InvalidInputException("Continent control value is not in valid format!");
         }
     }
 

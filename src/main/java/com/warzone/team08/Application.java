@@ -90,6 +90,8 @@ public class Application {
     }
 
     /**
+     * Handles the startup of CLI.
+     *
      * @throws InterruptedException If CLI interrupted by another thread.
      */
     public void handleCLIStartUp() throws InterruptedException {
