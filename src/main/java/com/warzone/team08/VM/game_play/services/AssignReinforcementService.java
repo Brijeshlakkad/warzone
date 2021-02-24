@@ -57,7 +57,7 @@ public class AssignReinforcementService {
         for (Country l_country1 : p_playerList.getAssignedCountries()) {
             l_country.add(l_country1.getCountryName());
         }
-        boolean l_checkCountry = l_country.equals(p_countryList);
+        boolean l_checkCountry = l_country.containsAll(p_countryList);
         if (l_checkCountry) {
             return p_continent.getContinentControlValue();
         } else {

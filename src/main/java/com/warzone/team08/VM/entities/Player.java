@@ -3,6 +3,7 @@ package com.warzone.team08.VM.entities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warzone.team08.CLI.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.OrderOutOfBoundException;
 import com.warzone.team08.VM.exceptions.ReinforcementOutOfBoundException;
@@ -38,6 +39,10 @@ public class Player {
     private int d_remainingReinforcementCount;
     private boolean d_canReinforce;
     private int d_assignedCountryCount;
+    /**
+     * Keeps track of if the player has deployed the reinforcements of not.
+     */
+    private boolean d_hasDeployed;
 
     public Player() {
         d_orders = new ArrayList<>();
@@ -45,7 +50,7 @@ public class Player {
         d_assignedCountries = new ArrayList<>();
         d_reinforcementsCount = 0;
         d_remainingReinforcementCount = 0;
-        d_canReinforce = false;
+        d_canReinforce = true;
         d_assignedCountryCount = 0;
     }
 
@@ -151,12 +156,21 @@ public class Player {
     }
 
     /**
-     * Reduces the reinforcements.
+     * Checks if the player has already deployed the reinforcements.
      *
-     * @param d_usedReinforcementCount Number of armies the player used.
+     * @return True if the player has deployed the reinforcements.
      */
-    public void reduceReinforcementCount(int d_usedReinforcementCount) {
-        this.d_remainingReinforcementCount -= d_usedReinforcementCount;
+    public boolean isHasDeployed() {
+        return d_hasDeployed;
+    }
+
+    /**
+     * Sets the value indicating that if the player has deployed the reinforcements.
+     *
+     * @param p_hasDeployed Value of true if the player has deployed the reinforcements.
+     */
+    public void setHasDeployed(boolean p_hasDeployed) {
+        d_hasDeployed = p_hasDeployed;
     }
 
     /**
@@ -216,21 +230,23 @@ public class Player {
         // Requests user interface for input from user.
         String l_responseVal = "";
         do {
-            Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Player: %s--------Issue Order:", this.d_name));
+            Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("\nPlayer: %s--------\nIssue Order:", this.d_name));
             l_responseVal = l_responseOfFuture.get();
         } while (l_responseVal.isEmpty());
         try {
             ObjectMapper l_objectMapper = new ObjectMapper();
             CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
             Order l_newOrder = Order.map(l_commandResponse);
-            if (this.canPlayerReinforce(l_newOrder.getNumOfReinforcements())) {
-                l_newOrder.setOwner(this);
-                this.addOrder(l_newOrder);
-            } else {
-                if (this.getRemainingReinforcementCount() == 0) {
-                    this.setCanReinforce(false);
+            if (l_newOrder.getOrderType() == OrderType.deploy) {
+                if (this.isCanReinforce() && this.canPlayerReinforce(l_newOrder.getNumOfReinforcements())) {
+                    l_newOrder.setOwner(this);
+                    this.addOrder(l_newOrder);
+                } else {
+                    if (this.getRemainingReinforcementCount() == 0) {
+                        this.setCanReinforce(false);
+                    }
+                    throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
                 }
-                throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
             }
         } catch (IOException p_ioException) {
             throw new InvalidCommandException("Unrecognised input!");

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class includes all the classes for the command of <code>MAP_EDITOR</code> game state that can be entered by the
+ * This class includes all the classes for the command of <code>GAME_PLAY</code> game state that can be entered by the
  * user.
  *
  * @author Brijesh Lakkad
@@ -25,7 +25,7 @@ public class GamePlayClassLayout implements ClassLayout {
     }
 
     /**
-     * Gets the mappings for <code>MAP_EDITOR</code> game state
+     * Gets the mappings for <code>GAME_PLAY</code> game state
      *
      * @return Value of the mappings
      */
