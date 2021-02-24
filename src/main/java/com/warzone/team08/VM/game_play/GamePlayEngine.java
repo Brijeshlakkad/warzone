@@ -61,10 +61,9 @@ public class GamePlayEngine implements Engine {
     private static GameLoopState gameLoopState;
 
     /**
-     * Keeps all the list of threads created by <code>GamePlayEngine</code>. These threads should be responsive to
-     * interruption.
+     * Thread created by <code>GamePlayEngine</code>. This thread should be responsive to interruption.
      */
-    private List<Thread> d_loopThreads = new ArrayList<>();
+    private Thread d_loopThread;
 
     /**
      * Gets the single instance of the <code>GamePlayEngine</code> class.
@@ -160,7 +159,10 @@ public class GamePlayEngine implements Engine {
      * <code>stderr</code> method.
      */
     public void startGameLoop() {
-        Thread l_thread = new Thread(() -> {
+        if (d_loopThread != null && d_loopThread.isAlive()) {
+            d_loopThread.interrupt();
+        }
+        d_loopThread = new Thread(() -> {
             try {
                 // Responsive to thread interruption.
                 while (!Thread.currentThread().isInterrupted()) {
@@ -175,7 +177,7 @@ public class GamePlayEngine implements Engine {
                 VirtualMachine.getInstance().stdout("GAME_ENGINE_TO_WAIT");
             }
         });
-        l_thread.start();
+        d_loopThread.start();
     }
 
     /**
@@ -224,7 +226,9 @@ public class GamePlayEngine implements Engine {
 
             // Until player issues the valid order.
             boolean l_invalidPreviousOrder;
+            boolean canTryAgain;
             do {
+                canTryAgain = true;
                 try {
                     // Request player to issue the order.
                     l_currentPlayer.issueOrder();
@@ -235,19 +239,16 @@ public class GamePlayEngine implements Engine {
                     // Send exception message to CLI.
                     VirtualMachine.getInstance().stderr(p_e.getMessage());
 
+                    // If all of its reinforcements have been placed, don't ask the player again.
                     if (!l_currentPlayer.isCanReinforce()) {
-                        break;
+                        canTryAgain = false;
+                        finishedIssuingOrders.add(l_currentPlayer);
                     }
                 } catch (InterruptedException | ExecutionException p_e) {
                     // If interruption occurred while issuing the order.
                     l_invalidPreviousOrder = true;
                 }
-            } while (l_invalidPreviousOrder && l_currentPlayer.isCanReinforce());
-
-            // If all of its reinforcements have been placed, don't ask the player again.
-            if (!l_currentPlayer.isCanReinforce()) {
-                finishedIssuingOrders.add(l_currentPlayer);
-            }
+            } while (l_invalidPreviousOrder && canTryAgain);
         }
 
         // Store to use when starting the issue phase again.
@@ -268,6 +269,8 @@ public class GamePlayEngine implements Engine {
         GamePlayEngine.setGameLoopState(GameLoopState.EXECUTE_ORDER);
         List<Player> finishedExecutingOrders = new ArrayList<>();
 
+        VirtualMachine.getInstance().stdout("Execution of orders started!");
+
         this.currentPlayerTurn = this.currentPlayerForExecutionPhase;
 
         while (finishedExecutingOrders.size() != d_playerList.size()) {
@@ -279,9 +282,11 @@ public class GamePlayEngine implements Engine {
             try {
                 // Get the next order
                 Order l_currentOrder = l_currentPlayer.nextOrder();
-                // TODO Show which player's order is being executed
                 // Use VirtualMachine.stdout()
                 l_currentOrder.execute();
+
+                VirtualMachine.getInstance().stdout(String.format("\nExecuted %s", l_currentOrder.toString()));
+
                 // If the current player does not have any orders left.
                 if (!l_currentPlayer.hasOrders()) {
                     finishedExecutingOrders.add(l_currentPlayer);
@@ -300,8 +305,8 @@ public class GamePlayEngine implements Engine {
      * {@inheritDoc} Shuts the <code>GamePlayEngine</code>.
      */
     public void shutdown() {
-        for (Thread d_loopThreads : d_loopThreads) {
-            d_loopThreads.interrupt();
-        }
+        // Interrupt thread if it is alive.
+        if (d_loopThread != null && d_loopThread.isAlive())
+            d_loopThread.interrupt();
     }
 }

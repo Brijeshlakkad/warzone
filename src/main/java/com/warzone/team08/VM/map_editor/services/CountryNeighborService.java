@@ -49,7 +49,7 @@ public class CountryNeighborService {
      */
     public String add(Country p_country, Country p_neighborCountry) {
         p_country.addNeighbourCountry(p_neighborCountry);
-        return String.format("Neighbor %s country added for %s!", p_neighborCountry, p_country);
+        return String.format("Neighbor %s country added for %s!", p_neighborCountry.getCountryName(), p_country.getCountryName());
     }
 
     /**
@@ -80,6 +80,6 @@ public class CountryNeighborService {
         ).collect(Collectors.toList());
 
         p_country.setNeighbourCountries(l_filteredCountry);
-        return String.format("Neighbor %s country removed from %s!", p_neighborCountry, p_country);
+        return String.format("Neighbor %s country removed from %s!", p_neighborCountry.getCountryName(), p_country.getCountryName());
     }
 }

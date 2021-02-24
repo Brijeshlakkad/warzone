@@ -49,12 +49,14 @@ public class RequestService {
                 this.handleMethodInvocation(l_object, DEFAULT_METHOD_NAME, p_userCommand.getCommandValues(), true);
             } else {
                 // Iterate over the user arguments
-                for (Map.Entry<String, List<String>> entry : p_userCommand.getUserArguments().entrySet()) {
-                    String p_argKey = entry.getKey();
-                    List<String> p_argValues = entry.getValue();
+                for (Map<String, List<String>> entryMap : p_userCommand.getUserArguments()) {
+                    for (Map.Entry<String, List<String>> entry : entryMap.entrySet()) {
+                        String p_argKey = entry.getKey();
+                        List<String> p_argValues = entry.getValue();
 
-                    // If the argument key does not have any value, it will send empty list
-                    this.handleMethodInvocation(l_object, p_argKey, p_argValues, false);
+                        // If the argument key does not have any value, it will send empty list
+                        this.handleMethodInvocation(l_object, p_argKey, p_argValues, false);
+                    }
                 }
             }
         } catch (ClassNotFoundException | IllegalAccessException |

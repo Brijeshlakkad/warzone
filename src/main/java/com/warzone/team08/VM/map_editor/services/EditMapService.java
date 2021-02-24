@@ -259,7 +259,7 @@ public class EditMapService implements SingleCommand {
             ResourceNotFoundException,
             InvalidInputException,
             AbsentTagException,
-            EntityNotFoundException, IOException {
+            EntityNotFoundException {
         if (!p_commandValues.isEmpty()) {
             // Resolve file path using absolute path of user data directory.
             String resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));

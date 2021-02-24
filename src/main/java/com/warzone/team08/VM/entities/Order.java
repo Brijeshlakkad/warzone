@@ -137,9 +137,13 @@ public class Order {
      */
     public void execute() {
         if (this.getOrderType() == OrderType.deploy) {
-            this.getOwner().reduceReinforcementCount(this.getNumOfReinforcements());
             this.getCountry().setNumberOfArmies(this.getNumOfReinforcements());
         }
         this.getOwner().addExecutedOrder(this);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s Player's order: %s %s %s", d_owner.getName(), d_orderType, d_country.getCountryName(), d_NumOfReinforcements);
     }
 }

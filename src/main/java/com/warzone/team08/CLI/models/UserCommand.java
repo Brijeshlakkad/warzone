@@ -12,17 +12,17 @@ import java.util.*;
  */
 public class UserCommand {
     /**
-     * Represents the user command
+     * Represents the user command.
      */
     private String d_headCommand;
 
     /**
-     * Represents the argument and its values
+     * Represents list of the arguments and its values.
      */
-    private Map<String, List<String>> d_userArguments;
+    private List<Map<String, List<String>>> d_userArguments;
 
     /**
-     * Value(s) of the head of the command if any
+     * Value(s) of the head of the command if any.
      */
     private List<String> d_commandValues;
 
@@ -47,7 +47,7 @@ public class UserCommand {
         setHeadCommand(p_predefinedUserCommand.getHeadCommand());
         d_predefinedUserCommand = p_predefinedUserCommand;
         // Initialise references
-        d_userArguments = new HashMap<>();
+        d_userArguments = new ArrayList<>();
         d_commandValues = new ArrayList<>();
     }
 
@@ -84,7 +84,7 @@ public class UserCommand {
      * @return Value of the list of argument key and its value(s)
      */
     @JsonIgnore
-    public Map<String, List<String>> getUserArguments() {
+    public List<Map<String, List<String>>> getUserArguments() {
         return d_userArguments;
     }
 
@@ -95,7 +95,9 @@ public class UserCommand {
      * @param values Value of the list of argument values.
      */
     public void pushUserArgument(String argKey, List<String> values) {
-        d_userArguments.put(argKey, values);
+        Map<String, List<String>> l_newArgumentKeyValue = new HashMap<>();
+        l_newArgumentKeyValue.put(argKey, values);
+        d_userArguments.add(l_newArgumentKeyValue);
     }
 
     /**
@@ -138,7 +140,9 @@ public class UserCommand {
         if (this == l_p_o) return true;
         if (l_p_o == null || getClass() != l_p_o.getClass()) return false;
         UserCommand l_that = (UserCommand) l_p_o;
-        return Objects.equals(d_headCommand, l_that.d_headCommand) &&
-                Objects.equals(d_userArguments.keySet(), l_that.d_userArguments.keySet());
+        return isExitCommand == l_that.isExitCommand &&
+                Objects.equals(d_headCommand, l_that.d_headCommand) &&
+                d_userArguments.size() == l_that.d_userArguments.size() &&
+                Objects.equals(d_predefinedUserCommand, l_that.d_predefinedUserCommand);
     }
 }

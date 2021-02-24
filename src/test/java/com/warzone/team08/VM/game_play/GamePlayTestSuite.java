@@ -16,7 +16,6 @@ import org.junit.runners.Suite;
         AssignReinforcementServiceTest.class,
         DistributeCountriesServiceTest.class,
         ShowMapServiceTest.class
-
 })
 public class GamePlayTestSuite {
     // This class remains empty, it is used only as a holder for the above annotations

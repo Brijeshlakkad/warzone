@@ -23,10 +23,11 @@ public class PlayerService {
     /**
      * Player repository.
      */
-    private PlayerRepository d_playerRepository;
+    private final PlayerRepository d_playerRepository;
 
     public PlayerService() {
         d_gamePlayEngine = GamePlayEngine.getInstance();
+        d_playerRepository = new PlayerRepository();
     }
 
     /**
@@ -37,13 +38,17 @@ public class PlayerService {
      * @throws InvalidInputException Throws if processing the player creation.
      */
     public String add(String p_playerName) throws InvalidInputException {
-        try {
-            Player l_player = new Player();
-            l_player.setName(p_playerName);
-            d_gamePlayEngine.addPlayer(l_player);
-            return String.format("%s player added!", p_playerName);
-        } catch (Exception e) {
-            throw new InvalidInputException("Player name is not valid");
+        if (!d_playerRepository.existByPlayerName(p_playerName)) {
+            try {
+                Player l_player = new Player();
+                l_player.setName(p_playerName);
+                d_gamePlayEngine.addPlayer(l_player);
+                return String.format("%s player added!", p_playerName);
+            } catch (Exception e) {
+                throw new InvalidInputException("Player name is not valid");
+            }
+        } else {
+            throw new InvalidInputException("Player name already exists....Please provide different name.");
         }
     }
 

@@ -110,6 +110,7 @@ public class MapEditorEngine implements Engine {
      * continent as a value.
      *
      * @return map of continent and its member countries.
+     * @throws EntityNotFoundException If requested entity not found.
      */
     public Map<String, List<String>> getContinentCountryMap() throws EntityNotFoundException {
         Map<String, List<String>> l_continentCountryMap = new HashMap<>();
