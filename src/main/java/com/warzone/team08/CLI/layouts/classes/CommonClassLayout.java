@@ -22,7 +22,7 @@ public class CommonClassLayout implements ClassLayout {
     }
 
     /**
-     * Gets the mappings for <code>MAP_EDITOR</code> game state
+     * Gets the mappings for <code>COMMON_CLASS</code> game state
      *
      * @return Value of the mappings
      */
