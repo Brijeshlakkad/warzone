@@ -37,14 +37,35 @@ public class PlayerService {
      * @throws InvalidInputException Throws if processing the player creation.
      */
     public String add(String p_playerName) throws InvalidInputException {
-        try {
-            Player l_player = new Player();
-            l_player.setName(p_playerName);
-            d_gamePlayEngine.addPlayer(l_player);
-            return String.format("%s player added!", p_playerName);
-        } catch (Exception e) {
-            throw new InvalidInputException("Player name is not valid");
+        if(!existByPlayerName(p_playerName))
+        {
+            try {
+                Player l_player = new Player();
+                l_player.setName(p_playerName);
+                d_gamePlayEngine.addPlayer(l_player);
+                return String.format("%s player added!", p_playerName);
+            } catch (Exception e) {
+                throw new InvalidInputException("Player name is not valid");
+            }
         }
+        else
+        {
+            throw new InvalidInputException("Player name already exists....Please provide different name.");
+        }
+
+    }
+
+    /**
+     * Checks whether the player having same name already exists or not.
+     *
+     * @param p_playerName player name
+     * @return true if player with same name already exists in the list of joined players, otherwise false.
+     */
+    public boolean existByPlayerName(String p_playerName)
+    {
+        return GamePlayEngine.getInstance().getPlayerList().stream().filter(p_player ->
+                p_player.getName().equals(p_playerName)
+        ).count() == 1;
     }
 
     /**

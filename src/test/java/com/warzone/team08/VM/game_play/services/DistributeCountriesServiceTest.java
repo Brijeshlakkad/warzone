@@ -55,15 +55,12 @@ public class DistributeCountriesServiceTest {
         d_GamePlayEngine.initialise();
         Player l_player1 = new Player();
         Player l_player2 = new Player();
-        Player l_player3 = new Player();
 
         l_player1.setName("Charit");
         l_player2.setName("Rutwik");
-        l_player3.setName("Brijesh");
 
         d_GamePlayEngine.addPlayer(l_player1);
         d_GamePlayEngine.addPlayer(l_player2);
-        d_GamePlayEngine.addPlayer(l_player3);
 
         d_distributeCountriesService = new DistributeCountriesService();
     }
@@ -84,7 +81,7 @@ public class DistributeCountriesServiceTest {
     @Test(expected = Test.None.class)
     public void testPlayerCountryCount() throws InvalidInputException {
         d_distributeCountriesService.distributeCountries();
-        assertEquals(4, d_GamePlayEngine.getPlayerList().get(0).getAssignedCountryCount());
+        assertEquals(5, d_GamePlayEngine.getPlayerList().get(0).getAssignedCountryCount());
     }
 
     /**
@@ -98,6 +95,6 @@ public class DistributeCountriesServiceTest {
         assertNotNull(l_response);
 
         int l_size = d_GamePlayEngine.getPlayerList().get(0).getAssignedCountries().size();
-        assertEquals(4, l_size);
+        assertEquals(5, l_size);
     }
 }
