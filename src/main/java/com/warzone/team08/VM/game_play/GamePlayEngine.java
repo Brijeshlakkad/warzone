@@ -170,8 +170,8 @@ public class GamePlayEngine implements Engine {
                     this.onStartIssueOrderPhase();
                     this.onStartExecuteOrderPhase();
                 }
-            } catch (VMException p_vmException) {
-                VirtualMachine.getInstance().stderr(p_vmException.getMessage());
+            } catch (GameLoopIllegalStateException p_loopIllegalStateException) {
+                VirtualMachine.getInstance().stderr(p_loopIllegalStateException.getMessage());
             } finally {
                 // Set CLI#UserInteractionState to WAIT
                 VirtualMachine.getInstance().stdout("GAME_ENGINE_TO_WAIT");
@@ -184,15 +184,18 @@ public class GamePlayEngine implements Engine {
      * Assigns each player the correct number of reinforcement armies according to the Warzone rules.
      *
      * @throws GameLoopIllegalStateException Throws if the engine tries to jump to illegal state.
-     * @throws EntityNotFoundException Throws if invalid phase.
      */
-    public void onAssignReinforcementPhase() throws GameLoopIllegalStateException, EntityNotFoundException {
+    public void onAssignReinforcementPhase() throws GameLoopIllegalStateException {
         if (GamePlayEngine.getGameLoopState() == GameLoopState.NOT_AVAILABLE ||
                 GamePlayEngine.getGameLoopState() == GameLoopState.EXECUTE_ORDER) {
             GamePlayEngine.setGameLoopState(GameLoopState.ASSIGN_REINFORCEMENTS);
 
-            AssignReinforcementService l_reinforcementService = new AssignReinforcementService();
-            l_reinforcementService.execute();
+            try {
+                AssignReinforcementService l_reinforcementService = new AssignReinforcementService();
+                l_reinforcementService.execute();
+            } catch (VMException p_vmException) {
+                VirtualMachine.getInstance().stderr(p_vmException.getMessage());
+            }
         } else {
             throw new GameLoopIllegalStateException("Illegal state transition!");
         }
@@ -206,9 +209,8 @@ public class GamePlayEngine implements Engine {
      * again for a valid order.
      *
      * @throws GameLoopIllegalStateException Throws if the engine tries to jump to illegal state.
-     * @throws EntityNotFoundException       Throws if any provided entity Id not found.
      */
-    public void onStartIssueOrderPhase() throws GameLoopIllegalStateException, EntityNotFoundException {
+    public void onStartIssueOrderPhase() throws GameLoopIllegalStateException {
         if (GamePlayEngine.getGameLoopState() != GameLoopState.ASSIGN_REINFORCEMENTS) {
             throw new GameLoopIllegalStateException("Illegal state transition!");
         }
@@ -244,6 +246,10 @@ public class GamePlayEngine implements Engine {
                         canTryAgain = false;
                         finishedIssuingOrders.add(l_currentPlayer);
                     }
+                } catch (EntityNotFoundException p_entityNotFoundException) {
+                    l_invalidPreviousOrder = true;
+                    // Show VMException error to the user.
+                    VirtualMachine.getInstance().stderr(p_entityNotFoundException.getMessage());
                 } catch (InterruptedException | ExecutionException p_e) {
                     // If interruption occurred while issuing the order.
                     l_invalidPreviousOrder = true;
