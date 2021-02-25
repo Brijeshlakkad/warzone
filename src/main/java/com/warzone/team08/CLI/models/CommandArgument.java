@@ -22,30 +22,66 @@ public class CommandArgument {
         d_specification = p_specification;
     }
 
+    /**
+     * Gets the argument key.
+     *
+     * @return Value of the argument key.
+     */
     public String getArgumentKey() {
         return d_argumentKey;
     }
 
+    /**
+     * Sets the argument key.
+     *
+     * @param p_argumentKey Value of the argument key.
+     */
     public void setArgumentKey(String p_argumentKey) {
         d_argumentKey = p_argumentKey;
     }
 
+    /**
+     * Gets the list of values for this command argument.
+     *
+     * @return Value of the list of command argument.
+     */
     public int getNumOfValues() {
         return d_numOfValues;
     }
 
+    /**
+     * Sets the list of values for this command argument.
+     *
+     * @param p_numOfValues Value of the list of command argument.
+     */
     public void setNumOfValues(int p_numOfValues) {
         d_numOfValues = p_numOfValues;
     }
 
+    /**
+     * Gets specification for this command argument.
+     *
+     * @return Value of specification for this command argument.
+     */
     public ArgumentSpecification getSpecification() {
         return d_specification;
     }
 
+    /**
+     * Sets specification for this command argument.
+     *
+     * @param p_specification Value of specification for this command argument.
+     */
     public void setSpecification(ArgumentSpecification p_specification) {
         d_specification = p_specification;
     }
 
+    /**
+     * Checks if the command arguments are equal.
+     *
+     * @param l_p_o The command argument to be checked with.
+     * @return True if both are the same.
+     */
     @Override
     public boolean equals(Object l_p_o) {
         if (this == l_p_o) return true;
@@ -54,10 +90,5 @@ public class CommandArgument {
         return d_numOfValues == l_that.d_numOfValues &&
                 Objects.equals(d_argumentKey, l_that.d_argumentKey) &&
                 d_specification == l_that.d_specification;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(d_argumentKey, d_numOfValues, d_specification);
     }
 }

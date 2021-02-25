@@ -89,8 +89,8 @@ public class SaveMapService implements SingleCommand {
     @Override
     public String execute(List<String> p_commandValues) throws InvalidInputException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException {
         // Validates the map before saving the file.
-        ValidateMapService d_validateObj = new ValidateMapService();
-        d_validateObj.execute(null);
+        ValidateMapService l_validateObj = new ValidateMapService();
+        l_validateObj.execute(null);
 
         // Validates the file, gets the file object, and writes the data into it.
         return saveToFile(FileUtil.retrieveFile(p_commandValues.get(0)));

@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.game_play;
 
+import com.warzone.team08.CLI.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.GameLoopState;
 import com.warzone.team08.VM.constants.interfaces.Engine;
@@ -246,10 +247,10 @@ public class GamePlayEngine implements Engine {
                         canTryAgain = false;
                         finishedIssuingOrders.add(l_currentPlayer);
                     }
-                } catch (EntityNotFoundException p_entityNotFoundException) {
+                } catch (EntityNotFoundException | InvalidCommandException p_exception) {
                     l_invalidPreviousOrder = true;
                     // Show VMException error to the user.
-                    VirtualMachine.getInstance().stderr(p_entityNotFoundException.getMessage());
+                    VirtualMachine.getInstance().stderr(p_exception.getMessage());
                 } catch (InterruptedException | ExecutionException p_e) {
                     // If interruption occurred while issuing the order.
                     l_invalidPreviousOrder = true;

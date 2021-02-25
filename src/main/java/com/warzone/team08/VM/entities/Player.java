@@ -157,6 +157,7 @@ public class Player {
 
     /**
      * Sets the remaining reinforcement army
+     *
      * @param p_remainingReinforcementCount reinforcement count
      */
     public void setRemainingReinforcementCount(int p_remainingReinforcementCount) {
@@ -164,8 +165,7 @@ public class Player {
     }
 
     /**
-     * Reduces the reinforcements.
-     * Checks if the player has already deployed the reinforcements.
+     * Reduces the reinforcements. Checks if the player has already deployed the reinforcements.
      *
      * @return True if the player has deployed the reinforcements.
      */
@@ -248,14 +248,18 @@ public class Player {
             CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
             Order l_newOrder = Order.map(l_commandResponse);
             if (l_newOrder.getOrderType() == OrderType.deploy) {
-                if (this.isCanReinforce() && this.canPlayerReinforce(l_newOrder.getNumOfReinforcements())) {
-                    l_newOrder.setOwner(this);
-                    this.addOrder(l_newOrder);
-                } else {
-                    if (this.getRemainingReinforcementCount() == 0) {
-                        this.setCanReinforce(false);
+                if (this.getAssignedCountries().contains(l_newOrder.getCountry())) {
+                    if (this.isCanReinforce() && this.canPlayerReinforce(l_newOrder.getNumOfReinforcements())) {
+                        l_newOrder.setOwner(this);
+                        this.addOrder(l_newOrder);
+                    } else {
+                        if (this.getRemainingReinforcementCount() == 0) {
+                            this.setCanReinforce(false);
+                        }
+                        throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
                     }
-                    throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
+                } else {
+                    throw new InvalidCommandException("You can deploy the reinforcements only in your assigned countries");
                 }
             }
         } catch (IOException p_ioException) {
