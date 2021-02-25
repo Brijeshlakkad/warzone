@@ -51,7 +51,8 @@ public class EditMapService implements SingleCommand {
     /**
      * This method reads user provided map file. It reads data from file and stores into different java objects.
      *
-     * @param p_filePath Path of the file to be read.
+     * @param p_filePath      Path of the file to be read.
+     * @param shouldCreateNew True if this method should create a new file if it doesn't exists.
      * @return Value of the response.
      * @throws InvalidMapException       Throws if file does not have valid map data.
      * @throws AbsentTagException        Throws if there is missing tag.
@@ -59,7 +60,7 @@ public class EditMapService implements SingleCommand {
      * @throws InvalidInputException     Throws if type cast was not successful.
      * @throws EntityNotFoundException   Throws if the referred entity is not found.
      */
-    public String handleLoadMap(String p_filePath)
+    public String handleLoadMap(String p_filePath, boolean shouldCreateNew)
             throws InvalidMapException,
             AbsentTagException,
             ResourceNotFoundException,
@@ -94,13 +95,31 @@ public class EditMapService implements SingleCommand {
             } catch (IOException p_ioException) {
                 throw new ResourceNotFoundException("File not found!");
             }
-        } else {
+        } else if (shouldCreateNew) {
             // Throws exception if file doesn't have required extension.
             FileUtil.checksIfFileHasRequiredExtension(p_filePath);
 
             FileUtil.createFileIfNotExists(p_filePath);
             return "New file created!";
+        } else {
+            throw new InvalidMapException("Please check if file exists. This may happen due to error while processing.");
         }
+    }
+
+    /**
+     * The overloading method of {@link EditMapService#handleLoadMap(String, boolean)} This overloading method calls the
+     * overloaded method with a variable indicating that create a new file if it doesn't exists.
+     *
+     * @param p_filePath Path of the file to be read.
+     * @return Value of the response.
+     * @throws InvalidMapException       Throws if file does not have valid map data.
+     * @throws AbsentTagException        Throws if there is missing tag.
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException     Throws if type cast was not successful.
+     * @throws EntityNotFoundException   Throws if the referred entity is not found.
+     */
+    public String handleLoadMap(String p_filePath) throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
+        return this.handleLoadMap(p_filePath, true);
     }
 
 

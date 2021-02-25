@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.game_play.services;
 
 import com.warzone.team08.Application;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.VMException;
@@ -10,7 +11,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -44,22 +44,22 @@ public class DistributeCountriesServiceTest {
      * Setting up the required objects before performing test.
      *
      * @throws VMException Exception generated during execution.
-     * @throws IOException IOException
      */
     @Before
-    public void before() throws VMException, IOException {
+    public void before() throws VMException {
+        // (Re)initialise the VM.
+        VirtualMachine.getInstance().initialise();
+
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assert d_TestFilePath != null;
         l_editMapService.handleLoadMap(d_TestFilePath.getPath());
 
-        // Creates players
-        d_GamePlayEngine.initialise();
         Player l_player1 = new Player();
         Player l_player2 = new Player();
 
-        l_player1.setName("XYZ");
-        l_player2.setName("Rutwik");
+        l_player1.setName("User_1");
+        l_player2.setName("User_2");
 
         d_GamePlayEngine.addPlayer(l_player1);
         d_GamePlayEngine.addPlayer(l_player2);
@@ -69,6 +69,7 @@ public class DistributeCountriesServiceTest {
 
     /**
      * Tests whether the player list is empty or not. Passes if list contains players objects, otherwise fails.
+     *
      * @throws InvalidInputException Throws if invalid player count.
      */
     @Test(expected = Test.None.class)

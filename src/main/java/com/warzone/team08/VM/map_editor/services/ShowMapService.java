@@ -138,7 +138,7 @@ public class ShowMapService implements SingleCommand {
         if (!this.d_continentCountryMap.isEmpty() || !this.d_countryList.isEmpty()) {
             return this.showContinentCountryContent() + "\n" + this.showNeighbourCountries();
         } else {
-            throw new EntityNotFoundException("Please select file to show");
+            throw new EntityNotFoundException("Please select file to show!");
         }
     }
 }

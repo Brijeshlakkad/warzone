@@ -33,7 +33,10 @@ public class VirtualMachine {
      */
     private UserInterfaceMiddleware d_userInterfaceMiddleware;
 
-    private ExecutorService d_executor = Executors.newFixedThreadPool(10);
+    /**
+     * To execute <code>Future</code> tasks.
+     */
+    private final ExecutorService d_executor = Executors.newFixedThreadPool(10);
 
     /**
      * Creates the single instance of the <code>VirtualMachine</code> class.
@@ -121,6 +124,16 @@ public class VirtualMachine {
      */
     public static GamePlayEngine GAME_PLAY_ENGINE() {
         return GamePlayEngine.getInstance();
+    }
+
+    /**
+     * Initialise all the engines to reset the runtime information.
+     */
+    public void initialise() {
+        // MAP_EDITOR ENGINE
+        VirtualMachine.MAP_EDITOR_ENGINE().initialise();
+        // GAME_PLAY ENGINE
+        VirtualMachine.GAME_PLAY_ENGINE().initialise();
     }
 
     /**

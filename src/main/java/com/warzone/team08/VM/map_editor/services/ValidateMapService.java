@@ -147,9 +147,8 @@ public class ValidateMapService implements SingleCommand {
     private boolean validationControlValue(List<Continent> p_continentList) {
         boolean l_isValid = true;
 
-        for (Continent l_continent:p_continentList) {
-            if(l_continent.getContinentControlValue()<0)
-            {
+        for (Continent l_continent : p_continentList) {
+            if (l_continent.getContinentControlValue() < 0) {
                 l_isValid = false;
                 break;
             }
@@ -171,18 +170,18 @@ public class ValidateMapService implements SingleCommand {
             if (validationControlValue(d_mapEditorEngine.getContinentList())) {
                 //Check for the minimum number of countries required
                 if (d_mapEditorEngine.getCountryList().size() > 1) {
-                    //check that every continent should have atleast 1 country
+                    //check that every continent should have at least 1 country
                     if (d_mapEditorEngine.getCountryList().size() >= d_mapEditorEngine.getContinentList().size()) {
                         //check every country is reachable
                         if (isContinentConnectedSubgraph()) {
-                            //Check that continent is a connected subgraph
+                            //Check that continent is a connected sub-graph
                             if (isMapConnectedGraph()) {
-                                return "Map validation passed successfully";
+                                return "Map validation passed successfully!";
                             } else {
-                                throw new InvalidMapException("map must be a connected graph");
+                                throw new InvalidMapException("map must be a connected graph!");
                             }
                         } else {
-                            throw new InvalidMapException("Continent must be a connected subgraph");
+                            throw new InvalidMapException("Continent must be a connected sub-graph!");
                         }
                     } else {
                         throw new InvalidMapException("Total continents must be lesser or equal to the countries!");
@@ -191,7 +190,7 @@ public class ValidateMapService implements SingleCommand {
                     throw new InvalidMapException("At least one country required!");
                 }
             } else {
-                throw new InvalidMapException("ControlValue is not valid");
+                throw new InvalidMapException("ControlValue is not valid!");
             }
         } else {
             throw new InvalidMapException("At least one continent required!");
