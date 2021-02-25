@@ -51,11 +51,11 @@ public class RequestService {
                 // Iterate over the user arguments
                 for (Map<String, List<String>> entryMap : p_userCommand.getUserArguments()) {
                     for (Map.Entry<String, List<String>> entry : entryMap.entrySet()) {
-                        String p_argKey = entry.getKey();
+                        String l_argKey = entry.getKey();
                         List<String> p_argValues = entry.getValue();
 
                         // If the argument key does not have any value, it will send empty list
-                        this.handleMethodInvocation(l_object, p_argKey, p_argValues, false);
+                        this.handleMethodInvocation(l_object, l_argKey, p_argValues, false);
                     }
                 }
             }

@@ -21,7 +21,7 @@ public class VirtualMachine {
     /**
      * Singleton instance of the class.
      */
-    private static VirtualMachine D_Instance;
+    private static VirtualMachine d_Instance;
 
     /**
      * Keeps track of the game state
@@ -44,11 +44,11 @@ public class VirtualMachine {
      * @return Value of the instance.
      */
     public static VirtualMachine newInstance() {
-        D_Instance = new VirtualMachine();
+        d_Instance = new VirtualMachine();
         // Default exception handler.
         ExceptionHandler l_exceptionHandler = new ExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(l_exceptionHandler);
-        return D_Instance;
+        return d_Instance;
     }
 
     /**
@@ -77,10 +77,10 @@ public class VirtualMachine {
      * @throws NullPointerException Throws if the virtual machine instance was not created before.
      */
     public static VirtualMachine getInstance() throws NullPointerException {
-        if (D_Instance == null) {
+        if (d_Instance == null) {
             throw new NullPointerException("Virtual Machine was not created. Something went wrong.");
         }
-        return D_Instance;
+        return d_Instance;
     }
 
     /**

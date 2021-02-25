@@ -17,8 +17,15 @@ import java.util.List;
  */
 public class LoadMapService implements SingleCommand {
     /**
-     * {@inheritDoc}
+     * Handles the load map operation for user command.
      *
+     * @param p_commandValues Represents the values passed while running the command.
+     * @return Value of string acknowledging user that the file is loaded or not.
+     * @throws InvalidMapException       Throws if the map was not valid.
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException     Throws if the user command is invalid.
+     * @throws AbsentTagException        Throws if any tag is missing in map file.
+     * @throws EntityNotFoundException   Throws if entity is missing.
      * @see EditMapService#handleLoadMap
      */
     @Override

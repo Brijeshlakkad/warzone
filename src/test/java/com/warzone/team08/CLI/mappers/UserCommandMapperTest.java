@@ -38,6 +38,9 @@ public class UserCommandMapperTest {
         l_application.handleApplicationStartup();
     }
 
+    /**
+     * Sets the required context before executing test case.
+     */
     @Before
     public void before() {
         MapEditorEngine.getInstance().initialise();
@@ -57,6 +60,9 @@ public class UserCommandMapperTest {
         l_application.handleApplicationStartup();
     }
 
+    /**
+     * Creates user input and tests whether it is correct or not.
+     */
     @Test
     public void testUserInput() {
         // Mapper class which maps text to interpreted command.

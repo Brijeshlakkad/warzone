@@ -17,7 +17,13 @@ import java.util.Map;
  * @author Rutwik
  */
 public class AssignReinforcementService {
+    /**
+     * Singleton instance of <code>MapEditorEngine</code>.
+     */
     public MapEditorEngine d_mapEditorEngine;
+    /**
+     * Map representing continent and its member countries.
+     */
     public Map<String, List<String>> d_continentCountryList;
 
     /**

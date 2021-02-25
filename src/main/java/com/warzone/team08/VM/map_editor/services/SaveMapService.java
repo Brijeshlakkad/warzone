@@ -9,6 +9,7 @@ import com.warzone.team08.VM.exceptions.InvalidMapException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.utils.FileUtil;
+import com.warzone.team08.VM.utils.PathResolverUtil;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,6 +34,9 @@ public class SaveMapService implements SingleCommand {
      */
     private final MapEditorEngine d_mapEditorEngine;
 
+    /**
+     * Fetches the singleton instance of <code>MapEditorEngine</code>
+     */
     public SaveMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
     }
@@ -93,6 +97,6 @@ public class SaveMapService implements SingleCommand {
         l_validateObj.execute(null);
 
         // Validates the file, gets the file object, and writes the data into it.
-        return saveToFile(FileUtil.retrieveFile(p_commandValues.get(0)));
+        return saveToFile(FileUtil.retrieveFile(PathResolverUtil.resolveFilePath(p_commandValues.get(0))));
     }
 }

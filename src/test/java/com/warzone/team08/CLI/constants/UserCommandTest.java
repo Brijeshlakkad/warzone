@@ -41,8 +41,8 @@ public class UserCommandTest {
 
     /**
      * Tests if the argument key belongs to the same command or not.
-     *
-     * @result Success if it can identify if the correct and wrong arguments
+     * <p>
+     * Success if it can identify if the correct and wrong arguments
      */
     @Test
     public void testIsKeyOfCommand() {

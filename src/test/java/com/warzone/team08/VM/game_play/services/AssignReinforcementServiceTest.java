@@ -23,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 public class AssignReinforcementServiceTest {
     private static MapEditorEngine d_MapEditorEngine;
     private static EditMapService d_EditMapService;
-    private static URL d_testFile;
+    private static URL d_TestFile;
     private static DistributeCountriesService d_DistributeCountriesService;
     private static AssignReinforcementService d_AssignReinforcementService;
     private static GamePlayEngine d_GamePlayEngine;
@@ -36,7 +36,7 @@ public class AssignReinforcementServiceTest {
     public static void beforeClass() {
         d_GamePlayEngine = GamePlayEngine.getInstance();
         d_MapEditorEngine = MapEditorEngine.getInstance();
-        d_testFile = AssignReinforcementServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
+        d_TestFile = AssignReinforcementServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
     }
 
 
@@ -64,7 +64,7 @@ public class AssignReinforcementServiceTest {
         d_GamePlayEngine.addPlayer(l_player2);
 
         d_EditMapService = new EditMapService();
-        d_EditMapService.handleLoadMap(d_testFile.getPath());
+        d_EditMapService.handleLoadMap(d_TestFile.getPath());
         d_DistributeCountriesService = new DistributeCountriesService();
         d_DistributeCountriesService.distributeCountries();
     }

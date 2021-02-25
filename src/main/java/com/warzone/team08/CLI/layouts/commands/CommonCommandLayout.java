@@ -20,6 +20,9 @@ public class CommonCommandLayout implements CommandLayout {
      */
     List<PredefinedUserCommand> d_userCommands;
 
+    /**
+     * Creates the instance of <code>PredefinedUserCommand</code> and sets its variables and adds into the list of user commands.
+     */
     public CommonCommandLayout() {
         d_userCommands = new ArrayList<>();
 

@@ -25,6 +25,11 @@ public class ShowMapService implements SingleCommand {
     List<Country> d_countryList;
     Map<String, List<String>> d_continentCountryMap;
 
+    /**
+     * Initializes different objects.
+     *
+     * @throws EntityNotFoundException Throws if required entity is not found.
+     */
     public ShowMapService() throws EntityNotFoundException {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentList = d_mapEditorEngine.getContinentList();

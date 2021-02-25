@@ -57,18 +57,21 @@ public class FileUtil {
     /**
      * Checks whether file has required extension or not.
      *
-     * @param l_fileName name of a file
+     * @param p_fileName name of a file
      * @return True if file has requires argument; otherwise false.
      * @throws InvalidInputException Throws if filename is invalid.
      */
-    public static boolean checksIfFileHasRequiredExtension(String l_fileName) throws InvalidInputException {
-        int l_index = l_fileName.lastIndexOf('.');
+    public static boolean checksIfFileHasRequiredExtension(String p_fileName) throws InvalidInputException {
+        int l_index = p_fileName.lastIndexOf('.');
         if (l_index > 0) {
-            String l_extension = l_fileName.substring(l_index + 1);
-            if (!l_extension.equalsIgnoreCase(FileUtil.getFileExtension())) {
-                throw new InvalidInputException("File doesn't exist!");
+            char l_prevChar = p_fileName.charAt(l_index - 1);
+            if (l_prevChar != '.') {
+                String l_extension = p_fileName.substring(l_index + 1);
+                if (!l_extension.equalsIgnoreCase(FileUtil.getFileExtension())) {
+                    throw new InvalidInputException("File doesn't exist!");
+                }
+                return true;
             }
-            return true;
         }
         throw new InvalidInputException("File must have an extension!");
     }

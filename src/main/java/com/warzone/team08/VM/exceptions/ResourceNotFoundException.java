@@ -16,6 +16,12 @@ public class ResourceNotFoundException extends VMException {
         super(p_message);
     }
 
+    /**
+     * Parameterized constructor to call parent class constructor.
+     *
+     * @param p_message Error message string.
+     * @param p_cause Cause is the exception that causes the current exception.
+     */
     public ResourceNotFoundException(String p_message, Throwable p_cause) {
         super(p_message, p_cause);
     }

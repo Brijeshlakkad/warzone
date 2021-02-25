@@ -23,6 +23,9 @@ public class LoadMapServiceTest {
     private URL d_testFilePath;
     private EditMapService d_editMapService;
 
+    /**
+     * Re-initializes required objects before test case run.
+     */
     @Before
     public void beforeTestCase() {
         d_application = new Application();
@@ -38,10 +41,11 @@ public class LoadMapServiceTest {
     /**
      * Tests the load map service method to check if the map file is being loaded correctly.
      *
+     * @throws URISyntaxException Throws if URI syntax is invalid.
      * @see EditMapService#handleLoadMap
      */
     @Test(expected = Test.None.class)
-    public void testLoadMapService() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
+    public void testLoadMapService() throws URISyntaxException {
         // In Windows, URL will create %20 for space. To avoid, use the below logic.
         String l_url = new URI(d_testFilePath.getPath()).getPath();
         Application.VIRTUAL_MACHINE().setGameStatePlaying();

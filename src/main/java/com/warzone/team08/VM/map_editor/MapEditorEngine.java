@@ -18,7 +18,7 @@ public class MapEditorEngine implements Engine {
     /**
      * Singleton instance of the class.
      */
-    private static MapEditorEngine d_instance;
+    private static MapEditorEngine d_Instance;
 
     private List<Continent> d_continentList;
 
@@ -28,10 +28,10 @@ public class MapEditorEngine implements Engine {
      * @return Value of the instance.
      */
     public static MapEditorEngine getInstance() {
-        if (d_instance == null) {
-            d_instance = new MapEditorEngine();
+        if (d_Instance == null) {
+            d_Instance = new MapEditorEngine();
         }
-        return d_instance;
+        return d_Instance;
     }
 
     /**
@@ -129,7 +129,7 @@ public class MapEditorEngine implements Engine {
                 }
             }
             else{
-                throw new EntityNotFoundException("add minimum 1 country in a continent");
+                throw new EntityNotFoundException("Add minimum one country in a continent!");
             }
         }
         return l_continentCountryMap;

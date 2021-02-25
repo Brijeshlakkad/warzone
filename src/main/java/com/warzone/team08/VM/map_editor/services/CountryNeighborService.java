@@ -21,6 +21,9 @@ public class CountryNeighborService {
     private final MapEditorEngine d_mapEditorEngine;
     private final CountryRepository d_countryRepository;
 
+    /**
+     * Initializes different objects.
+     */
     public CountryNeighborService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_countryRepository = new CountryRepository();

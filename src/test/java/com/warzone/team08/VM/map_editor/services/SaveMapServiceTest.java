@@ -74,8 +74,10 @@ public class SaveMapServiceTest {
     /**
      * This test will save the content added in Continent, Country and Neighbour List into the .map file.
      *
-     * @throws ResourceNotFoundException If the Target File where content is to be saved is not found then this
+     * @throws ResourceNotFoundException Throws if the Target File where content is to be saved is not found then this
      *                                   exception will be raised.
+     * @throws InvalidInputException     Throws if input is invalid.
+     * @throws IOException               Throws if IOException is generated.
      */
     @Test(expected = Test.None.class)
     public void testSaveFile() throws ResourceNotFoundException, InvalidInputException, IOException {

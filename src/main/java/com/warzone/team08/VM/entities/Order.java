@@ -1,9 +1,9 @@
 package com.warzone.team08.VM.entities;
 
-import com.warzone.team08.CLI.exceptions.InvalidArgumentException;
-import com.warzone.team08.CLI.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.repositories.CountryRepository;
 import com.warzone.team08.VM.responses.CommandResponse;
 
@@ -22,8 +22,11 @@ public class Order {
     /**
      * To find the country given its name.
      */
-    private final static CountryRepository d_countryRepository = new CountryRepository();
+    private final static CountryRepository COUNTRY_REPOSITORY = new CountryRepository();
 
+    /**
+     * Default constructor.
+     */
     public Order() {
 
     }
@@ -118,9 +121,9 @@ public class Order {
         Order l_newOrder = new Order();
         l_newOrder.setOrderType(OrderType.valueOf(p_commandResponse.getHeadCommand().toLowerCase()));
         try {
-            Country targetCountry = d_countryRepository.findFirstByCountryName(p_commandResponse.getCommandValues().get(0));
+            Country l_targetCountry = COUNTRY_REPOSITORY.findFirstByCountryName(p_commandResponse.getCommandValues().get(0));
             // Get country from repository.
-            l_newOrder.setCountry(targetCountry);
+            l_newOrder.setCountry(l_targetCountry);
             try {
                 l_newOrder.setNumOfReinforcements(Integer.parseInt(p_commandResponse.getCommandValues().get(1)));
             } catch (NumberFormatException p_e) {
@@ -137,13 +140,18 @@ public class Order {
      */
     public void execute() {
         if (this.getOrderType() == OrderType.deploy) {
-            this.getCountry().setNumberOfArmies(this.getNumOfReinforcements());
+            this.getCountry().setNumberOfArmies(this.getCountry().getNumberOfArmies() + this.getNumOfReinforcements());
         }
         this.getOwner().addExecutedOrder(this);
     }
 
+    /**
+     * Returns the string describing player order.
+     *
+     * @return String representing player orders.
+     */
     @Override
     public String toString() {
-        return String.format("%s Player's order: %s %s %s", d_owner.getName(), d_orderType, d_country.getCountryName(), d_NumOfReinforcements);
+        return String.format("%s player's order: %s %s %s", d_owner.getName(), d_orderType, d_country.getCountryName(), d_NumOfReinforcements);
     }
 }

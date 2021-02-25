@@ -24,13 +24,21 @@ public class Country {
     /**
      * Used to keep the track of unique IDs for the continent.
      */
-    public static int serialNumber = 0;
+    public static int d_SerialNumber = 0;
 
+    /**
+     * Assigns country id to the country and creates the neighbour countries list.
+     */
     public Country() {
-        this.COUNTRY_ID = ++serialNumber;
+        this.COUNTRY_ID = ++d_SerialNumber;
         d_neighbourCountries = new ArrayList<>();
     }
 
+    /**
+     * Assigns country id to the country and creates the neighbour countries list.
+     *
+     * @param p_countryId Country id.
+     */
     public Country(int p_countryId) {
         this.COUNTRY_ID = p_countryId;
         d_neighbourCountries = new ArrayList<>();
@@ -123,7 +131,7 @@ public class Country {
      * Resets the serial number to zero. Used when the map engine is being reset.
      */
     public static void resetSerialNumber() {
-        serialNumber = 0;
+        d_SerialNumber = 0;
     }
 
     /**
@@ -165,20 +173,23 @@ public class Country {
     /**
      * Checks if both objects are the same using both the country and continent of the object.
      *
-     * @param l_p_o Value of the second element to be checked with.
+     * @param p_l_o Value of the second element to be checked with.
      * @return True if the both are same.
      */
-
-
     @Override
-    public boolean equals(Object l_p_o) {
-        if (this == l_p_o) return true;
-        if (l_p_o == null || getClass() != l_p_o.getClass()) return false;
-        Country l_l_country = (Country) l_p_o;
+    public boolean equals(Object p_l_o) {
+        if (this == p_l_o) return true;
+        if (p_l_o == null || getClass() != p_l_o.getClass()) return false;
+        Country l_l_country = (Country) p_l_o;
         return COUNTRY_ID.equals(l_l_country.COUNTRY_ID) &&
                 d_continent.equals(l_l_country.d_continent);
     }
 
+    /**
+     * Return the hash value of the country.
+     *
+     * @return Hash value of the country.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(COUNTRY_ID, d_continent);

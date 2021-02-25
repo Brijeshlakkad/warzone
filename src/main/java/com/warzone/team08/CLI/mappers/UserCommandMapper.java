@@ -12,6 +12,7 @@ import com.warzone.team08.CLI.models.UserCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Converts string entity of user text to UserCommand object that can be used to call the different APIs
@@ -32,6 +33,10 @@ public class UserCommandMapper {
     public UserCommand toUserCommand(String p_userInput) {
         // Cracks a command line string
         List<String> l_commands = Arrays.asList(p_userInput.split("\\s"));
+
+        l_commands = l_commands.stream().filter(l_command ->
+                !l_command.trim().isEmpty()
+        ).collect(Collectors.toList());
 
         if (l_commands.size() > 0) {
             // The command entered by the user
@@ -136,13 +141,13 @@ public class UserCommandMapper {
      * Checks if the command doesn't need any argument to run
      *
      * @param p_predefinedUserCommand Value of the command which has the specification
-     * @param numOfKeys               Value of the number of keys entered by the user
+     * @param p_numOfKeys             Value of the number of keys entered by the user
      * @return True if the command can run alone; false otherwise
      */
-    private boolean validateIfCommandCanRunAlone(PredefinedUserCommand p_predefinedUserCommand, int numOfKeys) {
+    private boolean validateIfCommandCanRunAlone(PredefinedUserCommand p_predefinedUserCommand, int p_numOfKeys) {
         if (p_predefinedUserCommand.getCommandSpecification() == CommandSpecification.CAN_RUN_ALONE) {
             // Means the user has entered the not-needful text after the command
-            if (numOfKeys > 0)
+            if (p_numOfKeys > 0)
                 throw new InvalidArgumentException("Unrecognized argument!");
             return true;
         }
@@ -153,13 +158,13 @@ public class UserCommandMapper {
      * Checks if the command needs value to proceed
      *
      * @param p_predefinedUserCommand Value of the command which has the specification.
-     * @param numOfKeys               Value of the number of text entered by the user after the command.
+     * @param p_numOfKeys             Value of the number of text entered by the user after the command.
      * @return True if the command can run alone; false otherwise.
      */
-    private boolean validateIfCommandDoesNeedValue(PredefinedUserCommand p_predefinedUserCommand, int numOfKeys) {
+    private boolean validateIfCommandDoesNeedValue(PredefinedUserCommand p_predefinedUserCommand, int p_numOfKeys) {
         if (p_predefinedUserCommand.getCommandSpecification() == CommandSpecification.CAN_RUN_ALONE_WITH_VALUE) {
             // Means the user has not provided the value required with the command
-            if (numOfKeys == 0)
+            if (p_numOfKeys == 0)
                 throw new InvalidArgumentException("Value not provided");
             return true;
         }
@@ -170,13 +175,13 @@ public class UserCommandMapper {
      * Checks if the argument body is empty and the command needs an argument to run
      *
      * @param p_predefinedUserCommand Value of the command which has the specification
-     * @param numOfKeys               Value of the number of keys entered by the user
+     * @param p_numOfKeys             Value of the number of keys entered by the user
      * @return True if the entered command has at least one argument; false otherwise
      */
-    private boolean validateIfCommandDoesNeedArgument(PredefinedUserCommand p_predefinedUserCommand, int numOfKeys) {
+    private boolean validateIfCommandDoesNeedArgument(PredefinedUserCommand p_predefinedUserCommand, int p_numOfKeys) {
         if (p_predefinedUserCommand.getCommandSpecification() == CommandSpecification.AT_LEAST_ONE) {
             // Means the user has not provided any required argument keys
-            if (numOfKeys == 0)
+            if (p_numOfKeys == 0)
                 throw new InvalidArgumentException("Command requires at least one argument to run!");
             return true;
         }

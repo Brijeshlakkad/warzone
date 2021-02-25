@@ -40,6 +40,13 @@ public class PlayerTest {
     }
 
     /**
+     * Loads different objects and performs necessary operations required to execute testcase.
+     *
+     * @throws AbsentTagException        Throws if any tag is missing in map file.
+     * @throws InvalidMapException       Throws if map is invalid.
+     * @throws ResourceNotFoundException Throws if map file not found.
+     * @throws InvalidInputException     Throws if input command is invalid.
+     * @throws EntityNotFoundException   Throws if entity not found.
      * @see EditMapService#handleLoadMap If any exception thrown.
      */
     @Before
@@ -76,7 +83,9 @@ public class PlayerTest {
      * Tests the player issue order functionality. An order is tested against the user input and it will be stored in
      * the player's order list.
      *
-     * @throws VMException If any exception while processing the issue order request.
+     * @throws VMException          Throws if any exception while processing the issue order request.
+     * @throws ExecutionException   Throws if error occurs in execution.
+     * @throws InterruptedException Throws if interruption occurs during normal execution.
      */
     @Test
     public void testIssueOrder() throws VMException, ExecutionException, InterruptedException {
@@ -91,6 +100,8 @@ public class PlayerTest {
      * Tests the player issue order functionality when the player enters more reinforcements to deploy than possessing.
      *
      * @throws VMException If any exception while processing the issue order request.
+     * @throws ExecutionException   Throws if error occurs in execution.
+     * @throws InterruptedException Throws if interruption occurs during normal execution.
      */
     @Test(expected = ReinforcementOutOfBoundException.class)
     public void testOutOfReinforcementIssueOrder() throws VMException, ExecutionException, InterruptedException {

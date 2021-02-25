@@ -6,6 +6,7 @@ import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,10 +22,15 @@ public class ShowMapService implements SingleCommand {
     List<Player> d_playerList;
     com.warzone.team08.VM.map_editor.services.ShowMapService d_showMapService;
 
+    /**
+     * Initializes the different objects.
+     *
+     * @throws EntityNotFoundException Throws if entity not found.
+     */
     public ShowMapService() throws EntityNotFoundException {
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_playerList = d_gamePlayEngine.getPlayerList();
-        d_showMapService=new com.warzone.team08.VM.map_editor.services.ShowMapService();
+        d_showMapService = new com.warzone.team08.VM.map_editor.services.ShowMapService();
     }
 
     /**
@@ -55,7 +61,7 @@ public class ShowMapService implements SingleCommand {
 
         //showing army count per country
         for (int l_row = 1; l_row < l_playerMap.length; l_row++) {
-            Country l_country=l_countryNames2.pollFirst();
+            Country l_country = l_countryNames2.pollFirst();
             l_playerMap[l_row] = String.valueOf(l_country.getNumberOfArmies());
         }
         return FlipTable.of(l_header, new String[][]{l_playerMap});
@@ -72,14 +78,15 @@ public class ShowMapService implements SingleCommand {
     @Override
     public String execute(List<String> p_commandValues) throws EntityNotFoundException {
         StringBuilder l_playerContent = new StringBuilder();
-        int l_playerCount=0;
+        int l_playerCount = 0;
         if (!this.d_playerList.isEmpty()) {
             for (Player l_player : d_playerList) {
-                l_playerContent.append("Player "+(++l_playerCount)+"\n");
-                l_playerContent.append("Reinforcement Army: "+l_player.getReinforcementCount()+"\n");
+                l_playerContent.append("Player " + (++l_playerCount) + "\n");
+                l_playerContent.append("Total Deployed Army: " + (l_player.getReinforcementCount() - l_player.getRemainingReinforcementCount()) + "\n");
+                l_playerContent.append("Total Reinforcement Count: " + l_player.getReinforcementCount() + "\n");
                 l_playerContent.append(this.showPlayerContent(l_player));
             }
-            return l_playerContent.toString()+"\n"+"CONNECTIVITY"+"\n"+d_showMapService.showNeighbourCountries();
+            return l_playerContent.toString() + "\n" + "CONNECTIVITY" + "\n" + d_showMapService.showNeighbourCountries();
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");
         }

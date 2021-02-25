@@ -1,6 +1,5 @@
 package com.warzone.team08.VM.game_play;
 
-import com.warzone.team08.CLI.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.GameLoopState;
 import com.warzone.team08.VM.constants.interfaces.Engine;
@@ -34,19 +33,19 @@ public class GamePlayEngine implements Engine {
     /**
      * Current turn of the player for issuing the order.
      */
-    private int currentPlayerTurn = 0;
+    private int d_currentPlayerTurn = 0;
 
     /**
      * Keeps the track of the first player who was selected by the engine while <code>GAME_LOOP#ISSUE_ORDER</code>
      * state.
      */
-    private int currentPlayerForIssuePhase = 0;
+    private int d_currentPlayerForIssuePhase = 0;
 
     /**
      * Keeps the track of the first player who was selected by the engine while <code>GAME_LOOP#EXECUTE_ORDER</code>
      * state.
      */
-    private int currentPlayerForExecutionPhase = 0;
+    private int d_currentPlayerForExecutionPhase = 0;
 
     /**
      * Represents the current state of the game loop.
@@ -59,12 +58,12 @@ public class GamePlayEngine implements Engine {
      *
      * @see GameLoopState for more information.
      */
-    private static GameLoopState gameLoopState;
+    private static GameLoopState d_GameLoopState;
 
     /**
      * Thread created by <code>GamePlayEngine</code>. This thread should be responsive to interruption.
      */
-    private Thread d_loopThread;
+    private Thread d_LoopThread;
 
     /**
      * Gets the single instance of the <code>GamePlayEngine</code> class.
@@ -101,16 +100,16 @@ public class GamePlayEngine implements Engine {
      * @return Value of the state.
      */
     public static GameLoopState getGameLoopState() {
-        return gameLoopState;
+        return d_GameLoopState;
     }
 
     /**
      * Sets the state of <code>GameLoop</code>.
      *
-     * @param p_gameLoopState Value of the state.
+     * @param p_d_GameLoopState Value of the state.
      */
-    public static void setGameLoopState(GameLoopState p_gameLoopState) {
-        gameLoopState = p_gameLoopState;
+    public static void setGameLoopState(GameLoopState p_d_GameLoopState) {
+        d_GameLoopState = p_d_GameLoopState;
     }
 
     /**
@@ -146,11 +145,11 @@ public class GamePlayEngine implements Engine {
      * @return Value of the player which will issue the order.
      */
     public Player getCurrentPlayer() {
-        Player l_currentPlayer = d_playerList.get(currentPlayerTurn);
-        currentPlayerTurn++;
+        Player l_currentPlayer = d_playerList.get(d_currentPlayerTurn);
+        d_currentPlayerTurn++;
         // Round-robin fashion
-        if (currentPlayerTurn >= d_playerList.size()) {
-            currentPlayerTurn = 0;
+        if (d_currentPlayerTurn >= d_playerList.size()) {
+            d_currentPlayerTurn = 0;
         }
         return l_currentPlayer;
     }
@@ -160,10 +159,10 @@ public class GamePlayEngine implements Engine {
      * <code>stderr</code> method.
      */
     public void startGameLoop() {
-        if (d_loopThread != null && d_loopThread.isAlive()) {
-            d_loopThread.interrupt();
+        if (d_LoopThread != null && d_LoopThread.isAlive()) {
+            d_LoopThread.interrupt();
         }
-        d_loopThread = new Thread(() -> {
+        d_LoopThread = new Thread(() -> {
             try {
                 // Responsive to thread interruption.
                 while (!Thread.currentThread().isInterrupted()) {
@@ -178,7 +177,7 @@ public class GamePlayEngine implements Engine {
                 VirtualMachine.getInstance().stdout("GAME_ENGINE_TO_WAIT");
             }
         });
-        d_loopThread.start();
+        d_LoopThread.start();
     }
 
     /**
@@ -218,7 +217,7 @@ public class GamePlayEngine implements Engine {
         GamePlayEngine.setGameLoopState(GameLoopState.ISSUE_ORDER);
         List<Player> finishedIssuingOrders = new ArrayList<>();
 
-        this.currentPlayerTurn = this.currentPlayerForIssuePhase;
+        this.d_currentPlayerTurn = this.d_currentPlayerForIssuePhase;
 
         while (finishedIssuingOrders.size() != d_playerList.size()) {
             // Find player who has reinforcements.
@@ -229,9 +228,9 @@ public class GamePlayEngine implements Engine {
 
             // Until player issues the valid order.
             boolean l_invalidPreviousOrder;
-            boolean canTryAgain;
+            boolean l_canTryAgain;
             do {
-                canTryAgain = true;
+                l_canTryAgain = true;
                 try {
                     // Request player to issue the order.
                     l_currentPlayer.issueOrder();
@@ -243,11 +242,11 @@ public class GamePlayEngine implements Engine {
                     VirtualMachine.getInstance().stderr(p_e.getMessage());
 
                     // If all of its reinforcements have been placed, don't ask the player again.
-                    if (!l_currentPlayer.isCanReinforce()) {
-                        canTryAgain = false;
+                    if (l_currentPlayer.getRemainingReinforcementCount() == 0) {
+                        l_canTryAgain = false;
                         finishedIssuingOrders.add(l_currentPlayer);
                     }
-                } catch (EntityNotFoundException | InvalidCommandException p_exception) {
+                } catch (EntityNotFoundException | InvalidCommandException | InvalidArgumentException p_exception) {
                     l_invalidPreviousOrder = true;
                     // Show VMException error to the user.
                     VirtualMachine.getInstance().stderr(p_exception.getMessage());
@@ -255,11 +254,11 @@ public class GamePlayEngine implements Engine {
                     // If interruption occurred while issuing the order.
                     l_invalidPreviousOrder = true;
                 }
-            } while (l_invalidPreviousOrder && canTryAgain);
+            } while (l_invalidPreviousOrder && l_canTryAgain);
         }
 
         // Store to use when starting the issue phase again.
-        this.currentPlayerForIssuePhase = this.currentPlayerTurn;
+        this.d_currentPlayerForIssuePhase = this.d_currentPlayerTurn;
     }
 
     /**
@@ -278,7 +277,7 @@ public class GamePlayEngine implements Engine {
 
         VirtualMachine.getInstance().stdout("Execution of orders started!");
 
-        this.currentPlayerTurn = this.currentPlayerForExecutionPhase;
+        this.d_currentPlayerTurn = this.d_currentPlayerForExecutionPhase;
 
         while (finishedExecutingOrders.size() != d_playerList.size()) {
             // Find player who has remaining orders to execute.
@@ -305,7 +304,7 @@ public class GamePlayEngine implements Engine {
         }
 
         // Store to use when starting the issue phase again.
-        this.currentPlayerForExecutionPhase = this.currentPlayerTurn;
+        this.d_currentPlayerForExecutionPhase = this.d_currentPlayerTurn;
     }
 
     /**
@@ -313,7 +312,7 @@ public class GamePlayEngine implements Engine {
      */
     public void shutdown() {
         // Interrupt thread if it is alive.
-        if (d_loopThread != null && d_loopThread.isAlive())
-            d_loopThread.interrupt();
+        if (d_LoopThread != null && d_LoopThread.isAlive())
+            d_LoopThread.interrupt();
     }
 }

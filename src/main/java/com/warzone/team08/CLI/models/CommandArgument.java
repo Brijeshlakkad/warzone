@@ -16,6 +16,13 @@ public class CommandArgument {
     private int d_numOfValues;
     private ArgumentSpecification d_specification;
 
+    /**
+     * Parameterized constructor to initialize variables.
+     *
+     * @param p_argumentKey   Value of command argument key.
+     * @param p_numOfValues   Values of number of required values.
+     * @param p_specification Value of specification to be used for this command argument.
+     */
     public CommandArgument(String p_argumentKey, int p_numOfValues, ArgumentSpecification p_specification) {
         d_argumentKey = p_argumentKey;
         d_numOfValues = p_numOfValues;

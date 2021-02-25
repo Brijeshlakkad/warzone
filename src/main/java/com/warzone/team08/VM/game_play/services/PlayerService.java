@@ -25,6 +25,9 @@ public class PlayerService {
      */
     private final PlayerRepository d_playerRepository;
 
+    /**
+     * Initialization of different objects.
+     */
     public PlayerService() {
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_playerRepository = new PlayerRepository();

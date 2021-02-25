@@ -29,6 +29,9 @@ public class RequestServiceTest {
         l_application.handleApplicationStartup();
     }
 
+    /**
+     * Sets the required contexts for the execution of the test case.
+     */
     @Before
     public void before() {
         MapEditorEngine.getInstance().initialise();

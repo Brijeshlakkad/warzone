@@ -39,6 +39,9 @@ public class EditMapService implements SingleCommand {
     private final CountryService d_countryService;
     private final CountryNeighborService d_countryNeighborService;
 
+    /**
+     * Initializes variables required to load map into different objects.
+     */
     public EditMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentRepository = new ContinentRepository();
@@ -273,8 +276,15 @@ public class EditMapService implements SingleCommand {
     }
 
     /**
-     * {@inheritDoc}
+     * Takes the command and executes the function.
      *
+     * @param p_commandValues Represents the values passed while running the command.
+     * @return Value of string acknowledging user that the file is loaded or not.
+     * @throws InvalidMapException       Throws if the map was not valid.
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException     Throws if the user command is invalid.
+     * @throws AbsentTagException        Throws if any tag is missing in map file.
+     * @throws EntityNotFoundException   Throws if entity is missing.
      * @see EditMapService#handleLoadMap
      */
     @Override

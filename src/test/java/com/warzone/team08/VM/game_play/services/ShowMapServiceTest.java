@@ -27,7 +27,7 @@ import static org.junit.Assert.assertNotNull;
 public class ShowMapServiceTest {
     private ShowMapService d_showMapService;
     private List<Player> d_playerList;
-    private static URL d_testFilePath;
+    private static URL d_TestFilePath;
 
     /**
      * Setting up the context by loading the map file before testing the class methods.
@@ -37,7 +37,7 @@ public class ShowMapServiceTest {
         Application l_application = new Application();
         l_application.handleApplicationStartup();
 
-        d_testFilePath = ShowMapServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
+        d_TestFilePath = ShowMapServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
     }
 
     /**
@@ -59,8 +59,8 @@ public class ShowMapServiceTest {
 
         EditMapService l_editMapService = new EditMapService();
         d_showMapService = new ShowMapService();
-        assertNotNull(d_testFilePath);
-        String l_url = new URI(d_testFilePath.getPath()).getPath();
+        assertNotNull(d_TestFilePath);
+        String l_url = new URI(d_TestFilePath.getPath()).getPath();
         l_editMapService.handleLoadMap(l_url);
 
         DistributeCountriesService l_distributeCountriesService = new DistributeCountriesService();
