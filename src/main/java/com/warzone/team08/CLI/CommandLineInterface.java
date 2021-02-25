@@ -32,7 +32,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
     /**
      * Interprets user input text and converts it into the form which can be understood
      */
-    private static UserCommandMapper d_userCommandMapper;
+    private static UserCommandMapper d_UserCommandMapper;
 
     /**
      * Keeps track of user interaction
@@ -80,7 +80,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
 
     public CommandLineInterface() {
         d_thread = new Thread(this);
-        d_userCommandMapper = new UserCommandMapper();
+        d_UserCommandMapper = new UserCommandMapper();
         d_requestService = new RequestService();
     }
 
@@ -112,6 +112,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
      * Method to be called when thread steps
      */
     public void run() {
+        System.out.println("Command Line Interface has started...");
         while (Application.isRunning()) {
             try {
                 d_reentrantLock.lockInterruptibly();
@@ -121,7 +122,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
                             String l_userInput = this.waitForUserInput();
 
                             // Takes user input and interprets it for further processing
-                            UserCommand l_userCommand = d_userCommandMapper.toUserCommand(l_userInput);
+                            UserCommand l_userCommand = d_UserCommandMapper.toUserCommand(l_userInput);
 
                             this.setInteractionState(UserInteractionState.IN_PROGRESS);
                             // Takes action according to command instructions.
@@ -172,7 +173,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
                     System.out.println(p_message);
                 }
                 ObjectMapper mapper = new ObjectMapper();
-                UserCommand l_userCommand = d_userCommandMapper.toUserCommand(this.waitForUserInput());
+                UserCommand l_userCommand = d_UserCommandMapper.toUserCommand(this.waitForUserInput());
                 if (l_userCommand.getPredefinedUserCommand().isGameEngineCommand()) {
                     return mapper.writeValueAsString(l_userCommand);
                 } else {

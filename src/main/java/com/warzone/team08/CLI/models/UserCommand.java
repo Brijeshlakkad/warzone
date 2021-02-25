@@ -35,7 +35,7 @@ public class UserCommand {
     /**
      * True if the user commands represents the <code>exit</code> command.
      */
-    private boolean isExitCommand = false;
+    private boolean d_isExitCommand = false;
 
     /**
      * Parameterised constructor.
@@ -132,15 +132,15 @@ public class UserCommand {
     /**
      * Checks the head of the command and its argument key only
      *
-     * @param l_p_o UserCommand need to checked with
+     * @param p_l_o UserCommand need to checked with
      * @return true if both objects are equal
      */
     @Override
-    public boolean equals(Object l_p_o) {
-        if (this == l_p_o) return true;
-        if (l_p_o == null || getClass() != l_p_o.getClass()) return false;
-        UserCommand l_that = (UserCommand) l_p_o;
-        return isExitCommand == l_that.isExitCommand &&
+    public boolean equals(Object p_l_o) {
+        if (this == p_l_o) return true;
+        if (p_l_o == null || getClass() != p_l_o.getClass()) return false;
+        UserCommand l_that = (UserCommand) p_l_o;
+        return d_isExitCommand == l_that.d_isExitCommand &&
                 Objects.equals(d_headCommand, l_that.d_headCommand) &&
                 d_userArguments.size() == l_that.d_userArguments.size() &&
                 Objects.equals(d_predefinedUserCommand, l_that.d_predefinedUserCommand);

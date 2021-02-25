@@ -21,7 +21,7 @@ public class UserClassLayout {
     /**
      * The list of all classes across each GameState (A state of the game).
      */
-    private static Map<GameState, ClassLayout> d_gameStateListMap = new HashMap<>();
+    private static Map<GameState, ClassLayout> d_GameStateListMap = new HashMap<>();
 
     /**
      * The object which has its user commands that can be entered during any <code>GAME_STATE</code>.
@@ -42,12 +42,12 @@ public class UserClassLayout {
      * Stores the commands according to the game state
      */
     static {
-        d_gameStateListMap.put(
+        d_GameStateListMap.put(
                 GameState.MAP_EDITOR,
                 UserClassLayout.MAP_EDITOR_LAYOUT
         );
 
-        d_gameStateListMap.put(
+        d_GameStateListMap.put(
                 GameState.GAME_PLAY,
                 UserClassLayout.GAME_PLAY_CLASS_LAYOUT
         );
@@ -66,7 +66,7 @@ public class UserClassLayout {
             // If the command exists in COMMON_CLASS_LAYOUT, return that class name from that.
             return COMMON_CLASS_LAYOUT.getMappings().containsKey(p_headOfCommand) ?
                     COMMON_CLASS_LAYOUT.getMappings().get(p_headOfCommand) :
-                    d_gameStateListMap.get(Application.getGameState()).getMappings().get(p_headOfCommand);
+                    d_GameStateListMap.get(Application.getGameState()).getMappings().get(p_headOfCommand);
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             throw new InvalidCommandException("Unrecognized command!");
         }

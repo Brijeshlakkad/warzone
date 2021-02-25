@@ -13,7 +13,7 @@ public class PathResolverUtil {
     /**
      * Singleton instance of the class.
      */
-    private static PathResolverUtil d_instance;
+    private static PathResolverUtil d_Instance;
 
     /**
      * Represents the path to the user data directory.
@@ -38,10 +38,10 @@ public class PathResolverUtil {
      * @return Value of the instance.
      */
     public static PathResolverUtil getInstance() {
-        if (d_instance == null) {
-            d_instance = new PathResolverUtil();
+        if (d_Instance == null) {
+            d_Instance = new PathResolverUtil();
         }
-        return d_instance;
+        return d_Instance;
     }
 
     /**

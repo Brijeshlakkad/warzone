@@ -3,15 +3,6 @@ package com.warzone.team08;
 import com.warzone.team08.CLI.CommandLineInterface;
 import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.VM.VirtualMachine;
-import com.warzone.team08.VM.utils.FileUtil;
-import com.warzone.team08.VM.utils.PathResolverUtil;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Objects;
 
 /**
  * The main class of the War Zone Team08
@@ -23,29 +14,29 @@ public class Application {
     /**
      * False if user is interacting, meaning user is playing the game; true otherwise
      */
-    private static volatile boolean d_isRunning = true;
+    private static volatile boolean d_IsRunning = true;
 
     /**
      * Command-line user interface; Responsible for taking input from a user.
      */
-    private static CommandLineInterface d_commandLineInterface;
+    private static CommandLineInterface d_CommandLineInterface;
 
     /**
      * Connects interface with method APIs; An environment for the player to store the information.
      */
-    private static VirtualMachine d_virtualMachine;
+    private static VirtualMachine d_VirtualMachine;
 
     public Application() {
         // Creates interface for user interaction.
         // Just a local variable as the instance is not being used/shared with any other class.
-        d_commandLineInterface = new CommandLineInterface();
+        d_CommandLineInterface = new CommandLineInterface();
 
         // Starts the runtime engine for the game.
         // Virtual Machine will have the UI middleware.
-        d_virtualMachine = VirtualMachine.newInstance();
+        d_VirtualMachine = VirtualMachine.newInstance();
 
         // Attaches the CLI (stub) to VM.
-        d_virtualMachine.attachUIMiddleware(d_commandLineInterface);
+        d_VirtualMachine.attachUIMiddleware(d_CommandLineInterface);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -64,7 +55,7 @@ public class Application {
      * @return Value of virtual machine.
      */
     public static VirtualMachine VIRTUAL_MACHINE() {
-        return d_virtualMachine;
+        return d_VirtualMachine;
     }
 
     /**
@@ -73,7 +64,7 @@ public class Application {
      * @return Value of the game state
      */
     public static GameState getGameState() {
-        return d_virtualMachine.getGameState();
+        return d_VirtualMachine.getGameState();
     }
 
     /**
@@ -81,11 +72,6 @@ public class Application {
      */
     public void handleApplicationStartup() {
         setIsRunning(true);
-        try {
-            restoreMapFiles();
-        } catch (IOException | URISyntaxException l_ignored) {
-            // ignore exceptions occurred during storing map files to user data directory.
-        }
         VIRTUAL_MACHINE().setGameState(GameState.MAP_EDITOR);
     }
 
@@ -95,23 +81,9 @@ public class Application {
      * @throws InterruptedException If CLI interrupted by another thread.
      */
     public void handleCLIStartUp() throws InterruptedException {
-        d_commandLineInterface.d_thread.start();
+        d_CommandLineInterface.d_thread.start();
         // Wait till the game is over.
-        d_commandLineInterface.d_thread.join();
-    }
-
-    /**
-     * Restores the map files to user data directory location. Downloads the files to user location.
-     *
-     * @throws IOException        Throws if the directory can not be created. (because of permissions?)
-     * @throws URISyntaxException Throws if the directory can not be found.
-     */
-    public void restoreMapFiles() throws IOException, URISyntaxException {
-        // Download the files at user data directory.
-        Path l_sourceMapFiles = Paths.get(Objects.requireNonNull(Application.class.getClassLoader().getResource("map_files")).toURI());
-        Path l_userDataDirectory = PathResolverUtil.getUserDataDirectoryPath();
-        Files.walk(l_sourceMapFiles)
-                .forEach(source -> FileUtil.copy(source, l_userDataDirectory.resolve(l_sourceMapFiles.relativize(source))));
+        d_CommandLineInterface.d_thread.join();
     }
 
     /**
@@ -120,16 +92,16 @@ public class Application {
      * @return Value of false if user is interacting, meaning user is playing the game; true otherwise.
      */
     public static boolean isRunning() {
-        return d_isRunning;
+        return d_IsRunning;
     }
 
     /**
      * Sets new false if user is interacting, meaning user is playing the game; true otherwise.
      *
-     * @param d_isRunning New value of false if user is interacting, meaning user is playing the game; true otherwise.
+     * @param p_isRunning New value of false if user is interacting, meaning user is playing the game; true otherwise.
      */
-    public static void setIsRunning(boolean d_isRunning) {
-        d_isRunning = d_isRunning;
+    public static void setIsRunning(boolean p_isRunning) {
+        d_IsRunning = p_isRunning;
     }
 
     /**

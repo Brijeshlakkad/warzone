@@ -23,7 +23,7 @@ public class UserCommandLayout {
     /**
      * The list of all classes across each GameState (A state of the game).
      */
-    private static Map<GameState, CommandLayout> d_gameStateListMap = new HashMap<>();
+    private static Map<GameState, CommandLayout> d_GameStateListMap = new HashMap<>();
 
     /**
      * The object which has its user commands for <code>GAME_PLAY</code> game state.
@@ -44,12 +44,12 @@ public class UserCommandLayout {
      * Stores the commands according to the game state
      */
     static {
-        d_gameStateListMap.put(
+        d_GameStateListMap.put(
                 GameState.MAP_EDITOR,
                 UserCommandLayout.MAP_EDITOR_LAYOUT
         );
 
-        d_gameStateListMap.put(
+        d_GameStateListMap.put(
                 GameState.GAME_PLAY,
                 UserCommandLayout.GAME_PLAY_LAYOUT
         );
@@ -68,7 +68,7 @@ public class UserCommandLayout {
         List<PredefinedUserCommand> l_globalCommandList = UserCommandLayout.findByHeadOfCommand(COMMON_LAYOUT, p_headOfCommand);
         return l_globalCommandList.size() > 0 ?
                 l_globalCommandList.get(0) :
-                UserCommandLayout.findFirstByHeadOfCommand(d_gameStateListMap.get(Application.getGameState()),
+                UserCommandLayout.findFirstByHeadOfCommand(d_GameStateListMap.get(Application.getGameState()),
                         p_headOfCommand);
     }
 

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Brijesh Lakkad
  */
 public class ShowMapServiceTest {
-    ShowMapService d_showMapService;
+    private ShowMapService d_showMapService;
 
     /**
      * Setting up the context by loading the map file before testing the class methods.
@@ -41,10 +41,10 @@ public class ShowMapServiceTest {
         // Re-initialise map editor engine.
         MapEditorEngine.getInstance().initialise();
 
-        URL d_testFilePath = ShowMapServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
-        assertNotNull(d_testFilePath);
+        URL l_testFilePath = ShowMapServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
+        assertNotNull(l_testFilePath);
         // In Windows, URL will create %20 for space. To avoid, use the below logic.
-        String l_url = new URI(d_testFilePath.getPath()).getPath();
+        String l_url = new URI(l_testFilePath.getPath()).getPath();
         l_editMapService.handleLoadMap(l_url);
     }
 
