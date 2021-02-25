@@ -240,7 +240,8 @@ public class Player {
         // Requests user interface for input from user.
         String l_responseVal = "";
         do {
-            Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("\nPlayer: %s--------\nIssue Order:", this.d_name));
+            System.out.println("\nReinforce Army left for " + this.getName()+ ": " +this.getRemainingReinforcementCount());
+            Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Player: %s--------\nIssue Order:", this.d_name));
             l_responseVal = l_responseOfFuture.get();
         } while (l_responseVal.isEmpty());
         try {

@@ -137,7 +137,7 @@ public class Order {
      */
     public void execute() {
         if (this.getOrderType() == OrderType.deploy) {
-            this.getCountry().setNumberOfArmies(this.getNumOfReinforcements());
+            this.getCountry().setNumberOfArmies(this.getCountry().getNumberOfArmies() + this.getNumOfReinforcements());
         }
         this.getOwner().addExecutedOrder(this);
     }
