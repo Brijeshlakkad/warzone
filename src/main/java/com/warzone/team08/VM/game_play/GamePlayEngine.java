@@ -3,7 +3,7 @@ package com.warzone.team08.VM.game_play;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.GameLoopState;
 import com.warzone.team08.VM.constants.interfaces.Engine;
-import com.warzone.team08.VM.entities.Order;
+import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.services.AssignReinforcementService;
