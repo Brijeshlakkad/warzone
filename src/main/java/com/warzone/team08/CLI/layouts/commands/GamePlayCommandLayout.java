@@ -22,6 +22,10 @@ public class GamePlayCommandLayout implements CommandLayout {
      */
     List<PredefinedUserCommand> d_userCommands;
 
+    /**
+     * Constructor sets the predefined user commands. These commands will be used to check the structure of a command
+     * entered by the user.
+     */
     public GamePlayCommandLayout() {
         d_userCommands = new ArrayList<>();
 

@@ -1,12 +1,9 @@
 package com.warzone.team08.VM.entities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.warzone.team08.CLI.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.OrderType;
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.exceptions.OrderOutOfBoundException;
-import com.warzone.team08.VM.exceptions.ReinforcementOutOfBoundException;
+import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.responses.CommandResponse;
 
 import java.io.IOException;
@@ -44,6 +41,9 @@ public class Player {
      */
     private boolean d_hasDeployed;
 
+    /**
+     * Initializes variables required to handle player state.
+     */
     public Player() {
         d_orders = new ArrayList<>();
         d_executedOrders = new ArrayList<>();
@@ -193,37 +193,14 @@ public class Player {
      */
     public boolean canPlayerReinforce(int p_usedReinforcementCount) {
         if (this.getRemainingReinforcementCount() == 0) {
-            this.setCanReinforce(false);
             return false;
         }
         int l_remainingReinforcementCount = this.getRemainingReinforcementCount() - p_usedReinforcementCount;
-        this.setRemainingReinforcementCount(l_remainingReinforcementCount);
         if (l_remainingReinforcementCount < 0) {
-            this.setCanReinforce(false);
             return false;
         }
-        this.d_remainingReinforcementCount = l_remainingReinforcementCount;
-        // If the remaining reinforcement is zero, set d_canReinforce to false.
-        this.setCanReinforce(d_remainingReinforcementCount > 0);
+        this.setRemainingReinforcementCount(l_remainingReinforcementCount);
         return true;
-    }
-
-    /**
-     * If player can issue the order or not.
-     *
-     * @return True if the player can issue the order.
-     */
-    public boolean isCanReinforce() {
-        return d_canReinforce;
-    }
-
-    /**
-     * Sets the value for indicating that if player can issue the order.
-     *
-     * @param p_canReinforce Value of true if the player can issue the order.
-     */
-    public void setCanReinforce(boolean p_canReinforce) {
-        d_canReinforce = p_canReinforce;
     }
 
     /**
@@ -231,16 +208,17 @@ public class Player {
      *
      * @throws ReinforcementOutOfBoundException If the player doesn't have enough reinforcement to issue the order.
      * @throws InvalidCommandException          If there is an error while preprocessing the user command.
+     * @throws InvalidArgumentException         If the mentioned value is not of expected type.
      * @throws EntityNotFoundException          If the target country not found.
      * @throws ExecutionException               If any error while processing concurrent thread.
      * @throws InterruptedException             If scheduled thread was interrupted.
      */
     public void issueOrder() throws
-            ReinforcementOutOfBoundException, InvalidCommandException, EntityNotFoundException, ExecutionException, InterruptedException {
+            ReinforcementOutOfBoundException, InvalidCommandException, EntityNotFoundException, ExecutionException, InterruptedException, InvalidArgumentException {
         // Requests user interface for input from user.
         String l_responseVal = "";
         do {
-            VirtualMachine.getInstance().stdout(String.format("\nPlayer: %s--------\nYou have left %s reinforcements.", this.d_name, this.d_remainingReinforcementCount));
+            VirtualMachine.getInstance().stdout(String.format("\nPlayer: %s--------\nUSAGE: You can check map details\n> showmap <return>", this.d_name, this.d_remainingReinforcementCount));
             Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Issue Order:"));
             l_responseVal = l_responseOfFuture.get();
         } while (l_responseVal.isEmpty());
@@ -250,13 +228,10 @@ public class Player {
             Order l_newOrder = Order.map(l_commandResponse);
             if (l_newOrder.getOrderType() == OrderType.deploy) {
                 if (this.getAssignedCountries().contains(l_newOrder.getCountry())) {
-                    if (this.isCanReinforce() && this.canPlayerReinforce(l_newOrder.getNumOfReinforcements())) {
+                    if (this.getRemainingReinforcementCount() != 0 && this.canPlayerReinforce(l_newOrder.getNumOfReinforcements())) {
                         l_newOrder.setOwner(this);
                         this.addOrder(l_newOrder);
                     } else {
-                        if (this.getRemainingReinforcementCount() == 0) {
-                            this.setCanReinforce(false);
-                        }
                         throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
                     }
                 } else {

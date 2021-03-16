@@ -50,6 +50,8 @@ public class ShowMapServiceTest {
 
     /**
      * This method will initialise the ShowMapService object before running each test cases.
+     *
+     * @throws EntityNotFoundException Throws if required entity is not found.
      */
     @Before
     public void before() throws EntityNotFoundException {
@@ -73,6 +75,9 @@ public class ShowMapServiceTest {
         assertEquals(l_mapTable, l_mapData);
     }
 
+    /**
+     * Tests whether the found country list is actually a neighbour of the given country.
+     */
     @Test
     public void testShowNeighbourCountriesTest() {
         String[][] l_neighbourMatrix = {

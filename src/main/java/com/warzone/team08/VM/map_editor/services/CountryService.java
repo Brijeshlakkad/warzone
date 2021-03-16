@@ -31,6 +31,9 @@ public class CountryService {
      */
     private final CountryRepository d_countryRepository;
 
+    /**
+     * Initializes different object.
+     */
     public CountryService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentRepository = new ContinentRepository();

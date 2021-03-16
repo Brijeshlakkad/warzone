@@ -18,6 +18,9 @@ public class GamePlayClassLayout implements ClassLayout {
      */
     private final Map<String, String> d_commandToClassMapper = new HashMap<>();
 
+    /**
+     * Default constructor to map command with class.
+     */
     public GamePlayClassLayout() {
         d_commandToClassMapper.put("gameplayer", "com.warzone.team08.VM.game_play.services.PlayerService");
         d_commandToClassMapper.put("assigncountries", "com.warzone.team08.VM.game_play.services.DistributeCountriesService");

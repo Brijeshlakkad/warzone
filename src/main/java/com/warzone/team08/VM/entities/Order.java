@@ -1,9 +1,9 @@
 package com.warzone.team08.VM.entities;
 
-import com.warzone.team08.CLI.exceptions.InvalidArgumentException;
-import com.warzone.team08.CLI.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.repositories.CountryRepository;
 import com.warzone.team08.VM.responses.CommandResponse;
 
@@ -24,6 +24,9 @@ public class Order {
      */
     private final static CountryRepository COUNTRY_REPOSITORY = new CountryRepository();
 
+    /**
+     * Default constructor.
+     */
     public Order() {
 
     }
@@ -142,8 +145,13 @@ public class Order {
         this.getOwner().addExecutedOrder(this);
     }
 
+    /**
+     * Returns the string describing player order.
+     *
+     * @return String representing player orders.
+     */
     @Override
     public String toString() {
-        return String.format("%s Player's order: %s %s %s", d_owner.getName(), d_orderType, d_country.getCountryName(), d_NumOfReinforcements);
+        return String.format("%s player's order: %s %s %s", d_owner.getName(), d_orderType, d_country.getCountryName(), d_NumOfReinforcements);
     }
 }

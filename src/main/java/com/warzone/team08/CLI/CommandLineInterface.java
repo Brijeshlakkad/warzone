@@ -78,6 +78,9 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
      */
     ReentrantLock d_reentrantLock = new ReentrantLock();
 
+    /**
+     * Default constructor. Initializes thread, <code>UserCommandMapper</code>, and <code>RequestService</code>.
+     */
     public CommandLineInterface() {
         d_thread = new Thread(this);
         d_UserCommandMapper = new UserCommandMapper();
@@ -154,7 +157,6 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
             } catch (InterruptedException l_ignored) {
             }
         }
-
     }
 
     /**
@@ -182,6 +184,9 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
                 return "";
             } catch (IOException p_ioException) {
                 return "";
+            } catch (InvalidCommandException | InvalidArgumentException p_exception) {
+                this.stderr(p_exception.getMessage());
+                return "";
             }
         } catch (InterruptedException p_e) {
             return "";
@@ -198,8 +203,9 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
     public void stdout(String p_message) {
         if (p_message.equals("GAME_ENGINE_TO_WAIT")) {
             this.setInteractionState(UserInteractionState.WAIT);
+        } else {
+            System.out.println(p_message);
         }
-        System.out.println(p_message);
     }
 
     /**

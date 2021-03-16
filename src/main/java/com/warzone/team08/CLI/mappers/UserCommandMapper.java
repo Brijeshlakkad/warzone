@@ -12,6 +12,7 @@ import com.warzone.team08.CLI.models.UserCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Converts string entity of user text to UserCommand object that can be used to call the different APIs
@@ -32,6 +33,10 @@ public class UserCommandMapper {
     public UserCommand toUserCommand(String p_userInput) {
         // Cracks a command line string
         List<String> l_commands = Arrays.asList(p_userInput.split("\\s"));
+
+        l_commands = l_commands.stream().filter(l_command ->
+                !l_command.trim().isEmpty()
+        ).collect(Collectors.toList());
 
         if (l_commands.size() > 0) {
             // The command entered by the user
@@ -136,7 +141,7 @@ public class UserCommandMapper {
      * Checks if the command doesn't need any argument to run
      *
      * @param p_predefinedUserCommand Value of the command which has the specification
-     * @param p_numOfKeys               Value of the number of keys entered by the user
+     * @param p_numOfKeys             Value of the number of keys entered by the user
      * @return True if the command can run alone; false otherwise
      */
     private boolean validateIfCommandCanRunAlone(PredefinedUserCommand p_predefinedUserCommand, int p_numOfKeys) {
@@ -153,7 +158,7 @@ public class UserCommandMapper {
      * Checks if the command needs value to proceed
      *
      * @param p_predefinedUserCommand Value of the command which has the specification.
-     * @param p_numOfKeys               Value of the number of text entered by the user after the command.
+     * @param p_numOfKeys             Value of the number of text entered by the user after the command.
      * @return True if the command can run alone; false otherwise.
      */
     private boolean validateIfCommandDoesNeedValue(PredefinedUserCommand p_predefinedUserCommand, int p_numOfKeys) {
@@ -170,7 +175,7 @@ public class UserCommandMapper {
      * Checks if the argument body is empty and the command needs an argument to run
      *
      * @param p_predefinedUserCommand Value of the command which has the specification
-     * @param p_numOfKeys               Value of the number of keys entered by the user
+     * @param p_numOfKeys             Value of the number of keys entered by the user
      * @return True if the entered command has at least one argument; false otherwise
      */
     private boolean validateIfCommandDoesNeedArgument(PredefinedUserCommand p_predefinedUserCommand, int p_numOfKeys) {

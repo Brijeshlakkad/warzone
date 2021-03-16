@@ -44,6 +44,9 @@ public class PredefinedUserCommand {
      */
     private boolean d_isGameEngineStartCommand = false;
 
+    /**
+     * Initialises the data members.
+     */
     public PredefinedUserCommand() {
         // Initialise references
         d_commandArgumentList = new ArrayList<>();

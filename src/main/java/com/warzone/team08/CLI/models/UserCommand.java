@@ -38,7 +38,11 @@ public class UserCommand {
     private boolean d_isExitCommand = false;
 
     /**
-     * Parameterised constructor.
+     * Parameterised constructor to set the predefined user command for the command entered by the user.
+     * <p>Note that there is not <code>setter</code> method to set <code>PredefinedUserCommand</code>.
+     *
+     * <p>
+     * This constructor also initialises its data member.
      *
      * @param p_predefinedUserCommand Value of predefined user command that will be used while interpreting the user
      *                                text.

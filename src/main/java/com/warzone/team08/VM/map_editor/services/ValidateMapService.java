@@ -90,7 +90,6 @@ public class ValidateMapService implements SingleCommand {
         }
     }
 
-
     /**
      * Checks that map is a connected graph.
      *
@@ -98,41 +97,48 @@ public class ValidateMapService implements SingleCommand {
      */
     public boolean isMapConnectedGraph() {
         boolean l_isValid = false;
-        List<Country> l_visitedCountry = new ArrayList<>();
-        Stack<Country> l_stack = new Stack<>();
-        List<Country> l_countryList = d_mapEditorEngine.getCountryList();
-        Country l_country = l_countryList.get(0);
-        l_stack.push(l_country);
+        int l_connectedGraphCount = 0;
 
-        //visiting country using the DFS logic
-        while (!l_stack.isEmpty()) {
-            Country l_countryGet = l_stack.pop();
-            l_visitedCountry.add(l_countryGet);
-            List<Country> l_neighbourCountries = l_countryGet.getNeighbourCountries();
-            for (Country l_pushCountry : l_neighbourCountries) {
-                if (!l_stack.contains(l_pushCountry)) {
-                    int l_counter = 0;
-                    for (Country l_compareCountry : l_visitedCountry) {
-                        if (l_pushCountry.equals(l_compareCountry)) {
-                            l_counter++;
+        List<Country> l_countryList = d_mapEditorEngine.getCountryList();
+        for (int i = 0; i < 2; i++) {
+            List<Country> l_visitedCountry = new ArrayList<>();
+            Stack<Country> l_stack = new Stack<>();
+            Country l_country = l_countryList.get(i);
+            l_stack.push(l_country);
+
+            //visiting country using the DFS logic
+            while (!l_stack.isEmpty()) {
+                Country l_countryGet = l_stack.pop();
+                l_visitedCountry.add(l_countryGet);
+                List<Country> l_neighbourCountries = l_countryGet.getNeighbourCountries();
+                for (Country l_pushCountry : l_neighbourCountries) {
+                    if (!l_stack.contains(l_pushCountry)) {
+                        int l_counter = 0;
+                        for (Country l_compareCountry : l_visitedCountry) {
+                            if (l_pushCountry.equals(l_compareCountry)) {
+                                l_counter++;
+                            }
+                        }
+                        if (l_counter == 0) {
+                            l_stack.push(l_pushCountry);
                         }
                     }
-                    if (l_counter == 0) {
-                        l_stack.push(l_pushCountry);
+                }
+            }
+            //Check that CountryList and VisitedCountryList are same or not
+            int compareCounter = 0;
+            for (Country l_compareCountry : l_countryList) {
+                for (Country l_compare2 : l_visitedCountry) {
+                    if (l_compare2.equals(l_compareCountry)) {
+                        compareCounter++;
                     }
                 }
             }
-        }
-        //Check that CountryList and VisitedCountryList are same or not
-        int compareCounter = 0;
-        for (Country l_compareCountry : l_countryList) {
-            for (Country l_compare2 : l_visitedCountry) {
-                if (l_compare2.equals(l_compareCountry)) {
-                    compareCounter++;
-                }
+            if (compareCounter == l_countryList.size()) {
+                ++l_connectedGraphCount;
             }
         }
-        if (compareCounter == l_countryList.size()) {
+        if (l_connectedGraphCount == 2) {
             l_isValid = true;
         }
         return l_isValid;

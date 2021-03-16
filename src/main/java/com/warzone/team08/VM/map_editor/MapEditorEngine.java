@@ -129,7 +129,7 @@ public class MapEditorEngine implements Engine {
                 }
             }
             else{
-                throw new EntityNotFoundException("add minimum 1 country in a continent");
+                throw new EntityNotFoundException("Add minimum one country in a continent!");
             }
         }
         return l_continentCountryMap;

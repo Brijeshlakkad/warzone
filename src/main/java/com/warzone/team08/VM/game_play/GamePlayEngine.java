@@ -1,6 +1,5 @@
 package com.warzone.team08.VM.game_play;
 
-import com.warzone.team08.CLI.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.GameLoopState;
 import com.warzone.team08.VM.constants.interfaces.Engine;
@@ -243,11 +242,11 @@ public class GamePlayEngine implements Engine {
                     VirtualMachine.getInstance().stderr(p_e.getMessage());
 
                     // If all of its reinforcements have been placed, don't ask the player again.
-                    if (!l_currentPlayer.isCanReinforce()) {
+                    if (l_currentPlayer.getRemainingReinforcementCount() == 0) {
                         l_canTryAgain = false;
                         finishedIssuingOrders.add(l_currentPlayer);
                     }
-                } catch (EntityNotFoundException | InvalidCommandException p_exception) {
+                } catch (EntityNotFoundException | InvalidCommandException | InvalidArgumentException p_exception) {
                     l_invalidPreviousOrder = true;
                     // Show VMException error to the user.
                     VirtualMachine.getInstance().stderr(p_exception.getMessage());

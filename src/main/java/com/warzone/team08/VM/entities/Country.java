@@ -26,11 +26,19 @@ public class Country {
      */
     public static int d_SerialNumber = 0;
 
+    /**
+     * Assigns country id to the country and creates the neighbour countries list.
+     */
     public Country() {
         this.COUNTRY_ID = ++d_SerialNumber;
         d_neighbourCountries = new ArrayList<>();
     }
 
+    /**
+     * Assigns country id to the country and creates the neighbour countries list.
+     *
+     * @param p_countryId Country id.
+     */
     public Country(int p_countryId) {
         this.COUNTRY_ID = p_countryId;
         d_neighbourCountries = new ArrayList<>();
@@ -168,8 +176,6 @@ public class Country {
      * @param p_l_o Value of the second element to be checked with.
      * @return True if the both are same.
      */
-
-
     @Override
     public boolean equals(Object p_l_o) {
         if (this == p_l_o) return true;
@@ -179,6 +185,11 @@ public class Country {
                 d_continent.equals(l_l_country.d_continent);
     }
 
+    /**
+     * Return the hash value of the country.
+     *
+     * @return Hash value of the country.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(COUNTRY_ID, d_continent);

@@ -17,6 +17,9 @@ public class CommonClassLayout implements ClassLayout {
      */
     private final Map<String, String> d_commandToClassMapper = new HashMap<>();
 
+    /**
+     * Default constructor to map command with file.
+     */
     public CommonClassLayout() {
         d_commandToClassMapper.put("exit", "com.warzone.team08.VM.common.services.ApplicationExitService");
     }

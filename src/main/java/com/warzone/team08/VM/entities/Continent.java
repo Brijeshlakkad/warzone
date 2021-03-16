@@ -24,6 +24,9 @@ public class Continent {
      */
     public static int d_SerialNumber = 0;
 
+    /**
+     * Assigns Continent id to the continent and creates the member countries list.
+     */
     public Continent() {
         this.d_continentId = ++d_SerialNumber;
         d_countryList = new ArrayList<>();
@@ -133,6 +136,11 @@ public class Continent {
         return d_continentId.equals(l_that.d_continentId);
     }
 
+    /**
+     * Returns the hash value of the continent.
+     *
+     * @return Hash value of the continent.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(d_continentId);

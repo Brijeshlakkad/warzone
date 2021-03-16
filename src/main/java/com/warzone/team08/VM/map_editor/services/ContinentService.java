@@ -22,6 +22,9 @@ public class ContinentService {
     private final MapEditorEngine d_mapEditorEngine;
     private final ContinentRepository d_continentRepository;
 
+    /**
+     * Initialization of different objects.
+     */
     public ContinentService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentRepository = new ContinentRepository();

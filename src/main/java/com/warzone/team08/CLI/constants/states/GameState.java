@@ -23,6 +23,11 @@ public enum GameState {
 
     public String d_jsonValue;
 
+    /**
+     * Parameterised constructor to set the (json) string value of the enum member.
+     *
+     * @param p_jsonValue
+     */
     private GameState(String p_jsonValue) {
         this.d_jsonValue = p_jsonValue;
     }
