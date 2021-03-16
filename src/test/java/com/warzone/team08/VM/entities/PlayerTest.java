@@ -2,6 +2,8 @@ package com.warzone.team08.VM.entities;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.CLI.CommandLineInterface;
+import com.warzone.team08.CLI.constants.states.GameState;
+import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
@@ -62,7 +64,7 @@ public class PlayerTest {
         d_editMapService.handleLoadMap(d_TestFilePath.getPath());
 
         // Set the game state to GAME_PLAY
-        VirtualMachine.getInstance().setGameStatePlaying();
+        GameEngine.getInstance().setGameState(GameState.GAME_PLAY);
 
         List<Country> l_assignedCountries = MapEditorEngine.getInstance().getCountryList().subList(0, Math.min(4, MapEditorEngine.getInstance().getCountryList().size()));
         Player l_player1 = new Player();

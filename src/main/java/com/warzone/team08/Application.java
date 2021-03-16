@@ -72,7 +72,6 @@ public class Application {
      */
     public void handleApplicationStartup() {
         setIsRunning(true);
-        VIRTUAL_MACHINE().setGameState(GameState.MAP_EDITOR);
     }
 
     /**

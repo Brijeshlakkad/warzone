@@ -2,6 +2,7 @@ package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.CLI.constants.states.GameState;
+import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
@@ -48,7 +49,7 @@ public class LoadMapServiceTest {
     public void testLoadMapService() throws URISyntaxException {
         // In Windows, URL will create %20 for space. To avoid, use the below logic.
         String l_url = new URI(d_testFilePath.getPath()).getPath();
-        Application.VIRTUAL_MACHINE().setGameStatePlaying();
+        GameEngine.getInstance().setGameState(GameState.GAME_PLAY);
         assertEquals(Application.getGameState(), GameState.GAME_PLAY);
     }
 }

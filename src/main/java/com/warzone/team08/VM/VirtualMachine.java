@@ -3,8 +3,6 @@ package com.warzone.team08.VM;
 import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.UserInterfaceMiddleware;
 import com.warzone.team08.VM.exceptions.ExceptionHandler;
-import com.warzone.team08.VM.game_play.GamePlayEngine;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,11 +20,6 @@ public class VirtualMachine {
      * Singleton instance of the class.
      */
     private static VirtualMachine d_Instance;
-
-    /**
-     * Keeps track of the game state
-     */
-    private GameState d_gameState = GameState.NOT_STARTED;
 
     /**
      * List of User interface middleware. (Can be a stub/skeleton)
@@ -52,11 +45,17 @@ public class VirtualMachine {
     }
 
     /**
+     * Initialise engine to reset the runtime information.
+     */
+    public void initialise() {
+        VirtualMachine.GAME_ENGINE().initialise();
+    }
+
+    /**
      * Terminates gracefully. Signals its engines to terminate.
      */
     public static void exit() {
-        MAP_EDITOR_ENGINE().shutdown();
-        GAME_PLAY_ENGINE().shutdown();
+        GAME_ENGINE().shutdown();
         VirtualMachine.getInstance().stdout("Shutting down...");
     }
 
@@ -84,56 +83,21 @@ public class VirtualMachine {
     }
 
     /**
-     * Sets new Keeps track of the game state.
-     *
-     * @param p_gameState New value of Keeps track of the game state.
-     */
-    public void setGameState(GameState p_gameState) {
-        d_gameState = p_gameState;
-    }
-
-    /**
      * Gets the state of the game
      *
      * @return Value of the game state
      */
     public GameState getGameState() {
-        return d_gameState;
+        return GAME_ENGINE().getGameState();
     }
 
     /**
-     * Sets the game state to <code>GAME_PLAY</code>
-     */
-    public void setGameStatePlaying() {
-        this.setGameState(GameState.GAME_PLAY);
-    }
-
-    /**
-     * Gets VM runtime map-editor engine to store map runtime information.
+     * Gets game engine to store runtime information of the game.
      *
-     * @return Value of the map editor engine.
+     * @return Value of the game engine.
      */
-    public static MapEditorEngine MAP_EDITOR_ENGINE() {
-        return MapEditorEngine.getInstance();
-    }
-
-    /**
-     * Gets VM runtime game-play engine to store runtime after game starts.
-     *
-     * @return Value of the map editor engine.
-     */
-    public static GamePlayEngine GAME_PLAY_ENGINE() {
-        return GamePlayEngine.getInstance();
-    }
-
-    /**
-     * Initialise all the engines to reset the runtime information.
-     */
-    public void initialise() {
-        // MAP_EDITOR ENGINE
-        VirtualMachine.MAP_EDITOR_ENGINE().initialise();
-        // GAME_PLAY ENGINE
-        VirtualMachine.GAME_PLAY_ENGINE().initialise();
+    public static GameEngine GAME_ENGINE() {
+        return GameEngine.getInstance();
     }
 
     /**
