@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -46,14 +48,15 @@ public class DistributeCountriesServiceTest {
      * @throws VMException Exception generated during execution.
      */
     @Before
-    public void before() throws VMException {
+    public void before() throws VMException, URISyntaxException {
         // (Re)initialise the VM.
         VirtualMachine.getInstance().initialise();
 
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
-        assert d_TestFilePath != null;
-        l_editMapService.handleLoadMap(d_TestFilePath.getPath());
+        assertNotNull(d_TestFilePath);
+        String l_url = new URI(d_TestFilePath.getPath()).getPath();
+        l_editMapService.handleLoadMap(l_url);
 
         Player l_player1 = new Player();
         Player l_player2 = new Player();
