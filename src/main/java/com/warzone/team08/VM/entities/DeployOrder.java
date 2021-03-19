@@ -15,7 +15,11 @@ public class DeployOrder implements Order {
     private final int d_NumOfReinforcements;
 
     /**
-     * Default constructor.
+     * Default parameterised constructor.
+     *
+     * @param p_owner               Player who has initiated this order.
+     * @param p_targetCountry       Target country.
+     * @param p_NumOfReinforcements Number of reinforcements to be deployed.
      */
     public DeployOrder(Player p_owner, Country p_targetCountry, int p_NumOfReinforcements) {
         d_owner = p_owner;

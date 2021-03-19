@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -32,20 +33,25 @@ public class DistributeCountriesServiceTest {
 
     /**
      * Runs before the test case class runs; Initializes different objects required to perform test.
+     *
+     * @throws IOException        If exception while coping the predefined files.
+     * @throws URISyntaxException If the path to parent directory of the files doesn't exist.
      */
     @BeforeClass
-    public static void createPlayersList() {
+    public static void createPlayersList() throws IOException, URISyntaxException {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
         d_GamePlayEngine = GamePlayEngine.getInstance();
 
+        d_Application.restoreMapFiles();
         d_TestFilePath = DistributeCountriesServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
     }
 
     /**
      * Setting up the required objects before performing test.
      *
-     * @throws VMException Exception generated during execution.
+     * @throws VMException        Exception generated during execution.
+     * @throws URISyntaxException If error while parsing the string representing the path.
      */
     @Before
     public void before() throws VMException, URISyntaxException {

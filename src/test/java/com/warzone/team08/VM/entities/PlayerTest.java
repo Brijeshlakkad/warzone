@@ -2,13 +2,13 @@ package com.warzone.team08.VM.entities;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.CLI.CommandLineInterface;
-import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
+import com.warzone.team08.VM.phases.PlaySetup;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,12 +53,13 @@ public class PlayerTest {
      * @throws ResourceNotFoundException Throws if map file not found.
      * @throws InvalidInputException     Throws if input command is invalid.
      * @throws EntityNotFoundException   Throws if entity not found.
+     * @throws URISyntaxException        If error while parsing the string representing the path.
      * @see EditMapService#handleLoadMap If any exception thrown.
      */
     @Before
     public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
         // CLI to read and interpret the user input
-        d_commandLineInterface = new CommandLineInterface();
+        d_commandLineInterface = new CommandLineInterface(d_Application);
 
         // (Re)initialise the VM.
         VirtualMachine.getInstance().initialise();
@@ -70,7 +71,7 @@ public class PlayerTest {
         d_editMapService.handleLoadMap(l_url);
 
         // Set the game state to GAME_PLAY
-        GameEngine.getInstance().setGameState(GameState.GAME_PLAY);
+        GameEngine.getInstance().setGamePhase(new PlaySetup(GameEngine.getInstance()));
 
         List<Country> l_assignedCountries = MapEditorEngine.getInstance().getCountryList().subList(0, Math.min(4, MapEditorEngine.getInstance().getCountryList().size()));
         Player l_player1 = new Player();
@@ -107,7 +108,7 @@ public class PlayerTest {
     /**
      * Tests the player issue order functionality when the player enters more reinforcements to deploy than possessing.
      *
-     * @throws VMException If any exception while processing the issue order request.
+     * @throws VMException          If any exception while processing the issue order request.
      * @throws ExecutionException   Throws if error occurs in execution.
      * @throws InterruptedException Throws if interruption occurs during normal execution.
      */

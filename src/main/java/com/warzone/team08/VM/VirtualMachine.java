@@ -1,8 +1,8 @@
 package com.warzone.team08.VM;
 
-import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.UserInterfaceMiddleware;
 import com.warzone.team08.VM.exceptions.ExceptionHandler;
+import com.warzone.team08.VM.phases.Phase;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,6 +48,7 @@ public class VirtualMachine {
      * Initialise engine to reset the runtime information.
      */
     public void initialise() {
+        // Prepare instances.
         VirtualMachine.GAME_ENGINE().initialise();
     }
 
@@ -83,21 +84,21 @@ public class VirtualMachine {
     }
 
     /**
-     * Gets the state of the game
-     *
-     * @return Value of the game state
-     */
-    public GameState getGameState() {
-        return GAME_ENGINE().getGameState();
-    }
-
-    /**
      * Gets game engine to store runtime information of the game.
      *
      * @return Value of the game engine.
      */
     public static GameEngine GAME_ENGINE() {
         return GameEngine.getInstance();
+    }
+
+    /**
+     * Gets the state of the game
+     *
+     * @return Value of the game state
+     */
+    public static Phase getGamePhase() {
+        return GAME_ENGINE().getGamePhase();
     }
 
     /**

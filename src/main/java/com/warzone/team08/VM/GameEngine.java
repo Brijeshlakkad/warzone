@@ -1,8 +1,9 @@
 package com.warzone.team08.VM;
 
-import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.phases.Phase;
+import com.warzone.team08.VM.phases.Preload;
 
 /**
  * Handles the connection with different user interfaces. Creates an environment for the player to store the
@@ -18,9 +19,9 @@ public class GameEngine {
     private static GameEngine d_Instance;
 
     /**
-     * Keeps track of the game state
+     * State object of the GameEngine
      */
-    private GameState d_gameState = GameState.NOT_STARTED;
+    private Phase d_gameState;
 
     /**
      * Gets the single instance of the <code>GameEngine</code> class which was created before.
@@ -39,7 +40,7 @@ public class GameEngine {
      * Initialise all the engines to reset the runtime information.
      */
     public void initialise() {
-        d_Instance.setGameState(GameState.MAP_EDITOR);
+        d_Instance.setGamePhase(new Preload(this));
         // MAP_EDITOR ENGINE
         GameEngine.MAP_EDITOR_ENGINE().initialise();
         // GAME_PLAY ENGINE
@@ -55,20 +56,20 @@ public class GameEngine {
     }
 
     /**
-     * Sets new Keeps track of the game state.
+     * Sets new phase for the game.
      *
-     * @param p_gameState New value of Keeps track of the game state.
+     * @param p_gamePhase New value of the game phase.
      */
-    public void setGameState(GameState p_gameState) {
-        d_gameState = p_gameState;
+    public void setGamePhase(Phase p_gamePhase) {
+        d_gameState = p_gamePhase;
     }
 
     /**
-     * Gets the state of the game
+     * Gets the phase of game.
      *
-     * @return Value of the game state
+     * @return Value of the game phase.
      */
-    public GameState getGameState() {
+    public Phase getGamePhase() {
         return d_gameState;
     }
 

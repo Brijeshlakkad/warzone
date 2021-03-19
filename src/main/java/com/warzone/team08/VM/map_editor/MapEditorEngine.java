@@ -115,7 +115,7 @@ public class MapEditorEngine implements Engine {
     public Map<String, List<String>> getContinentCountryMap() throws EntityNotFoundException {
         Map<String, List<String>> l_continentCountryMap = new HashMap<>();
         for (Continent l_continent : d_continentList) {
-            if(!l_continent.getCountryList().isEmpty()){
+            if (!l_continent.getCountryList().isEmpty()) {
                 for (Country l_country : l_continent.getCountryList()) {
                     String continentName = l_continent.getContinentName();
                     List<String> l_countryNames;
@@ -127,8 +127,7 @@ public class MapEditorEngine implements Engine {
                     l_countryNames.add(l_country.getCountryName());
                     l_continentCountryMap.put(continentName, l_countryNames);
                 }
-            }
-            else{
+            } else {
                 throw new EntityNotFoundException("Add minimum one country in a continent!");
             }
         }

@@ -1,8 +1,16 @@
 package com.warzone.team08;
 
 import com.warzone.team08.CLI.CommandLineInterface;
-import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.utils.FileUtil;
+import com.warzone.team08.VM.utils.PathResolverUtil;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 /**
  * The main class of the War Zone Team08
@@ -14,22 +22,22 @@ public class Application {
     /**
      * False if user is interacting, meaning user is playing the game; true otherwise
      */
-    private static volatile boolean d_IsRunning = true;
+    private volatile boolean d_IsRunning = true;
 
     /**
      * Command-line user interface; Responsible for taking input from a user.
      */
-    private static CommandLineInterface d_CommandLineInterface;
+    private CommandLineInterface d_CommandLineInterface;
 
     /**
      * Connects interface with method APIs; An environment for the player to store the information.
      */
-    private static VirtualMachine d_VirtualMachine;
+    private VirtualMachine d_VirtualMachine;
 
     public Application() {
         // Creates interface for user interaction.
         // Just a local variable as the instance is not being used/shared with any other class.
-        d_CommandLineInterface = new CommandLineInterface();
+        d_CommandLineInterface = new CommandLineInterface(this);
 
         // Starts the runtime engine for the game.
         // Virtual Machine will have the UI middleware.
@@ -54,17 +62,23 @@ public class Application {
      *
      * @return Value of virtual machine.
      */
-    public static VirtualMachine VIRTUAL_MACHINE() {
+    public VirtualMachine VIRTUAL_MACHINE() {
         return d_VirtualMachine;
     }
 
     /**
-     * Gets the state of the game
+     * Only for testing purpose. Restores the map files to user data directory location. Downloads the files to user
+     * location.
      *
-     * @return Value of the game state
+     * @throws IOException        Throws if the directory can not be created. (because of permissions?)
+     * @throws URISyntaxException Throws if the directory can not be found.
      */
-    public static GameState getGameState() {
-        return d_VirtualMachine.getGameState();
+    public void restoreMapFiles() throws IOException, URISyntaxException {
+        // Download the files at user data directory.
+        Path l_sourceMapFiles = Paths.get(Objects.requireNonNull(Application.class.getClassLoader().getResource("map_files")).toURI());
+        Path l_userDataDirectory = PathResolverUtil.getUserDataDirectoryPath();
+        Files.walk(l_sourceMapFiles)
+                .forEach(source -> FileUtil.copy(source, l_userDataDirectory.resolve(l_sourceMapFiles.relativize(source))));
     }
 
     /**
@@ -90,7 +104,7 @@ public class Application {
      *
      * @return Value of false if user is interacting, meaning user is playing the game; true otherwise.
      */
-    public static boolean isRunning() {
+    public boolean isRunning() {
         return d_IsRunning;
     }
 
@@ -99,16 +113,7 @@ public class Application {
      *
      * @param p_isRunning New value of false if user is interacting, meaning user is playing the game; true otherwise.
      */
-    public static void setIsRunning(boolean p_isRunning) {
+    public void setIsRunning(boolean p_isRunning) {
         d_IsRunning = p_isRunning;
-    }
-
-    /**
-     * To exist from the game
-     */
-    public static void exit() {
-        Application.setIsRunning(false);
-        VirtualMachine.exit();
-        System.exit(0);
     }
 }

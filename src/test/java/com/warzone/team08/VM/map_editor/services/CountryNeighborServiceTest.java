@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -36,7 +35,8 @@ public class CountryNeighborServiceTest {
     /**
      * Re-initializes the continent list before test case run.
      *
-     * @throws VMException Exception generated during execution.
+     * @throws VMException        Exception generated during execution.
+     * @throws URISyntaxException If error while parsing the string representing the path.
      */
     @Before
     public void beforeTestCase() throws VMException, URISyntaxException {

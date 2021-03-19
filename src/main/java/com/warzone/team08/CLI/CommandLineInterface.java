@@ -79,9 +79,17 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
     ReentrantLock d_reentrantLock = new ReentrantLock();
 
     /**
-     * Default constructor. Initializes thread, <code>UserCommandMapper</code>, and <code>RequestService</code>.
+     * Instance of <code>Application</code>.
      */
-    public CommandLineInterface() {
+    private Application d_application;
+
+    /**
+     * Default constructor. Initializes thread, <code>UserCommandMapper</code>, and <code>RequestService</code>.
+     *
+     * @param p_application Instance of the class which has the entry point <code>main</code> method.
+     */
+    public CommandLineInterface(Application p_application) {
+        d_application = p_application;
         d_thread = new Thread(this);
         d_UserCommandMapper = new UserCommandMapper();
         d_requestService = new RequestService();
@@ -115,7 +123,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
      * Method to be called when thread steps
      */
     public void run() {
-        while (Application.isRunning()) {
+        while (d_application.isRunning()) {
             try {
                 d_reentrantLock.lockInterruptibly();
                 try {
@@ -175,10 +183,12 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
                 }
                 ObjectMapper mapper = new ObjectMapper();
                 UserCommand l_userCommand = d_UserCommandMapper.toUserCommand(this.waitForUserInput());
-                if (l_userCommand.getPredefinedUserCommand().isGameEngineCommand()) {
+                if (l_userCommand.getPredefinedUserCommand().isOrderCommand()) {
                     return mapper.writeValueAsString(l_userCommand);
-                } else {
+                } else if (l_userCommand.getPredefinedUserCommand().isGameEngineCommand()) {
                     d_userCommandQueue.add(l_userCommand);
+                } else {
+                    this.stderr("Invalid command!");
                 }
                 return "";
             } catch (IOException p_ioException) {
