@@ -8,6 +8,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.Assert.assertNotNull;
@@ -37,12 +39,13 @@ public class CountryNeighborServiceTest {
      * @throws VMException Exception generated during execution.
      */
     @Before
-    public void beforeTestCase() throws VMException {
+    public void beforeTestCase() throws VMException, URISyntaxException {
         MapEditorEngine.getInstance().initialise();
         d_editMapService = new EditMapService();
         d_testFilePath = getClass().getClassLoader().getResource("test_map_files/test_map.map");
-        assert d_testFilePath != null;
-        d_editMapService.handleLoadMap(d_testFilePath.getPath());
+        assertNotNull(d_testFilePath);
+        String l_url = new URI(d_testFilePath.getPath()).getPath();
+        d_editMapService.handleLoadMap(l_url);
     }
 
     /**

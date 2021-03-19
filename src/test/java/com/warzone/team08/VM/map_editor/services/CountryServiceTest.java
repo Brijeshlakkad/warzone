@@ -8,6 +8,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -44,10 +46,12 @@ public class CountryServiceTest {
      * @throws EntityNotFoundException    Throws if entity not found.
      */
     @Before
-    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException{
+    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
         d_editMapService = new EditMapService();
         d_testFilePath = getClass().getClassLoader().getResource("test_map_files/test_map.map");
-        d_editMapService.handleLoadMap(d_testFilePath.getPath());
+        assertNotNull(d_testFilePath);
+        String l_url = new URI(d_testFilePath.getPath()).getPath();
+        d_editMapService.handleLoadMap(l_url);
         d_continentList = MapEditorEngine.getInstance().getContinentList();
     }
 

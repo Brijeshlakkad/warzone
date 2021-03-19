@@ -10,6 +10,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -51,7 +53,7 @@ public class AssignReinforcementServiceTest {
      * @throws IOException IOException
      */
     @Before
-    public void before() throws InvalidInputException, AbsentTagException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException, IOException {
+    public void before() throws InvalidInputException, AbsentTagException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException, IOException, URISyntaxException {
         d_GamePlayEngine.initialise();
         d_MapEditorEngine.initialise();
         d_MapEditorEngine.getCountryList();
@@ -64,7 +66,9 @@ public class AssignReinforcementServiceTest {
         d_GamePlayEngine.addPlayer(l_player2);
 
         d_EditMapService = new EditMapService();
-        d_EditMapService.handleLoadMap(d_TestFile.getPath());
+        assertNotNull(d_TestFile);
+        String l_url = new URI(d_TestFile.getPath()).getPath();
+        d_EditMapService.handleLoadMap(l_url);
         d_DistributeCountriesService = new DistributeCountriesService();
         d_DistributeCountriesService.distributeCountries();
     }

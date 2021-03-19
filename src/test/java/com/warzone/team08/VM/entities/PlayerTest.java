@@ -14,9 +14,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests if the player can issue the order correctly.
@@ -52,7 +56,7 @@ public class PlayerTest {
      * @see EditMapService#handleLoadMap If any exception thrown.
      */
     @Before
-    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
+    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
         // CLI to read and interpret the user input
         d_commandLineInterface = new CommandLineInterface();
 
@@ -61,7 +65,9 @@ public class PlayerTest {
 
         // EditMap service to load the map
         d_editMapService = new EditMapService();
-        d_editMapService.handleLoadMap(d_TestFilePath.getPath());
+        assertNotNull(d_TestFilePath);
+        String l_url = new URI(d_TestFilePath.getPath()).getPath();
+        d_editMapService.handleLoadMap(l_url);
 
         // Set the game state to GAME_PLAY
         GameEngine.getInstance().setGameState(GameState.GAME_PLAY);
