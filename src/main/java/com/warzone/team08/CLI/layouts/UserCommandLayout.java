@@ -1,16 +1,13 @@
 package com.warzone.team08.CLI.layouts;
 
-import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.CLI.exceptions.InvalidCommandException;
 import com.warzone.team08.CLI.layouts.commands.CommonCommandLayout;
 import com.warzone.team08.CLI.layouts.commands.GamePlayCommandLayout;
 import com.warzone.team08.CLI.layouts.commands.MapEditorCommandLayout;
 import com.warzone.team08.CLI.models.PredefinedUserCommand;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +20,7 @@ public class UserCommandLayout {
     /**
      * The list of all classes across each GameState (A state of the game).
      */
-    private static Map<GameState, CommandLayout> d_GameStateListMap = new HashMap<>();
+    private final static List<PredefinedUserCommand> d_GameCommandLayouts = new ArrayList<>();
 
     /**
      * The object which has its user commands for <code>GAME_PLAY</code> game state.
@@ -44,15 +41,9 @@ public class UserCommandLayout {
      * Stores the commands according to the game state
      */
     static {
-        d_GameStateListMap.put(
-                GameState.MAP_EDITOR,
-                UserCommandLayout.MAP_EDITOR_LAYOUT
-        );
-
-        d_GameStateListMap.put(
-                GameState.GAME_PLAY,
-                UserCommandLayout.GAME_PLAY_LAYOUT
-        );
+        d_GameCommandLayouts.addAll(COMMON_LAYOUT.getUserCommands());
+        d_GameCommandLayouts.addAll(MAP_EDITOR_LAYOUT.getUserCommands());
+        d_GameCommandLayouts.addAll(GAME_PLAY_LAYOUT.getUserCommands());
     }
 
     /**
@@ -65,41 +56,34 @@ public class UserCommandLayout {
      */
     public static PredefinedUserCommand matchAndGetUserCommand(String p_headOfCommand) throws InvalidCommandException {
         // Gets the list of command from the layout, and then it is being streamed over to filter the list
-        List<PredefinedUserCommand> l_globalCommandList = UserCommandLayout.findByHeadOfCommand(COMMON_LAYOUT, p_headOfCommand);
-        return l_globalCommandList.size() > 0 ?
-                l_globalCommandList.get(0) :
-                UserCommandLayout.findFirstByHeadOfCommand(d_GameStateListMap.get(Application.getGameState()),
-                        p_headOfCommand);
+        return UserCommandLayout.findFirstByHeadOfCommand(p_headOfCommand);
     }
 
     /**
      * Finds the list of matched <code>PredefinedUserCommand</code> using the head of the command
      * <code>headOfCommand</code> data member.
      *
-     * @param p_commandLayout Represents the <code>CommandLayout</code> sub class.
      * @param p_headOfCommand Value of head command that need to be used to find <code>PredefinedUserCommand</code>.
      * @return Value of found <code>PredefinedUserCommand</code>.
      */
-    private static List<PredefinedUserCommand> findByHeadOfCommand(CommandLayout p_commandLayout, String p_headOfCommand) {
-        return p_commandLayout.getUserCommands()
+    private static List<PredefinedUserCommand> findByHeadOfCommand(String p_headOfCommand) {
+        return d_GameCommandLayouts
                 .stream().filter((userCommand) ->
                         userCommand.getHeadCommand().equals(p_headOfCommand)
                 ).collect(Collectors.toList());
-
     }
 
     /**
      * Finds the first matched <code>PredefinedUserCommand</code> using the head of the command
      * <code>headOfCommand</code> data member.
      *
-     * @param p_commandLayout Represents the <code>CommandLayout</code> sub class.
      * @param p_headOfCommand Value of head command that need to be used to find <code>PredefinedUserCommand</code>.
      * @return Value of found <code>PredefinedUserCommand</code>.
      * @throws InvalidCommandException If command not found in this <code>GAME_STATE</code>.
      */
-    private static PredefinedUserCommand findFirstByHeadOfCommand(CommandLayout p_commandLayout, String p_headOfCommand) {
+    private static PredefinedUserCommand findFirstByHeadOfCommand(String p_headOfCommand) {
         try {
-            return UserCommandLayout.findByHeadOfCommand(p_commandLayout, p_headOfCommand).get(0);
+            return UserCommandLayout.findByHeadOfCommand(p_headOfCommand).get(0);
         } catch (IndexOutOfBoundsException | NullPointerException e) {
             throw new InvalidCommandException("Unrecognized command!");
         }

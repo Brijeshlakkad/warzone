@@ -3,7 +3,9 @@ package com.warzone.team08.VM.entities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.OrderType;
+import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.mappers.OrderMapper;
 import com.warzone.team08.VM.responses.CommandResponse;
 
 import java.io.IOException;
@@ -37,6 +39,11 @@ public class Player {
     private boolean d_canReinforce;
     private int d_assignedCountryCount;
     /**
+     * To map from <code>UserCommand</code> to <code>Order</code>.
+     */
+    private final OrderMapper d_orderMapper;
+
+    /**
      * Keeps track of if the player has deployed the reinforcements of not.
      */
     private boolean d_hasDeployed;
@@ -52,6 +59,7 @@ public class Player {
         d_remainingReinforcementCount = 0;
         d_canReinforce = true;
         d_assignedCountryCount = 0;
+        d_orderMapper = new OrderMapper();
     }
 
     /**
@@ -225,12 +233,12 @@ public class Player {
         try {
             ObjectMapper l_objectMapper = new ObjectMapper();
             CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
-            Order l_newOrder = Order.map(l_commandResponse);
-            if (l_newOrder.getOrderType() == OrderType.deploy) {
-                if (this.getAssignedCountries().contains(l_newOrder.getCountry())) {
-                    if (this.getRemainingReinforcementCount() != 0 && this.canPlayerReinforce(l_newOrder.getNumOfReinforcements())) {
-                        l_newOrder.setOwner(this);
-                        this.addOrder(l_newOrder);
+            Order l_newOrder = d_orderMapper.toOrder(l_commandResponse, this);
+            if (l_newOrder.getType() == OrderType.deploy) {
+                DeployOrder l_deployOrder = (DeployOrder) l_newOrder;
+                if (this.getAssignedCountries().contains(l_deployOrder.getTargetCountry())) {
+                    if (this.getRemainingReinforcementCount() != 0 && this.canPlayerReinforce(l_deployOrder.getNumOfReinforcements())) {
+                        this.addOrder(l_deployOrder);
                     } else {
                         throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
                     }

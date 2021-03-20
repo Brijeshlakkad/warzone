@@ -1,16 +1,11 @@
 package com.warzone.team08.VM.game_play;
 
-import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.GameLoopState;
 import com.warzone.team08.VM.constants.interfaces.Engine;
-import com.warzone.team08.VM.entities.Order;
 import com.warzone.team08.VM.entities.Player;
-import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.game_play.services.AssignReinforcementService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Manages players and their orders runtime information; Responsible for executing orders in round-robin fashion.
@@ -59,11 +54,6 @@ public class GamePlayEngine implements Engine {
      * @see GameLoopState for more information.
      */
     private static GameLoopState d_GameLoopState;
-
-    /**
-     * Thread created by <code>GamePlayEngine</code>. This thread should be responsive to interruption.
-     */
-    private Thread d_LoopThread;
 
     /**
      * Gets the single instance of the <code>GamePlayEngine</code> class.
@@ -155,164 +145,63 @@ public class GamePlayEngine implements Engine {
     }
 
     /**
-     * Starts the thread to iterate through various <code>GameLoopState</code> states. Channels the exception to
-     * <code>stderr</code> method.
+     * Gets the index of current player.
+     *
+     * @return Value of index of current player.
      */
-    public void startGameLoop() {
-        if (d_LoopThread != null && d_LoopThread.isAlive()) {
-            d_LoopThread.interrupt();
-        }
-        d_LoopThread = new Thread(() -> {
-            try {
-                // Responsive to thread interruption.
-                while (!Thread.currentThread().isInterrupted()) {
-                    this.onAssignReinforcementPhase();
-                    this.onStartIssueOrderPhase();
-                    this.onStartExecuteOrderPhase();
-                }
-            } catch (GameLoopIllegalStateException p_loopIllegalStateException) {
-                VirtualMachine.getInstance().stderr(p_loopIllegalStateException.getMessage());
-            } finally {
-                // Set CLI#UserInteractionState to WAIT
-                VirtualMachine.getInstance().stdout("GAME_ENGINE_TO_WAIT");
-            }
-        });
-        d_LoopThread.start();
+    public int getCurrentPlayerTurn() {
+        return d_currentPlayerTurn;
     }
 
     /**
-     * Assigns each player the correct number of reinforcement armies according to the Warzone rules.
+     * Sets the index of current player.
      *
-     * @throws GameLoopIllegalStateException Throws if the engine tries to jump to illegal state.
+     * @param p_currentPlayerTurn Value of index of current player.
      */
-    public void onAssignReinforcementPhase() throws GameLoopIllegalStateException {
-        if (GamePlayEngine.getGameLoopState() == GameLoopState.NOT_AVAILABLE ||
-                GamePlayEngine.getGameLoopState() == GameLoopState.EXECUTE_ORDER) {
-            GamePlayEngine.setGameLoopState(GameLoopState.ASSIGN_REINFORCEMENTS);
-
-            try {
-                AssignReinforcementService l_reinforcementService = new AssignReinforcementService();
-                l_reinforcementService.execute();
-            } catch (VMException p_vmException) {
-                VirtualMachine.getInstance().stderr(p_vmException.getMessage());
-            }
-        } else {
-            throw new GameLoopIllegalStateException("Illegal state transition!");
-        }
+    public void setCurrentPlayerTurn(int p_currentPlayerTurn) {
+        d_currentPlayerTurn = p_currentPlayerTurn;
     }
 
     /**
-     * Starts the <code>GameLoopState#ISSUE_ORDER</code> phase. Requests all players in round-robin fashion for the
-     * issuing order until all the players have placed all their reinforcement armies on the map.
-     * <p>
-     * If the player issues an order with reinforcements more than enough they possess, it will request the same player
-     * again for a valid order.
+     * Gets the previously-stored player index whose turn is to issue an order.
      *
-     * @throws GameLoopIllegalStateException Throws if the engine tries to jump to illegal state.
+     * @return Value of the index.
      */
-    public void onStartIssueOrderPhase() throws GameLoopIllegalStateException {
-        if (GamePlayEngine.getGameLoopState() != GameLoopState.ASSIGN_REINFORCEMENTS) {
-            throw new GameLoopIllegalStateException("Illegal state transition!");
-        }
-        GamePlayEngine.setGameLoopState(GameLoopState.ISSUE_ORDER);
-        List<Player> finishedIssuingOrders = new ArrayList<>();
-
-        this.d_currentPlayerTurn = this.d_currentPlayerForIssuePhase;
-
-        while (finishedIssuingOrders.size() != d_playerList.size()) {
-            // Find player who has reinforcements.
-            Player l_currentPlayer;
-            do {
-                l_currentPlayer = this.getCurrentPlayer();
-            } while (finishedIssuingOrders.contains(l_currentPlayer));
-
-            // Until player issues the valid order.
-            boolean l_invalidPreviousOrder;
-            boolean l_canTryAgain;
-            do {
-                l_canTryAgain = true;
-                try {
-                    // Request player to issue the order.
-                    l_currentPlayer.issueOrder();
-                    l_invalidPreviousOrder = false;
-                } catch (ReinforcementOutOfBoundException p_e) {
-                    l_invalidPreviousOrder = true;
-
-                    // Send exception message to CLI.
-                    VirtualMachine.getInstance().stderr(p_e.getMessage());
-
-                    // If all of its reinforcements have been placed, don't ask the player again.
-                    if (l_currentPlayer.getRemainingReinforcementCount() == 0) {
-                        l_canTryAgain = false;
-                        finishedIssuingOrders.add(l_currentPlayer);
-                    }
-                } catch (EntityNotFoundException | InvalidCommandException | InvalidArgumentException p_exception) {
-                    l_invalidPreviousOrder = true;
-                    // Show VMException error to the user.
-                    VirtualMachine.getInstance().stderr(p_exception.getMessage());
-                } catch (InterruptedException | ExecutionException p_e) {
-                    // If interruption occurred while issuing the order.
-                    l_invalidPreviousOrder = true;
-                }
-            } while (l_invalidPreviousOrder && l_canTryAgain);
-        }
-
-        // Store to use when starting the issue phase again.
-        this.d_currentPlayerForIssuePhase = this.d_currentPlayerTurn;
+    public int getCurrentPlayerForIssuePhase() {
+        return d_currentPlayerForIssuePhase;
     }
 
     /**
-     * Starts the <code>EXECUTE_ORDER</code> game loop state.
-     * <p>
-     * Gets the order of the player using <code>Player#nextOrder</code> method and executes it using the type of order.
+     * Sets the player index whose turn is going to issue an order in the next iteration.
      *
-     * @throws GameLoopIllegalStateException Throws if the engine tries to jump to illegal state.
+     * @param p_currentPlayerForIssuePhase Value of the index to be set.
      */
-    public void onStartExecuteOrderPhase() throws GameLoopIllegalStateException {
-        if (GamePlayEngine.getGameLoopState() != GameLoopState.ISSUE_ORDER) {
-            throw new GameLoopIllegalStateException("Illegal state transition!");
-        }
-        GamePlayEngine.setGameLoopState(GameLoopState.EXECUTE_ORDER);
-        List<Player> finishedExecutingOrders = new ArrayList<>();
+    public void setCurrentPlayerForIssuePhase(int p_currentPlayerForIssuePhase) {
+        d_currentPlayerForIssuePhase = p_currentPlayerForIssuePhase;
+    }
 
-        VirtualMachine.getInstance().stdout("Execution of orders started!");
+    /**
+     * Gets the previously-stored player index to get an order of the player for execution.
+     *
+     * @return Value of the index.
+     */
+    public int getCurrentPlayerForExecutionPhase() {
+        return d_currentPlayerForExecutionPhase;
+    }
 
-        this.d_currentPlayerTurn = this.d_currentPlayerForExecutionPhase;
-
-        while (finishedExecutingOrders.size() != d_playerList.size()) {
-            // Find player who has remaining orders to execute.
-            Player l_currentPlayer;
-            do {
-                l_currentPlayer = this.getCurrentPlayer();
-            } while (finishedExecutingOrders.contains(l_currentPlayer));
-            try {
-                // Get the next order
-                Order l_currentOrder = l_currentPlayer.nextOrder();
-                // Use VirtualMachine.stdout()
-                l_currentOrder.execute();
-
-                VirtualMachine.getInstance().stdout(String.format("\nExecuted %s", l_currentOrder.toString()));
-
-                // If the current player does not have any orders left.
-                if (!l_currentPlayer.hasOrders()) {
-                    finishedExecutingOrders.add(l_currentPlayer);
-                }
-            } catch (OrderOutOfBoundException p_e) {
-                VirtualMachine.getInstance().stderr(p_e.getMessage());
-                finishedExecutingOrders.add(l_currentPlayer);
-            }
-        }
-
-        // Store to use when starting the issue phase again.
-        this.d_currentPlayerForExecutionPhase = this.d_currentPlayerTurn;
+    /**
+     * Sets the player index whose order is going to be executed first in the next iteration.
+     *
+     * @param p_currentPlayerForExecutionPhase Value of the index to be set.
+     */
+    public void setCurrentPlayerForExecutionPhase(int p_currentPlayerForExecutionPhase) {
+        d_currentPlayerForExecutionPhase = p_currentPlayerForExecutionPhase;
     }
 
     /**
      * {@inheritDoc} Shuts the <code>GamePlayEngine</code>.
      */
     public void shutdown() {
-        // Interrupt thread if it is alive.
-        if (d_LoopThread != null && d_LoopThread.isAlive())
-            d_LoopThread.interrupt();
+        // Does nothing
     }
 }

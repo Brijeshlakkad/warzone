@@ -2,15 +2,19 @@ package com.warzone.team08.VM.constants.enums;
 
 /**
  * This enum lists all the orders which player can issue during <code>issue orders</code> phase.
+ * <p>The enum values should
+ * represent the command which can be entered by the player at the <code>GameLoop#ISSUE_ORDER</code> phase.
  *
  * @author Brijesh Lakkad
  * @version 1.0
  */
 public enum OrderType {
-    /**
-     * Order of deploying the reinforcements.
-     */
-    deploy("deploy");
+    deploy("deploy"),
+    advance("advance"),
+    bomb("bomb"),
+    blockade("blockade"),
+    airlift("airlift"),
+    negotiate("negotiate");
 
     /**
      * Variable to set enum value.

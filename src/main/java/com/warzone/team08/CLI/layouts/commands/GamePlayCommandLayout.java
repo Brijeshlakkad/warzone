@@ -30,12 +30,6 @@ public class GamePlayCommandLayout implements CommandLayout {
         d_userCommands = new ArrayList<>();
 
         PredefinedUserCommand l_userCommand;
-        // Example of the command:
-        // > showmap
-        l_userCommand = new PredefinedUserCommand();
-        l_userCommand.setHeadCommand("showmap");
-        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
-        d_userCommands.add(l_userCommand);
 
         // Example of the command:
         // > gameplayer -add playername -remove playername
@@ -52,6 +46,7 @@ public class GamePlayCommandLayout implements CommandLayout {
                 1,
                 ArgumentSpecification.EQUAL
         ));
+        l_userCommand.setGamePhaseMethodName("setPlayers");
         d_userCommands.add(l_userCommand);
 
         // Example of the command:
@@ -60,13 +55,14 @@ public class GamePlayCommandLayout implements CommandLayout {
         l_userCommand.setHeadCommand("assigncountries");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
         l_userCommand.setGameEngineStartCommand(true);
+        l_userCommand.setGamePhaseMethodName("assignCountries");
         d_userCommands.add(l_userCommand);
 
         // Example of the command:
         // > deploy countryID num
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("deploy");
-        l_userCommand.setGameEngineCommand(true);
+        l_userCommand.setOrderCommand(true);
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
         d_userCommands.add(l_userCommand);
     }

@@ -7,11 +7,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class tests the add and remove operations on country.
@@ -37,17 +38,20 @@ public class CountryServiceTest {
     /**
      * Re-initializes the continent list before test case run.
      *
-     * @throws AbsentTagException         Throws if any tag is missing in map file.
-     * @throws InvalidMapException        Throws if map is invalid.
-     * @throws ResourceNotFoundException  Throws if file not found.
-     * @throws InvalidInputException      Throws if input is invalid.
-     * @throws EntityNotFoundException    Throws if entity not found.
+     * @throws AbsentTagException        Throws if any tag is missing in map file.
+     * @throws InvalidMapException       Throws if map is invalid.
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException     Throws if input is invalid.
+     * @throws EntityNotFoundException   Throws if entity not found.
+     * @throws URISyntaxException        If error while parsing the string representing the path.
      */
     @Before
-    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException{
+    public void beforeTestCase() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
         d_editMapService = new EditMapService();
         d_testFilePath = getClass().getClassLoader().getResource("test_map_files/test_map.map");
-        d_editMapService.handleLoadMap(d_testFilePath.getPath());
+        assertNotNull(d_testFilePath);
+        String l_url = new URI(d_testFilePath.getPath()).getPath();
+        d_editMapService.handleLoadMap(l_url);
         d_continentList = MapEditorEngine.getInstance().getContinentList();
     }
 

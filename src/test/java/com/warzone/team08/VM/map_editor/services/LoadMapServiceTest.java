@@ -1,55 +1,64 @@
 package com.warzone.team08.VM.map_editor.services;
 
-import com.warzone.team08.Application;
-import com.warzone.team08.CLI.constants.states.GameState;
 import com.warzone.team08.VM.GameEngine;
-import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.exceptions.AbsentTagException;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.junit.Assert.assertEquals;
-
 /**
- * This Class tests the blank fields available in the map file.
+ * This class tests the blank fields available in the map file.
  *
  * @author Brijesh Lakkad
+ * @author CHARIT
  */
 public class LoadMapServiceTest {
-    private Application d_application;
-    private URL d_testFilePath;
     private EditMapService d_editMapService;
+    private static URL d_testCorruptedFilePath;
+    private static URL d_testCorrectFilePath;
 
     /**
-     * Re-initializes required objects before test case run.
+     * This method runs before the test case runs. This method initializes different objects required to perform test.
      */
     @Before
-    public void beforeTestCase() {
-        d_application = new Application();
-        d_application.handleApplicationStartup();
-
-        // Re-initialise map editor engine.
-        MapEditorEngine.getInstance().initialise();
-
+    public void before() {
         d_editMapService = new EditMapService();
-        d_testFilePath = getClass().getClassLoader().getResource("map_files/solar.map");
+        GameEngine.getInstance().initialise();
     }
 
     /**
-     * Tests the load map service method to check if the map file is being loaded correctly.
+     * Sets the path to the files.
+     */
+    @BeforeClass
+    public static void beforeClass() {
+        d_testCorruptedFilePath = LoadMapServiceTest.class.getClassLoader().getResource("test_map_files/test_blank_data_fields.map");
+        d_testCorrectFilePath = LoadMapServiceTest.class.getClassLoader().getResource("map_files/solar.map");
+    }
+
+    /**
+     * This is a method that performs actual test. It test passes if .map file consists of any empty field.
      *
-     * @throws URISyntaxException Throws if URI syntax is invalid.
-     * @see EditMapService#handleLoadMap
+     * @throws Exception IOException
+     */
+    @Test(expected = AbsentTagException.class)
+    public void testLoadCorruptedMap() throws Exception {
+        // In Windows, URL will create %20 for space. To avoid, use the below logic.
+        String l_url = new URI(d_testCorruptedFilePath.getPath()).getPath();
+        d_editMapService.handleLoadMap(l_url);
+    }
+
+    /**
+     * This method loads the map file and expects the none exception.
+     *
+     * @throws Exception IOException
      */
     @Test(expected = Test.None.class)
-    public void testLoadMapService() throws URISyntaxException {
+    public void testLoadCorrectMapFile() throws Exception {
         // In Windows, URL will create %20 for space. To avoid, use the below logic.
-        String l_url = new URI(d_testFilePath.getPath()).getPath();
-        GameEngine.getInstance().setGameState(GameState.GAME_PLAY);
-        assertEquals(Application.getGameState(), GameState.GAME_PLAY);
+        String l_url = new URI(d_testCorrectFilePath.getPath()).getPath();
+        d_editMapService.handleLoadMap(l_url);
     }
 }

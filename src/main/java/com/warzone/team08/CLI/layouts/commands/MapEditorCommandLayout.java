@@ -44,6 +44,7 @@ public class MapEditorCommandLayout implements CommandLayout {
                 1,
                 ArgumentSpecification.EQUAL
         ));
+        l_userCommand.setGamePhaseMethodName("editContinent");
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
@@ -61,6 +62,7 @@ public class MapEditorCommandLayout implements CommandLayout {
                 1,
                 ArgumentSpecification.EQUAL
         ));
+        l_userCommand.setGamePhaseMethodName("editCountry");
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
@@ -78,13 +80,7 @@ public class MapEditorCommandLayout implements CommandLayout {
                 2,
                 ArgumentSpecification.EQUAL
         ));
-        d_userCommands.add(l_userCommand);
-
-        // Example of the below command:
-        // > showmap
-        l_userCommand = new PredefinedUserCommand();
-        l_userCommand.setHeadCommand("showmap");
-        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
+        l_userCommand.setGamePhaseMethodName("editNeighbor");
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
@@ -92,6 +88,7 @@ public class MapEditorCommandLayout implements CommandLayout {
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("savemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setGamePhaseMethodName("saveMap");
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
@@ -99,6 +96,7 @@ public class MapEditorCommandLayout implements CommandLayout {
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("editmap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setGamePhaseMethodName("editMap");
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
@@ -106,13 +104,7 @@ public class MapEditorCommandLayout implements CommandLayout {
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("validatemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
-        d_userCommands.add(l_userCommand);
-
-        // Example of the below command:
-        // > loadmap filename
-        l_userCommand = new PredefinedUserCommand();
-        l_userCommand.setHeadCommand("loadmap");
-        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setGamePhaseMethodName("validateMap");
         d_userCommands.add(l_userCommand);
     }
 

@@ -40,9 +40,19 @@ public class PredefinedUserCommand {
     private boolean d_isGameEngineCommand = false;
 
     /**
+     * Command represents the order command.
+     */
+    private boolean d_isOrderCommand = false;
+
+    /**
      * This command represents that <code>GameEngine</code> will start.
      */
     private boolean d_isGameEngineStartCommand = false;
+
+    /**
+     * Represents the name of the method to be called for this user command.
+     */
+    private String d_gamePhaseMethodName;
 
     /**
      * Initialises the data members.
@@ -163,6 +173,24 @@ public class PredefinedUserCommand {
     }
 
     /**
+     * Checks if the command belongs to order by the player.
+     *
+     * @return True if the command is order command.
+     */
+    public boolean isOrderCommand() {
+        return d_isOrderCommand;
+    }
+
+    /**
+     * Sets true if the command belongs to order by the player.
+     *
+     * @param p_orderCommand the command type.
+     */
+    public void setOrderCommand(boolean p_orderCommand) {
+        d_isOrderCommand = p_orderCommand;
+    }
+
+    /**
      * <code>VM#GameEngine</code> needs input from user.
      *
      * @return True if the <code>VM#GameEngine</code> had requested.
@@ -179,6 +207,24 @@ public class PredefinedUserCommand {
      */
     public void setGameEngineStartCommand(boolean p_gameEngineStartCommand) {
         d_isGameEngineStartCommand = p_gameEngineStartCommand;
+    }
+
+    /**
+     * Gets the method name to be called for this user command.
+     *
+     * @return Value of the method name.
+     */
+    public String getGamePhaseMethodName() {
+        return d_gamePhaseMethodName;
+    }
+
+    /**
+     * Sets the method name to be called for this user command.
+     *
+     * @param p_gamePhaseMethodName Value of the method name.
+     */
+    public void setGamePhaseMethodName(String p_gamePhaseMethodName) {
+        d_gamePhaseMethodName = p_gamePhaseMethodName;
     }
 
     /**

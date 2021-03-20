@@ -11,6 +11,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -30,30 +33,36 @@ public class DistributeCountriesServiceTest {
 
     /**
      * Runs before the test case class runs; Initializes different objects required to perform test.
+     *
+     * @throws IOException        If exception while coping the predefined files.
+     * @throws URISyntaxException If the path to parent directory of the files doesn't exist.
      */
     @BeforeClass
-    public static void createPlayersList() {
+    public static void createPlayersList() throws IOException, URISyntaxException {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
         d_GamePlayEngine = GamePlayEngine.getInstance();
 
+        d_Application.restoreMapFiles();
         d_TestFilePath = DistributeCountriesServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
     }
 
     /**
      * Setting up the required objects before performing test.
      *
-     * @throws VMException Exception generated during execution.
+     * @throws VMException        Exception generated during execution.
+     * @throws URISyntaxException If error while parsing the string representing the path.
      */
     @Before
-    public void before() throws VMException {
+    public void before() throws VMException, URISyntaxException {
         // (Re)initialise the VM.
         VirtualMachine.getInstance().initialise();
 
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
-        assert d_TestFilePath != null;
-        l_editMapService.handleLoadMap(d_TestFilePath.getPath());
+        assertNotNull(d_TestFilePath);
+        String l_url = new URI(d_TestFilePath.getPath()).getPath();
+        l_editMapService.handleLoadMap(l_url);
 
         Player l_player1 = new Player();
         Player l_player2 = new Player();

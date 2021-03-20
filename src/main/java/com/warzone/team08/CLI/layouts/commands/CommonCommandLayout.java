@@ -28,11 +28,21 @@ public class CommonCommandLayout implements CommandLayout {
 
         PredefinedUserCommand l_userCommand;
 
-        // Example of command:
-        // > exit
+        // Example of the below command:
+        // > loadmap filename
         l_userCommand = new PredefinedUserCommand();
-        l_userCommand.setHeadCommand("exit");
+        l_userCommand.setHeadCommand("loadmap");
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setGamePhaseMethodName("loadMap");
+        d_userCommands.add(l_userCommand);
+
+        // Example of the below command:
+        // > showmap
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("showmap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
+        l_userCommand.setGamePhaseMethodName("showMap");
+        l_userCommand.setGameEngineCommand(true);
         d_userCommands.add(l_userCommand);
     }
 

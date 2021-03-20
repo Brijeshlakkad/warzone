@@ -136,9 +136,7 @@ public class DistributeCountriesService implements SingleCommand {
         // Check if players have been added.
         // What if only one player is available?
         if (!GamePlayEngine.getInstance().getPlayerList().isEmpty()) {
-            String response = distributeCountries();
-            GamePlayEngine.getInstance().startGameLoop();
-            return response;
+            return distributeCountries();
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");
         }

@@ -12,7 +12,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        EditMapServiceTest.class,
         LoadMapServiceTest.class,
         ShowMapServiceTest.class,
         ContinentServiceTest.class,

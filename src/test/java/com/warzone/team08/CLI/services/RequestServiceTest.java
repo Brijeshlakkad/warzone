@@ -3,7 +3,8 @@ package com.warzone.team08.CLI.services;
 import com.warzone.team08.Application;
 import com.warzone.team08.CLI.layouts.UserCommandLayout;
 import com.warzone.team08.CLI.models.UserCommand;
-import com.warzone.team08.CLI.services.RequestService;
+import com.warzone.team08.VM.GameEngine;
+import com.warzone.team08.VM.phases.PostLoad;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -35,6 +36,7 @@ public class RequestServiceTest {
     @Before
     public void before() {
         MapEditorEngine.getInstance().initialise();
+        GameEngine.getInstance().setGamePhase(new PostLoad(GameEngine.getInstance()));
 
         d_userCommand = new UserCommand(UserCommandLayout.matchAndGetUserCommand("editcontinent"));
 

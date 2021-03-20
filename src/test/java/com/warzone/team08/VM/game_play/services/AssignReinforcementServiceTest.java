@@ -9,7 +9,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
@@ -43,15 +44,15 @@ public class AssignReinforcementServiceTest {
     /**
      * Setting up the required Objects before test run.
      *
-     * @throws InvalidInputException Throws if provided argument and its value(s) are not valid.
-     * @throws AbsentTagException Throws if tag is absent in .map file.
-     * @throws InvalidMapException Throws if map file is invalid.
+     * @throws InvalidInputException     Throws if provided argument and its value(s) are not valid.
+     * @throws AbsentTagException        Throws if tag is absent in .map file.
+     * @throws InvalidMapException       Throws if map file is invalid.
      * @throws ResourceNotFoundException Throws if file not found.
-     * @throws EntityNotFoundException Throws if entity not found while searching.
-     * @throws IOException IOException
+     * @throws EntityNotFoundException   Throws if entity not found while searching.
+     * @throws URISyntaxException        If error while parsing the string representing the path.
      */
     @Before
-    public void before() throws InvalidInputException, AbsentTagException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException, IOException {
+    public void before() throws InvalidInputException, AbsentTagException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException, URISyntaxException {
         d_GamePlayEngine.initialise();
         d_MapEditorEngine.initialise();
         d_MapEditorEngine.getCountryList();
@@ -64,7 +65,9 @@ public class AssignReinforcementServiceTest {
         d_GamePlayEngine.addPlayer(l_player2);
 
         d_EditMapService = new EditMapService();
-        d_EditMapService.handleLoadMap(d_TestFile.getPath());
+        assertNotNull(d_TestFile);
+        String l_url = new URI(d_TestFile.getPath()).getPath();
+        d_EditMapService.handleLoadMap(l_url);
         d_DistributeCountriesService = new DistributeCountriesService();
         d_DistributeCountriesService.distributeCountries();
     }
