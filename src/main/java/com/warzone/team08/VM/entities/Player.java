@@ -33,6 +33,10 @@ public class Player {
      * List of orders executed by the <code>GameEngine</code>.
      */
     private final List<Order> d_executedOrders;
+    /**
+     * List of cards owned by the player.
+     */
+    private List<String> d_cards;
     private List<Country> d_assignedCountries;
     private int d_reinforcementsCount;
     private int d_remainingReinforcementCount;
@@ -52,6 +56,7 @@ public class Player {
      * Initializes variables required to handle player state.
      */
     public Player() {
+        d_cards = new ArrayList<>();
         d_orders = new ArrayList<>();
         d_executedOrders = new ArrayList<>();
         d_assignedCountries = new ArrayList<>();
@@ -128,6 +133,16 @@ public class Player {
     }
 
     /**
+     * Removes the country from the list of assigned countries.
+     *
+     * @param p_county Country object.
+     */
+    public void removeCountry(Country p_county)
+    {
+        d_assignedCountries.remove(p_county);
+    }
+
+    /**
      * Gets the number of assigned countries for this player.
      *
      * @return Value of the count.
@@ -143,6 +158,34 @@ public class Player {
      */
     public void setAssignedCountryCount(int p_assignedCountryCount) {
         d_assignedCountryCount = p_assignedCountryCount;
+    }
+
+    /**
+     * Adds the card to the list of cards owned by the player.
+     *
+     * @param p_card  Card name
+     */
+    public void addCard(String p_card) {
+        d_cards.add(p_card);
+    }
+
+    /**
+     * Removes card from the list
+     *
+     * @param p_card  Card name
+     */
+    public void removeCard(String p_card)
+    {
+        d_cards.remove(p_card);
+    }
+
+    /**
+     * Returns the list of cards owned by the player.
+     *
+     * @return List of cards owned by the player.
+     */
+    public List<String> getCards() {
+        return d_cards;
     }
 
     /**

@@ -4,7 +4,7 @@ import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Player;
-import com.warzone.team08.VM.exceptions.OrderOutOfBoundException;
+import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class ExecuteOrderService {
                 if (!l_currentPlayer.hasOrders()) {
                     finishedExecutingOrders.add(l_currentPlayer);
                 }
-            } catch (OrderOutOfBoundException p_e) {
+            } catch (OrderOutOfBoundException | EntityNotFoundException | InvalidInputException | InvalidCommandException | InvalidArgumentException p_e) {
                 VirtualMachine.getInstance().stderr(p_e.getMessage());
                 finishedExecutingOrders.add(l_currentPlayer);
             }
