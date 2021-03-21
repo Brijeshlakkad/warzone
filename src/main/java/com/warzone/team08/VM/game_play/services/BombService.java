@@ -17,6 +17,8 @@ import static java.lang.Math.floor;
 
 /**
  * This class implements the operations required to be perform when the Bomb card is used.
+ * When bomb card is used then it simple halves the number of armies available in the country on which the bomb operation is performed.
+ * A player can perform bomb operation on the countries owned by the other players only.
  *
  * @author CHARIT
  * @version 2.0
