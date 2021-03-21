@@ -95,4 +95,65 @@ public class AirliftServiceTest {
         l_airliftService.execute();
         assertEquals(l_playerAssignCountries.get(1).getNumberOfArmies(),l_expected+2);
     }
+
+    /**
+     * checks that player has airlift card.
+     *
+     * @throws EntityNotFoundException Throws if entity not found.
+     * @throws InvalidInputException Throws if user input is invalid.
+     * @throws InvalidCommandException Throws if the command is invalid.
+     */
+    //not have airlift card
+    @Test(expected = InvalidCommandException.class)
+    public void testPlayerHasCard() throws EntityNotFoundException, InvalidInputException, InvalidCommandException {
+        Player l_player = d_playerList.get(0);
+        List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
+        l_playerAssignCountries.get(0).setNumberOfArmies(7);
+        l_playerAssignCountries.get(1).setNumberOfArmies(5);
+        int l_expected = l_playerAssignCountries.get(1).getNumberOfArmies();
+        l_player.addCard("bomb");
+
+        AirliftService l_airliftService = new AirliftService(l_playerAssignCountries.get(0).getCountryName(),l_playerAssignCountries.get(1).getCountryName(),2,l_player);
+        l_airliftService.execute();
+    }
+
+    /**
+     * checks that player will not airlift armies in others country.
+     *
+     * @throws EntityNotFoundException Throws if entity not found.
+     * @throws InvalidInputException Throws if user input is invalid.
+     * @throws InvalidCommandException Throws if the command is invalid.
+     */
+    //try to transfer into other's country
+    @Test(expected = InvalidInputException.class)
+    public void testPlayerNotAirliftInOthersCountry() throws EntityNotFoundException, InvalidInputException, InvalidCommandException {
+        Player l_player = d_playerList.get(0);
+        Player l_player2 = d_playerList.get(1);
+        List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
+        List<Country> l_playerAssignCountries1 = l_player2.getAssignedCountries();
+        l_player.addCard("airlift");
+
+        AirliftService l_airliftService = new AirliftService(l_playerAssignCountries.get(0).getCountryName(),l_playerAssignCountries1.get(0).getCountryName(),2,l_player);
+        l_airliftService.execute();
+    }
+
+    /**
+     * method test that source country has entered number of armies for airlifted.
+     *
+     * @throws EntityNotFoundException Throws if entity not found.
+     * @throws InvalidInputException Throws if user input is invalid.
+     * @throws InvalidCommandException Throws if the command is invalid.
+     */
+    @Test(expected = InvalidInputException.class)
+    public void testPlayerHasEnteredArmies() throws EntityNotFoundException, InvalidInputException, InvalidCommandException {
+        Player l_player = d_playerList.get(0);
+        List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
+        l_playerAssignCountries.get(0).setNumberOfArmies(7);
+        l_playerAssignCountries.get(1).setNumberOfArmies(5);
+        int l_expected = l_playerAssignCountries.get(1).getNumberOfArmies();
+        l_player.addCard("airlift");
+
+        AirliftService l_airliftService = new AirliftService(l_playerAssignCountries.get(0).getCountryName(),l_playerAssignCountries.get(1).getCountryName(),8,l_player);
+        l_airliftService.execute();
+    }
 }
