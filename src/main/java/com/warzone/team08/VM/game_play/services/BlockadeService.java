@@ -14,6 +14,8 @@ import java.util.List;
 
 /**
  * This class implements the operations required to be perform when the Blockade card is used.
+ * When blockade card is used then it simply multiplies the number of armies by certain constant value and make that country a neutral country.
+ * A player can perform blockade operation on its own country.
  *
  * @author CHARIT
  * @version 2.0

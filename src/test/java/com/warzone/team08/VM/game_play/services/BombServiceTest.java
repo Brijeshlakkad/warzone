@@ -32,7 +32,7 @@ public class BombServiceTest {
      * Runs before the test case class runs; Initializes different objects required to perform test.
      */
     @BeforeClass
-    public static void createPlayersList() {
+    public static void beforeClass() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
         d_GamePlayEngine = GamePlayEngine.getInstance();
