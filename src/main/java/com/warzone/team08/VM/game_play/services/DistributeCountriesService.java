@@ -7,9 +7,11 @@ import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +31,15 @@ public class DistributeCountriesService implements SingleCommand {
 
     private final GamePlayEngine d_gamePlayEngine;
 
+    private final LogEntryBuffer d_logEntryBuffer;
+
     /**
      * Constructor for instantiating required objects.
      */
     public DistributeCountriesService() {
         d_countryList = MapEditorEngine.getInstance().getCountryList();
         d_gamePlayEngine = GamePlayEngine.getInstance();
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -132,13 +137,33 @@ public class DistributeCountriesService implements SingleCommand {
      * @throws VMException           If any exception from while players in <code>GameLoop</code>.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws VMException, IllegalStateException {
+    public String execute(List<String> p_commandValues) throws VMException, IllegalStateException{
         // Check if players have been added.
         // What if only one player is available?
         if (!GamePlayEngine.getInstance().getPlayerList().isEmpty()) {
-            return distributeCountries();
+            String l_response = distributeCountries();
+            try {
+                d_logEntryBuffer.dataChanged("assigncountries", "\n---ASSIGNCOUNTRIES---\n"+l_response+"\n"+this.getPlayerCountries()+"\n*******GAME LOOP BEGINS*******\n");
+            } catch (IOException p_e) {
+                p_e.printStackTrace();
+            }
+            return l_response;
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");
         }
+    }
+
+    public String getPlayerCountries(){
+        String l_playerContent="";
+        for(Player l_player:d_gamePlayEngine.getPlayerList()){
+            List<Country> l_countries=l_player.getAssignedCountries();
+            List<String> l_names=new ArrayList<>();
+            for(Country l_country:l_countries){
+                l_names.add(l_country.getCountryName());
+            }
+            String l_countriesNames=String.join(",",l_names);
+            l_playerContent+=l_player.getName()+": "+l_names+"\n";
+        }
+        return l_playerContent;
     }
 }

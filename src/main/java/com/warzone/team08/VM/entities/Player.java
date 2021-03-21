@@ -5,6 +5,7 @@ import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.mappers.OrderMapper;
 import com.warzone.team08.VM.responses.CommandResponse;
 
@@ -52,6 +53,8 @@ public class Player {
      */
     private boolean d_hasDeployed;
 
+    private final LogEntryBuffer d_logEntryBuffer;
+
     /**
      * Initializes variables required to handle player state.
      */
@@ -65,6 +68,7 @@ public class Player {
         d_canReinforce = true;
         d_assignedCountryCount = 0;
         d_orderMapper = new OrderMapper();
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -265,22 +269,27 @@ public class Player {
      * @throws InterruptedException             If scheduled thread was interrupted.
      */
     public void issueOrder() throws
-            ReinforcementOutOfBoundException, InvalidCommandException, EntityNotFoundException, ExecutionException, InterruptedException, InvalidArgumentException {
+            ReinforcementOutOfBoundException, InvalidCommandException, EntityNotFoundException, ExecutionException, InterruptedException, InvalidArgumentException, ResourceNotFoundException, InvalidInputException {
         // Requests user interface for input from user.
         String l_responseVal = "";
+        String l_loggingMessage="";
         do {
             VirtualMachine.getInstance().stdout(String.format("\nPlayer: %s--------\nUSAGE: You can check map details\n> showmap <return>", this.d_name, this.d_remainingReinforcementCount));
             Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Issue Order:"));
             l_responseVal = l_responseOfFuture.get();
+            l_loggingMessage="\n"+this.d_name+" turn to Issue Order:"+"\n";
         } while (l_responseVal.isEmpty());
         try {
             ObjectMapper l_objectMapper = new ObjectMapper();
             CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
             Order l_newOrder = d_orderMapper.toOrder(l_commandResponse, this);
             if (l_newOrder.getType() == OrderType.deploy) {
+                l_loggingMessage+="---DEPLOY ORDER---:"+"\n";
                 DeployOrder l_deployOrder = (DeployOrder) l_newOrder;
                 if (this.getAssignedCountries().contains(l_deployOrder.getTargetCountry())) {
                     if (this.getRemainingReinforcementCount() != 0 && this.canPlayerReinforce(l_deployOrder.getNumOfReinforcements())) {
+                        l_loggingMessage+="Deploy "+l_deployOrder.getNumOfReinforcements()+" armies in "+l_deployOrder.getTargetCountry().getCountryName()+"\n";
+                        d_logEntryBuffer.dataChanged("deploy",l_loggingMessage);
                         this.addOrder(l_deployOrder);
                     } else {
                         throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");

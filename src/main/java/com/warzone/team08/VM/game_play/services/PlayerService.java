@@ -3,8 +3,12 @@ package com.warzone.team08.VM.game_play.services;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.PlayerRepository;
+
+import java.io.IOException;
 
 /**
  * This class handles `gameplayer` user command to add and/or remove game player from the game.
@@ -25,12 +29,15 @@ public class PlayerService {
      */
     private final PlayerRepository d_playerRepository;
 
+    private final LogEntryBuffer d_logEntryBuffer;
+
     /**
      * Initialization of different objects.
      */
     public PlayerService() {
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_playerRepository = new PlayerRepository();
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -46,6 +53,7 @@ public class PlayerService {
                 Player l_player = new Player();
                 l_player.setName(p_playerName);
                 d_gamePlayEngine.addPlayer(l_player);
+                d_logEntryBuffer.dataChanged("gameplayer", "\n---GAMEPLAYER---\n"+p_playerName+" player added!\n");
                 return String.format("%s player added!", p_playerName);
             } catch (Exception e) {
                 throw new InvalidInputException("Player name is not valid");
@@ -62,11 +70,12 @@ public class PlayerService {
      * @return Value of response of the request.
      * @throws EntityNotFoundException If the player with provided name not found.
      */
-    public String remove(String p_playerName) throws EntityNotFoundException {
+    public String remove(String p_playerName) throws EntityNotFoundException, ResourceNotFoundException, IOException, InvalidInputException {
         // We can check if the continent exists before filtering?
         // Filters the continent list using the continent name
         Player l_player = d_playerRepository.findByPlayerName(p_playerName);
         d_gamePlayEngine.removePlayer(l_player);
+        d_logEntryBuffer.dataChanged("gameplayer", "\n---GAMEPLAYER---\n"+p_playerName+" player removed!\n");
         return String.format("%s player removed!", p_playerName);
     }
 }
