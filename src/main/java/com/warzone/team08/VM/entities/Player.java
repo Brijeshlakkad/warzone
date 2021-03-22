@@ -362,4 +362,13 @@ public class Player {
         d_negotiatePlayer.remove(p_player);
     }
 
+    /**
+     * Gets the negotiated player list.
+     *
+     * @return the list of players.
+     */
+    public List<Player> getNegotiationplayers() {
+        return d_negotiatePlayer;
+    }
+
 }

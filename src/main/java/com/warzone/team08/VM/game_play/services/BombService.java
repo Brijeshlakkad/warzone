@@ -79,7 +79,7 @@ public class BombService implements Order {
     public void execute() throws InvalidInputException, EntityNotFoundException, InvalidCommandException {
         Country l_country;
         List<Country> l_countryList;
-        if (valid()) {
+        if (valid() && isNotNegotiation()) {
             try {
                 List<Country> l_neighbourCountryList = new ArrayList<>();
                 l_country = this.getAttackedCountry();
@@ -109,5 +109,24 @@ public class BombService implements Order {
     @Override
     public OrderType getType() {
         return OrderType.bomb;
+    }
+
+    /**
+     * This method checks that player has not negotiated with the attacked country owner.
+     *
+     * @return True if no negotiaton
+     * @throws EntityNotFoundException not able to find the Owner.
+     */
+    public boolean isNotNegotiation() throws EntityNotFoundException {
+        List<Player> l_negotiationPlayer = d_player.getNegotiationplayers();
+        Player l_player2 = this.getAttackedCountry().getOwnedBy();
+        for(Player l_loopPlayer : l_negotiationPlayer)
+        {
+            if(l_loopPlayer.equals(l_player2))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
