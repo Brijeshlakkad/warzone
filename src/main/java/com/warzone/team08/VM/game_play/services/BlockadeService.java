@@ -1,13 +1,12 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.jakewharton.fliptables.FlipTable;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.exceptions.InvalidArgumentException;
-import com.warzone.team08.VM.exceptions.InvalidCommandException;
-import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.List;
@@ -24,6 +23,7 @@ public class BlockadeService implements Order {
     private String d_countryId;
     private Player d_player;
     public static final int CONSTANT = 3;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * Sets the country name and current player object.
@@ -34,6 +34,7 @@ public class BlockadeService implements Order {
     public BlockadeService(String p_countryId, Player p_player) {
         d_countryId = String.valueOf(p_countryId);
         d_player = p_player;
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -74,9 +75,10 @@ public class BlockadeService implements Order {
      * @throws InvalidCommandException  Throws if the command is invalid.
      * @throws InvalidArgumentException Throws if the argument value in the command is invalid.
      */
-    public void execute() throws EntityNotFoundException, InvalidInputException, InvalidCommandException, InvalidArgumentException {
+    public void execute() throws EntityNotFoundException, InvalidInputException, InvalidCommandException, InvalidArgumentException, ResourceNotFoundException {
         Country l_country;
         List<Country> l_countryList;
+        String l_logResponse="\n---BLOCKADE ORDER---\n";
         if (valid())
         {
             l_country = this.getAttackedCountry();
@@ -91,6 +93,13 @@ public class BlockadeService implements Order {
             }
             d_player.setAssignedCountries(l_countryList);
             d_player.removeCard("blockade");
+            l_logResponse+=d_player.getName()+" used the Blockade card to triple the army count of "+l_country.getCountryName()+" and remove it from Assigned Country list";
+            String[] l_header={"COUNTRY","ARMY COUNT"};
+            String[][] l_changeContent={
+                    {l_country.getCountryName(), String.valueOf(l_country.getNumberOfArmies())}
+            };
+            l_logResponse+="\n Order Effect\n"+ FlipTable.of(l_header, l_changeContent);
+            d_logEntryBuffer.dataChanged("blockade", l_logResponse);
         }
     }
 

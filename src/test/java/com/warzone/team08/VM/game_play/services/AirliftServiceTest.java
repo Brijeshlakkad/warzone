@@ -83,7 +83,7 @@ public class AirliftServiceTest {
      * @throws InvalidCommandException Throws if the command is invalid.
      */
     @Test
-    public void testExecute() throws EntityNotFoundException, InvalidInputException, InvalidCommandException {
+    public void testExecute() throws EntityNotFoundException, InvalidInputException, InvalidCommandException, ResourceNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);

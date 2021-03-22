@@ -86,7 +86,7 @@ public class AdvanceOrderServiceTest {
      * @throws EntityNotFoundException Throws if entity not found.
      */
     @Test(expected = EntityNotFoundException.class)
-    public void testInvalidCountry() throws InvalidInputException, EntityNotFoundException {
+    public void testInvalidCountry() throws InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
         //Randomly passing country name.
         AdvanceOrderService l_advanceOrderService = new AdvanceOrderService("INDIA", "CANADA", 10, d_player1);
         l_advanceOrderService.execute();
@@ -100,7 +100,7 @@ public class AdvanceOrderServiceTest {
      * @throws EntityNotFoundException Throws if entity not found.
      */
     @Test(expected = InvalidInputException.class)
-    public void testInvalidNoOfArmies() throws InvalidInputException, EntityNotFoundException {
+    public void testInvalidNoOfArmies() throws InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
         //Passing negative number of armies to move.
         AdvanceOrderService l_advanceOrderService = new AdvanceOrderService("Mercury-South", "Mercury-East", -10, d_player1);
         l_advanceOrderService.execute();
@@ -115,7 +115,7 @@ public class AdvanceOrderServiceTest {
      * @throws EntityNotFoundException Throws if entity not found.
      */
     @Test(expected = InvalidInputException.class)
-    public void testAdvanceOrderAsInvalidSourceCountry() throws InvalidInputException, EntityNotFoundException {
+    public void testAdvanceOrderAsInvalidSourceCountry() throws InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
 
         //Passing the opponent player's country as a source country.
         //It will raise an InvalidInputException as we cannot move armies from another player's country.
@@ -131,7 +131,7 @@ public class AdvanceOrderServiceTest {
      * @throws EntityNotFoundException Throws if entity not found.
      */
     @Test(expected = Test.None.class)
-    public void testArmiesWhenMovedToOwnCountry() throws InvalidInputException, EntityNotFoundException {
+    public void testArmiesWhenMovedToOwnCountry() throws InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
         Country l_country1 = d_player1.getAssignedCountries().get(0);
         Country l_country2 = d_player1.getAssignedCountries().get(1);
 
@@ -154,7 +154,7 @@ public class AdvanceOrderServiceTest {
      * @throws EntityNotFoundException Throws if entity not found.
      */
     @Test(expected = Test.None.class)
-    public void testSuccessfulBattle() throws InvalidInputException, EntityNotFoundException {
+    public void testSuccessfulBattle() throws InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
         Country l_country1 = d_player1.getAssignedCountries().get(4);
         Country l_country2 = d_player2.getAssignedCountries().get(0);
 
@@ -181,7 +181,7 @@ public class AdvanceOrderServiceTest {
      * @throws EntityNotFoundException Throws if entity not found.
      */
     @Test(expected = Test.None.class)
-    public void testUnsuccessfulBattle() throws InvalidInputException, EntityNotFoundException {
+    public void testUnsuccessfulBattle() throws InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
         Country l_country1 = d_player1.getAssignedCountries().get(4);
         Country l_country2 = d_player2.getAssignedCountries().get(0);
 

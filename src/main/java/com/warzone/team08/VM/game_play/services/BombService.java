@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.jakewharton.fliptables.FlipTable;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Country;
@@ -8,6 +9,7 @@ import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class BombService implements Order {
 
     private String d_countryId;
     private Player d_player;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * Sets the country name and current player object.
@@ -37,6 +40,7 @@ public class BombService implements Order {
     public BombService(String p_countryId, Player p_player) {
         d_countryId = String.valueOf(p_countryId);
         d_player = p_player;
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -79,6 +83,7 @@ public class BombService implements Order {
     public void execute() throws InvalidInputException, EntityNotFoundException, InvalidCommandException {
         Country l_country;
         List<Country> l_countryList;
+        String l_logResponse="\n---BOMB ORDER---\n";
         if (valid()) {
             try {
                 List<Country> l_neighbourCountryList = new ArrayList<>();
@@ -92,6 +97,13 @@ public class BombService implements Order {
                     l_country.setNumberOfArmies(l_finalArmies);
                     //Remove card from list
                     d_player.removeCard("bomb");
+                    l_logResponse+=d_player.getName()+" used Bomb card to half the army count of "+l_country.getCountryName();
+                    String[] l_header={"COUNTRY","ARMY COUNT"};
+                    String[][] l_changeContent={
+                            {l_country.getCountryName(), String.valueOf(l_country.getNumberOfArmies())}
+                    };
+                    l_logResponse+="\n Order Effect\n"+ FlipTable.of(l_header, l_changeContent);
+                    d_logEntryBuffer.dataChanged("bomb", l_logResponse);
                 } else {
                     throw new InvalidArgumentException("Invalid Country Name is provided!! Country must be a neighboring country.");
                 }

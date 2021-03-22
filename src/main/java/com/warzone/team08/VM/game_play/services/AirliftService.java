@@ -1,10 +1,13 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.jakewharton.fliptables.FlipTable;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
 /**
@@ -19,6 +22,7 @@ public class AirliftService{
     private String d_targetCountryId;
     private int d_numarmies;
     private Player d_player;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * sets the source and target country id along with number of armies to be airlifted and player object.
@@ -34,6 +38,7 @@ public class AirliftService{
         d_targetCountryId = p_targetCountryId;
         d_numarmies = p_numarmies;
         d_player = p_player;
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -87,7 +92,7 @@ public class AirliftService{
      * @throws InvalidCommandException Throws if player has not airlift card.
      * @throws InvalidInputException   Throws if player select opponent country for airlift or player doesn't have sufficient armies.
      */
-    public void execute() throws EntityNotFoundException, InvalidInputException, InvalidCommandException {
+    public void execute() throws EntityNotFoundException, InvalidInputException, InvalidCommandException, ResourceNotFoundException {
         int l_sourceCountryArmies = this.getSourceCountry().getNumberOfArmies();
         int l_targetCountryArmies = this.getTargetCountry().getNumberOfArmies();
         if(valid())
@@ -98,5 +103,14 @@ public class AirliftService{
             this.getTargetCountry().setNumberOfArmies(l_targetCountryArmies);
         }
         d_player.removeCard("airlift");
+        String l_logResponse="\n ---AIRLIFT ORDER---\n";
+        l_logResponse+=d_player.getName()+" used the Airlift card to move "+d_numarmies+" armies from "+this.getSourceCountry().getCountryName()+" to "+this.getTargetCountry().getCountryName();
+        String[] l_header={"COUNTRY","ARMY COUNT"};
+        String[][] l_changeContent={
+                {this.getSourceCountry().getCountryName(), String.valueOf(l_sourceCountryArmies)},
+                {this.getTargetCountry().getCountryName(), String.valueOf(l_targetCountryArmies)}
+        };
+        l_logResponse+="\n Order Effect\n"+ FlipTable.of(l_header, l_changeContent);
+        d_logEntryBuffer.dataChanged("airlift",l_logResponse);
     }
 }

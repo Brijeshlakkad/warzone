@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.jakewharton.fliptables.FlipTable;
 import com.warzone.team08.VM.common.services.AssignRandomCardService;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.constants.interfaces.Order;
@@ -7,6 +8,8 @@ import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.List;
@@ -34,6 +37,7 @@ public class AdvanceOrderService implements Order {
     private String d_countryTo;
     private int d_numOfArmies;
     private Player d_player;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * Sets the values of data members.
@@ -49,6 +53,7 @@ public class AdvanceOrderService implements Order {
         d_countryTo = p_countryTo;
         d_numOfArmies = p_numOfArmies;
         d_player = p_player;
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -57,7 +62,7 @@ public class AdvanceOrderService implements Order {
      * @throws EntityNotFoundException Throws if the country name doesn't exist.
      * @throws InvalidInputException   Throws if the Input is invalid.
      */
-    public void execute() throws EntityNotFoundException, InvalidInputException {
+    public void execute() throws EntityNotFoundException, InvalidInputException, ResourceNotFoundException {
         Country l_countryFrom;
         Country l_countryTo;
         List<Country> l_assignCountryList;
@@ -87,6 +92,8 @@ public class AdvanceOrderService implements Order {
             throw new InvalidInputException("Please select any of the neighbor country of the source country as a destination country as we can perform Advance order on neighbor countries only.");
         }
 
+        String l_logResponse ="\n---ADVANCE ORDER---\n";
+
         //If destination country is owned by the current player then it simply moves armies to the destination country.
         if(l_assignCountryList.contains(l_countryTo))
         {
@@ -100,6 +107,8 @@ public class AdvanceOrderService implements Order {
             }
             l_countryFrom.setNumberOfArmies(l_remainingArmies);
             l_countryTo.setNumberOfArmies(l_countryTo.getNumberOfArmies()+d_numOfArmies);
+            l_logResponse +=d_player.getName()+" moved "+d_numOfArmies+" armies from "+l_countryFrom.getCountryName()+" to "+l_countryTo.getCountryName();
+            d_logEntryBuffer.dataChanged("advance", l_logResponse);
         }
         //If destination country is not owned by the current player than it performs battle.
         else
@@ -131,11 +140,26 @@ public class AdvanceOrderService implements Order {
                 l_countryTo.setNumberOfArmies(l_attackingArmies - l_attackersKilled);
 
                 d_player.addCard(AssignRandomCardService.randomCard());
+                l_logResponse+=d_player+" won the attack!!!!\n"+d_player.getName()+" moved "+l_attackingArmies+" armies from "+l_countryFrom.getCountryName()+" to attack on "+l_countryTo.getCountryName();
+                String[] l_header={"COUNTRY","ARMY COUNT","PREVIOUS OWNER","NEW OWNER"};
+                String[][] l_changeContent={
+                        {l_countryTo.getCountryName(), String.valueOf(l_countryTo.getNumberOfArmies()), l_owner.getName(),d_player.getName()}
+                };
+                l_logResponse+="\n Order Effect\n"+ FlipTable.of(l_header, l_changeContent);
+                d_logEntryBuffer.dataChanged("advance", l_logResponse);
             }
             else
             {
                 l_countryFrom.setNumberOfArmies(l_countryFrom.getNumberOfArmies() + l_attackingArmies-l_attackersKilled);
                 l_countryTo.setNumberOfArmies(l_defendingArmies-l_defendersKilled);
+                l_logResponse+=d_player+" did not won the attack!!!!\n"+d_player.getName()+" moved "+l_attackingArmies+" armies from "+l_countryFrom.getCountryName()+" to attack on "+l_countryTo.getCountryName();
+                String[] l_header={"COUNTRY","ARMY COUNT"};
+                String[][] l_changeContent={
+                        {l_countryTo.getCountryName(), String.valueOf(l_countryTo.getNumberOfArmies())},
+                        {l_countryFrom.getCountryName(), String.valueOf(l_countryFrom.getNumberOfArmies())}
+                };
+                l_logResponse+="\n Order Effect\n"+ FlipTable.of(l_header, l_changeContent);
+                d_logEntryBuffer.dataChanged("advance", l_logResponse);
             }
         }
     }

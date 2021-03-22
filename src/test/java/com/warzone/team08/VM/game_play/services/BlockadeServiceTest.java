@@ -81,7 +81,7 @@ public class BlockadeServiceTest {
      * @throws InvalidArgumentException Throws if the arguments is invalid.
      */
     @Test(expected = Test.None.class)
-    public void testBlockadeOperationWithBlockadeCard() throws EntityNotFoundException, InvalidInputException, InvalidCommandException, InvalidArgumentException {
+    public void testBlockadeOperationWithBlockadeCard() throws EntityNotFoundException, InvalidInputException, InvalidCommandException, InvalidArgumentException, ResourceNotFoundException {
         Player l_player1 = d_playerList.get(0);
         List<Country> l_player1AssignCountries = l_player1.getAssignedCountries();
         l_player1.addCard("blockade");
@@ -102,7 +102,7 @@ public class BlockadeServiceTest {
      * @throws InvalidArgumentException Throws if the arguments is invalid.
      */
     @Test(expected = InvalidCommandException.class)
-    public void testBlockadeOperationWithOutBlockadeCard() throws InvalidArgumentException, InvalidCommandException, InvalidInputException, EntityNotFoundException {
+    public void testBlockadeOperationWithOutBlockadeCard() throws InvalidArgumentException, InvalidCommandException, InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
         Player l_player1 = d_playerList.get(0);
         List<Country> l_player1AssignCountries = l_player1.getAssignedCountries();
         l_player1.addCard("bomb");
@@ -123,7 +123,7 @@ public class BlockadeServiceTest {
      * @throws InvalidArgumentException Throws if the argument is invalid.
      */
     @Test(expected = InvalidInputException.class)
-    public void testBlockadeOperationOnOtherPlayerOwnedCountry() throws InvalidArgumentException, InvalidCommandException, InvalidInputException, EntityNotFoundException {
+    public void testBlockadeOperationOnOtherPlayerOwnedCountry() throws InvalidArgumentException, InvalidCommandException, InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
@@ -141,7 +141,7 @@ public class BlockadeServiceTest {
      * @throws InvalidArgumentException Throws if the argument is invalid.
      */
     @Test(expected = InvalidCommandException.class)
-    public void testCardSuccessfullyRemoved() throws InvalidArgumentException, InvalidCommandException, InvalidInputException, EntityNotFoundException {
+    public void testCardSuccessfullyRemoved() throws InvalidArgumentException, InvalidCommandException, InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
         Player l_player1 = d_playerList.get(0);
         List<Country> l_player1AssignCountries = l_player1.getAssignedCountries();
         l_player1.addCard("blockade");
