@@ -1,5 +1,7 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.warzone.team08.VM.constants.enums.OrderType;
+import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
@@ -13,7 +15,7 @@ import com.warzone.team08.VM.repositories.CountryRepository;
  * @author Deep Patel
  * @version 2.0
  */
-public class AirliftService{
+public class AirliftService implements Order {
 
     private String d_sourceCountryId;
     private String d_targetCountryId;
@@ -78,6 +80,16 @@ public class AirliftService{
         } else {
             throw new InvalidInputException("You have to select source and target country both from your owned countries");
         }
+    }
+
+    /**
+     * Gets the type of order.
+     *
+     * @return Value of the order type.
+     */
+    @Override
+    public OrderType getType() {
+        return OrderType.airlift;
     }
 
     /**
