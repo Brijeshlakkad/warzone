@@ -42,6 +42,8 @@ public class Player {
     private int d_remainingReinforcementCount;
     private boolean d_canReinforce;
     private int d_assignedCountryCount;
+    private List<Player> d_negotiatePlayer;
+
     /**
      * To map from <code>UserCommand</code> to <code>Order</code>.
      */
@@ -137,8 +139,7 @@ public class Player {
      *
      * @param p_county Country object.
      */
-    public void removeCountry(Country p_county)
-    {
+    public void removeCountry(Country p_county) {
         d_assignedCountries.remove(p_county);
     }
 
@@ -163,7 +164,7 @@ public class Player {
     /**
      * Adds the card to the list of cards owned by the player.
      *
-     * @param p_card  Card name
+     * @param p_card Card name
      */
     public void addCard(String p_card) {
         d_cards.add(p_card);
@@ -172,10 +173,9 @@ public class Player {
     /**
      * Removes card from the list
      *
-     * @param p_card  Card name
+     * @param p_card Card name
      */
-    public void removeCard(String p_card)
-    {
+    public void removeCard(String p_card) {
         d_cards.remove(p_card);
     }
 
@@ -334,4 +334,32 @@ public class Player {
             throw new OrderOutOfBoundException("No order left for execution.");
         }
     }
+
+    /**
+     * Gets the player order list.
+     *
+     * @return the list of orders.
+     */
+    public List<Order> getOrders() {
+        return d_orders;
+    }
+
+    /**
+     * Used for add player between which negotiation happend.
+     *
+     * @param p_player is the player with whom current player negotiate.
+     */
+    public void addNegotiatePlayer(Player p_player) {
+        d_negotiatePlayer.add(p_player);
+    }
+
+    /**
+     * Used for remove player after 1 turn as diplomacy card effect ended.
+     *
+     * @param p_player is the player with whom current player did negotiation.
+     */
+    public void removeNegotiatePlayer(Player p_player) {
+        d_negotiatePlayer.remove(p_player);
+    }
+
 }
