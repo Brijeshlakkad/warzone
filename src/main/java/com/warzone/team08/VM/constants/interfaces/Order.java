@@ -1,10 +1,7 @@
 package com.warzone.team08.VM.constants.interfaces;
 
 import com.warzone.team08.VM.constants.enums.OrderType;
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.exceptions.InvalidArgumentException;
-import com.warzone.team08.VM.exceptions.InvalidCommandException;
-import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.*;
 
 /**
  * This interface provides the methods to be implemented by different orders.
@@ -23,7 +20,7 @@ public interface Order {
      * @throws InvalidCommandException  Throws if the command is invalid.
      * @throws InvalidArgumentException Throws if the argument value in the command is invalid.
      */
-    void execute() throws EntityNotFoundException, InvalidInputException, InvalidCommandException, InvalidArgumentException;
+    void execute() throws EntityNotFoundException, InvalidInputException, InvalidCommandException, InvalidArgumentException, ResourceNotFoundException;
 
     /**
      * Gets the type of the order.

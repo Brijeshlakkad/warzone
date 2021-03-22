@@ -12,14 +12,14 @@ import java.io.Writer;
 
 public class LogWriter implements Observer{
     @Override
-    public void update(Observable p_observable) throws ResourceNotFoundException, InvalidInputException {
-        File l_file= new File("C:\\Users\\MILESH\\Downloads\\War Zone Team08\\log.txt");
+    public void update(Observable p_observable) throws InvalidInputException {
+        File l_file = new File("C:\\Users\\MILESH\\Downloads\\War Zone Team08\\log.txt");
         //File l_file= FileUtil.retrieveFile(PathResolverUtil.resolveFilePath("logFile.txt"));
-        String l_message=((LogEntryBuffer) p_observable).getMessage();
-        try (Writer l_writer = new FileWriter(l_file,true)) {
+        String l_message = ((LogEntryBuffer) p_observable).getMessage();
+        try (Writer l_writer = new FileWriter(l_file, true)) {
             l_writer.write(l_message);
-        } catch (IOException p_e) {
-            p_e.printStackTrace();
+        } catch (IOException p_ioException) {
+            throw new InvalidInputException("Error while saving the file!");
         }
     }
 }

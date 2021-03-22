@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.log;
 
+import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 
@@ -13,9 +14,10 @@ import java.util.List;
  */
 public class LogEntryBuffer implements Observable {
     private List<Observer> d_observerList;
-    private String d_message="";
+    private String d_message;
+    private String d_headCommand;
 
-    public LogEntryBuffer(){
+    public LogEntryBuffer() {
         d_observerList=new ArrayList<>();
         d_observerList.add(new LogWriter());
     }
@@ -31,9 +33,13 @@ public class LogEntryBuffer implements Observable {
     }
 
     @Override
-    public void notifyObservers(Observable p_o) throws ResourceNotFoundException, IOException, InvalidInputException {
+    public void notifyObservers(Observable p_o) throws ResourceNotFoundException, InvalidInputException {
         for(Observer l_observer:d_observerList){
-            l_observer.update(p_o);
+            try {
+                l_observer.update(p_o);
+            } catch (IOException p_e) {
+                p_e.printStackTrace();
+            }
         }
     }
 
@@ -45,9 +51,18 @@ public class LogEntryBuffer implements Observable {
         d_message = p_message;
     }
 
-    public void dataChanged(String p_headCommand,String p_message) throws IOException, ResourceNotFoundException, InvalidInputException {
+    public void dataChanged(String p_headCommand,String p_message) throws ResourceNotFoundException, InvalidInputException {
+        d_headCommand=p_headCommand;
         d_message=p_message;
         notifyObservers(this);
         d_message="";
+    }
+
+    public String getHeadCommand() {
+        return d_headCommand;
+    }
+
+    public void setHeadCommand(String p_headCommand) {
+        d_headCommand = p_headCommand;
     }
 }
