@@ -4,6 +4,7 @@ import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.entities.orders.AirliftOrder;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
@@ -16,15 +17,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class tests various operations performed during the execution of the airlift command.
  *
  * @author Deep Patel
  */
-public class AirliftServiceTest {
-
+public class AirliftOrderTest {
     private static Application d_Application;
     private static URL d_TestFilePath;
     private static GamePlayEngine d_GamePlayEngine;
@@ -35,11 +36,11 @@ public class AirliftServiceTest {
      * Runs before the test case class runs; Initializes different objects required to perform test.
      */
     @BeforeClass
-    public static void createPlayersList(){
+    public static void createPlayersList() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
         d_GamePlayEngine = GamePlayEngine.getInstance();
-        d_TestFilePath = BombServiceTest.class.getClassLoader().getResource("map_files/solar.map");
+        d_TestFilePath = BombOrderTest.class.getClassLoader().getResource("map_files/solar.map");
     }
 
     /**
@@ -79,11 +80,10 @@ public class AirliftServiceTest {
      * checks that execute method working properly.
      *
      * @throws EntityNotFoundException Throws if entity not found.
-     * @throws InvalidInputException   Throws if user input is invalid.
-     * @throws InvalidCommandException Throws if the command is invalid.
+     * @throws InvalidOrderException   Throws if exception while executing the order.
      */
     @Test
-    public void testExecute() throws EntityNotFoundException, InvalidInputException, InvalidCommandException {
+    public void testExecute() throws EntityNotFoundException, InvalidOrderException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -91,21 +91,20 @@ public class AirliftServiceTest {
         int l_expected = l_playerAssignCountries.get(1).getNumberOfArmies();
         l_player.addCard("airlift");
 
-        AirliftService l_airliftService = new AirliftService(l_playerAssignCountries.get(0).getCountryName(),l_playerAssignCountries.get(1).getCountryName(),2,l_player);
-        l_airliftService.execute();
-        assertEquals(l_playerAssignCountries.get(1).getNumberOfArmies(),l_expected+2);
+        AirliftOrder l_airliftOrder = new AirliftOrder(l_playerAssignCountries.get(0).getCountryName(), l_playerAssignCountries.get(1).getCountryName(), "2", l_player);
+        l_airliftOrder.execute();
+        assertEquals(l_playerAssignCountries.get(1).getNumberOfArmies(), l_expected + 2);
     }
 
     /**
      * checks that player has airlift card.
      *
      * @throws EntityNotFoundException Throws if entity not found.
-     * @throws InvalidInputException Throws if user input is invalid.
-     * @throws InvalidCommandException Throws if the command is invalid.
+     * @throws InvalidOrderException   Throws if exception while executing the order.
      */
     //not have airlift card
-    @Test(expected = InvalidCommandException.class)
-    public void testPlayerHasCard() throws EntityNotFoundException, InvalidInputException, InvalidCommandException {
+    @Test(expected = InvalidOrderException.class)
+    public void testPlayerHasCard() throws EntityNotFoundException, InvalidOrderException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -113,39 +112,37 @@ public class AirliftServiceTest {
         int l_expected = l_playerAssignCountries.get(1).getNumberOfArmies();
         l_player.addCard("bomb");
 
-        AirliftService l_airliftService = new AirliftService(l_playerAssignCountries.get(0).getCountryName(),l_playerAssignCountries.get(1).getCountryName(),2,l_player);
-        l_airliftService.execute();
+        AirliftOrder l_airliftOrder = new AirliftOrder(l_playerAssignCountries.get(0).getCountryName(), l_playerAssignCountries.get(1).getCountryName(), "2", l_player);
+        l_airliftOrder.execute();
     }
 
     /**
      * checks that player will not airlift armies in others country.
      *
      * @throws EntityNotFoundException Throws if entity not found.
-     * @throws InvalidInputException Throws if user input is invalid.
-     * @throws InvalidCommandException Throws if the command is invalid.
+     * @throws InvalidOrderException   Throws if exception while executing the order.
      */
     //try to transfer into other's country
-    @Test(expected = InvalidInputException.class)
-    public void testPlayerNotAirliftInOthersCountry() throws EntityNotFoundException, InvalidInputException, InvalidCommandException {
+    @Test(expected = InvalidOrderException.class)
+    public void testPlayerNotAirliftInOthersCountry() throws EntityNotFoundException, InvalidOrderException {
         Player l_player = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         List<Country> l_playerAssignCountries1 = l_player2.getAssignedCountries();
         l_player.addCard("airlift");
 
-        AirliftService l_airliftService = new AirliftService(l_playerAssignCountries.get(0).getCountryName(),l_playerAssignCountries1.get(0).getCountryName(),2,l_player);
-        l_airliftService.execute();
+        AirliftOrder l_airliftOrder = new AirliftOrder(l_playerAssignCountries.get(0).getCountryName(), l_playerAssignCountries1.get(0).getCountryName(), "2", l_player);
+        l_airliftOrder.execute();
     }
 
     /**
      * method test that source country has entered number of armies for airlifted.
      *
      * @throws EntityNotFoundException Throws if entity not found.
-     * @throws InvalidInputException Throws if user input is invalid.
-     * @throws InvalidCommandException Throws if the command is invalid.
+     * @throws InvalidOrderException   Throws if exception while executing the order.
      */
-    @Test(expected = InvalidInputException.class)
-    public void testPlayerHasEnteredArmies() throws EntityNotFoundException, InvalidInputException, InvalidCommandException {
+    @Test(expected = InvalidOrderException.class)
+    public void testPlayerHasEnteredArmies() throws EntityNotFoundException, InvalidOrderException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -153,7 +150,7 @@ public class AirliftServiceTest {
         int l_expected = l_playerAssignCountries.get(1).getNumberOfArmies();
         l_player.addCard("airlift");
 
-        AirliftService l_airliftService = new AirliftService(l_playerAssignCountries.get(0).getCountryName(),l_playerAssignCountries.get(1).getCountryName(),8,l_player);
-        l_airliftService.execute();
+        AirliftOrder l_airliftOrder = new AirliftOrder(l_playerAssignCountries.get(0).getCountryName(), l_playerAssignCountries.get(1).getCountryName(), "8", l_player);
+        l_airliftOrder.execute();
     }
 }

@@ -2,9 +2,11 @@ package com.warzone.team08.VM.entities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warzone.team08.VM.VirtualMachine;
-import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.constants.interfaces.Order;
-import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.exceptions.InvalidCommandException;
+import com.warzone.team08.VM.exceptions.OrderOutOfBoundException;
 import com.warzone.team08.VM.mappers.OrderMapper;
 import com.warzone.team08.VM.responses.CommandResponse;
 
@@ -40,19 +42,13 @@ public class Player {
     private List<Country> d_assignedCountries;
     private int d_reinforcementsCount;
     private int d_remainingReinforcementCount;
-    private boolean d_canReinforce;
     private int d_assignedCountryCount;
-    private List<Player> d_negotiatePlayer;
+    private final List<Player> d_negotiatePlayer;
 
     /**
      * To map from <code>UserCommand</code> to <code>Order</code>.
      */
     private final OrderMapper d_orderMapper;
-
-    /**
-     * Keeps track of if the player has deployed the reinforcements of not.
-     */
-    private boolean d_hasDeployed;
 
     /**
      * Initializes variables required to handle player state.
@@ -64,9 +60,9 @@ public class Player {
         d_assignedCountries = new ArrayList<>();
         d_reinforcementsCount = 0;
         d_remainingReinforcementCount = 0;
-        d_canReinforce = true;
         d_assignedCountryCount = 0;
         d_orderMapper = new OrderMapper();
+        d_negotiatePlayer = new ArrayList<>();
     }
 
     /**
@@ -216,56 +212,21 @@ public class Player {
     }
 
     /**
-     * Reduces the reinforcements. Checks if the player has already deployed the reinforcements.
-     *
-     * @return True if the player has deployed the reinforcements.
-     */
-    public boolean isHasDeployed() {
-        return d_hasDeployed;
-    }
-
-    /**
-     * Sets the value indicating that if the player has deployed the reinforcements.
-     *
-     * @param p_hasDeployed Value of true if the player has deployed the reinforcements.
-     */
-    public void setHasDeployed(boolean p_hasDeployed) {
-        d_hasDeployed = p_hasDeployed;
-    }
-
-    /**
-     * Calculates the number of remaining reinforcements for the player.
-     * <p>Shows error if the player orders more than
-     * reinforcements than in possession. This method also sets the remaining number of reinforcements left for the
-     * future use.
-     *
-     * @param p_usedReinforcementCount Total number of used reinforcements.
-     * @return True if the player can reinforce the armies; false otherwise.
-     */
-    public boolean canPlayerReinforce(int p_usedReinforcementCount) {
-        if (this.getRemainingReinforcementCount() == 0) {
-            return false;
-        }
-        int l_remainingReinforcementCount = this.getRemainingReinforcementCount() - p_usedReinforcementCount;
-        if (l_remainingReinforcementCount < 0) {
-            return false;
-        }
-        this.setRemainingReinforcementCount(l_remainingReinforcementCount);
-        return true;
-    }
-
-    /**
      * Gets order from the user and stores the order for the player.
      *
-     * @throws ReinforcementOutOfBoundException If the player doesn't have enough reinforcement to issue the order.
-     * @throws InvalidCommandException          If there is an error while preprocessing the user command.
-     * @throws InvalidArgumentException         If the mentioned value is not of expected type.
-     * @throws EntityNotFoundException          If the target country not found.
-     * @throws ExecutionException               If any error while processing concurrent thread.
-     * @throws InterruptedException             If scheduled thread was interrupted.
+     * @return True if the player doesn't want to being asked to issue order.
+     * @throws InvalidCommandException  If there is an error while preprocessing the user command.
+     * @throws InvalidArgumentException If the mentioned value is not of expected type.
+     * @throws EntityNotFoundException  If the target country not found.
+     * @throws ExecutionException       If any error while processing concurrent thread.
+     * @throws InterruptedException     If scheduled thread was interrupted.
      */
-    public void issueOrder() throws
-            ReinforcementOutOfBoundException, InvalidCommandException, EntityNotFoundException, ExecutionException, InterruptedException, InvalidArgumentException {
+    public boolean issueOrder() throws
+            InvalidCommandException,
+            EntityNotFoundException,
+            ExecutionException,
+            InterruptedException,
+            InvalidArgumentException {
         // Requests user interface for input from user.
         String l_responseVal = "";
         do {
@@ -275,23 +236,18 @@ public class Player {
         } while (l_responseVal.isEmpty());
         try {
             ObjectMapper l_objectMapper = new ObjectMapper();
+            // Map user response to Order object.
             CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
-            Order l_newOrder = d_orderMapper.toOrder(l_commandResponse, this);
-            if (l_newOrder.getType() == OrderType.deploy) {
-                DeployOrder l_deployOrder = (DeployOrder) l_newOrder;
-                if (this.getAssignedCountries().contains(l_deployOrder.getTargetCountry())) {
-                    if (this.getRemainingReinforcementCount() != 0 && this.canPlayerReinforce(l_deployOrder.getNumOfReinforcements())) {
-                        this.addOrder(l_deployOrder);
-                    } else {
-                        throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
-                    }
-                } else {
-                    throw new InvalidCommandException("You can deploy the reinforcements only in your assigned countries");
-                }
+            if (l_commandResponse.isDone()) {
+                return true;
             }
+            this.addExecutedOrder(d_orderMapper.toOrder(l_commandResponse, this));
         } catch (IOException p_ioException) {
             throw new InvalidCommandException("Unrecognised input!");
         }
+
+        // Default player will be asked to issue order until they enter "done"
+        return false;
     }
 
     /**
@@ -367,8 +323,22 @@ public class Player {
      *
      * @return the list of players.
      */
-    public List<Player> getNegotiationplayers() {
+    public List<Player> getFriendPlayers() {
         return d_negotiatePlayer;
     }
 
+    /**
+     * This method checks whether or not this player has not negotiated with other player.
+     *
+     * @param p_otherPlayer Other player.
+     * @return True if the players has no peace treaty signed.
+     */
+    public boolean isNotNegotiation(Player p_otherPlayer) {
+        for (Player l_loopPlayer : this.getFriendPlayers()) {
+            if (l_loopPlayer.equals(p_otherPlayer)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

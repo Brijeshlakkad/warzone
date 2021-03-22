@@ -6,7 +6,6 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
-import com.warzone.team08.VM.exceptions.ReinforcementOutOfBoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 
 import java.util.ArrayList;
@@ -41,24 +40,14 @@ public class IssueOrderService {
 
             // Until player issues the valid order.
             boolean l_invalidPreviousOrder;
-            boolean l_canTryAgain;
             do {
-                l_canTryAgain = true;
                 try {
                     // Request player to issue the order.
-                    l_currentPlayer.issueOrder();
-                    l_invalidPreviousOrder = false;
-                } catch (ReinforcementOutOfBoundException p_e) {
-                    l_invalidPreviousOrder = true;
-
-                    // Send exception message to CLI.
-                    VirtualMachine.getInstance().stderr(p_e.getMessage());
-
-                    // If all of its reinforcements have been placed, don't ask the player again.
-                    if (l_currentPlayer.getRemainingReinforcementCount() == 0) {
-                        l_canTryAgain = false;
+                    if (l_currentPlayer.issueOrder()) {
+                        // Player won't be asked again for issuing orders for this phase.
                         finishedIssuingOrders.add(l_currentPlayer);
                     }
+                    l_invalidPreviousOrder = false;
                 } catch (EntityNotFoundException | InvalidCommandException | InvalidArgumentException p_exception) {
                     l_invalidPreviousOrder = true;
                     // Show VMException error to the user.
@@ -67,7 +56,7 @@ public class IssueOrderService {
                     // If interruption occurred while issuing the order.
                     l_invalidPreviousOrder = true;
                 }
-            } while (l_invalidPreviousOrder && l_canTryAgain);
+            } while (l_invalidPreviousOrder);
         }
 
         // Store to use when starting the issue phase again.

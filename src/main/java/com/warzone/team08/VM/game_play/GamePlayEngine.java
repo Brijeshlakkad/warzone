@@ -14,7 +14,7 @@ import java.util.List;
  * @author MILESH
  * @version 1.0
  */
-public class    GamePlayEngine implements Engine {
+public class GamePlayEngine implements Engine {
     /**
      * Singleton instance of the class.
      */

@@ -21,6 +21,11 @@ public class CommandResponse {
     private List<String> d_commandValues;
 
     /**
+     * Shows that player doesn't want to continue issuing the orders.
+     */
+    private boolean d_isDone = false;
+
+    /**
      * Gets the head of command for this user command
      *
      * @return head of the command
@@ -54,5 +59,24 @@ public class CommandResponse {
      */
     public void setCommandValues(List<String> d_commandValues) {
         this.d_commandValues = d_commandValues;
+    }
+
+
+    /**
+     * Sets true if the player doesn't want to continue issuing the orders.
+     *
+     * @param p_isDone Value of true if the player doesn't want to issue any order.
+     */
+    public void setIsDone(boolean p_isDone) {
+        this.d_isDone = p_isDone;
+    }
+
+    /**
+     * Gets true if the player doesn't want to continue issuing the orders.
+     *
+     * @return Value of true if the player doesn't want to issue any order.
+     */
+    public boolean isDone() {
+        return d_isDone;
     }
 }
