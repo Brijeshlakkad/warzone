@@ -3,10 +3,7 @@ package com.warzone.team08.VM.game_play.services;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Player;
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.exceptions.InvalidArgumentException;
-import com.warzone.team08.VM.exceptions.InvalidCommandException;
-import com.warzone.team08.VM.exceptions.ReinforcementOutOfBoundException;
+import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 
 import java.util.ArrayList;
@@ -27,7 +24,7 @@ public class IssueOrderService {
      * If the player issues an order with reinforcements more than enough they possess, it will request the same player
      * again for a valid order.
      */
-    public void execute() {
+    public void execute() throws ResourceNotFoundException, InvalidInputException {
         List<Player> finishedIssuingOrders = new ArrayList<>();
         GamePlayEngine l_gamePlayEngine = GameEngine.GAME_PLAY_ENGINE();
         l_gamePlayEngine.setCurrentPlayerTurn(l_gamePlayEngine.getCurrentPlayerForIssuePhase());

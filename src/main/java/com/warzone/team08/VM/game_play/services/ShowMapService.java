@@ -5,7 +5,10 @@ import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,16 +24,18 @@ public class ShowMapService implements SingleCommand {
     GamePlayEngine d_gamePlayEngine;
     List<Player> d_playerList;
     com.warzone.team08.VM.map_editor.services.ShowMapService d_showMapService;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * Initializes the different objects.
      *
      * @throws EntityNotFoundException Throws if entity not found.
      */
-    public ShowMapService() throws EntityNotFoundException {
+    public ShowMapService() throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_playerList = d_gamePlayEngine.getPlayerList();
         d_showMapService = new com.warzone.team08.VM.map_editor.services.ShowMapService();
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -76,8 +81,9 @@ public class ShowMapService implements SingleCommand {
      * @throws EntityNotFoundException If no player is available.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws EntityNotFoundException {
+    public String execute(List<String> p_commandValues) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         StringBuilder l_playerContent = new StringBuilder();
+        String l_logResponse="";
         int l_playerCount = 0;
         if (!this.d_playerList.isEmpty()) {
             for (Player l_player : d_playerList) {
@@ -86,7 +92,9 @@ public class ShowMapService implements SingleCommand {
                 l_playerContent.append("Total Reinforcement Count: " + l_player.getReinforcementCount() + "\n");
                 l_playerContent.append(this.showPlayerContent(l_player));
             }
-            return l_playerContent.toString() + "\n" + "CONNECTIVITY" + "\n" + d_showMapService.showNeighbourCountries();
+            l_logResponse=l_playerContent.toString() + "\n" + "CONNECTIVITY" + "\n" + d_showMapService.showNeighbourCountries();
+            d_logEntryBuffer.dataChanged("showmap","\n---SHOWMAP---\n"+l_logResponse);
+            return l_logResponse;
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");
         }

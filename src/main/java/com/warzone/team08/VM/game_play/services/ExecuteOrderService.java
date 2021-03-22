@@ -45,7 +45,7 @@ public class ExecuteOrderService {
                 if (!l_currentPlayer.hasOrders()) {
                     finishedExecutingOrders.add(l_currentPlayer);
                 }
-            } catch (OrderOutOfBoundException | EntityNotFoundException | InvalidInputException | InvalidCommandException | InvalidArgumentException p_e) {
+            } catch (OrderOutOfBoundException | EntityNotFoundException | InvalidInputException | InvalidCommandException | InvalidArgumentException | ResourceNotFoundException p_e) {
                 VirtualMachine.getInstance().stderr(p_e.getMessage());
                 finishedExecutingOrders.add(l_currentPlayer);
             }

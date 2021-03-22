@@ -21,6 +21,7 @@ public class MapEditorEngine implements Engine {
     private static MapEditorEngine d_Instance;
 
     private List<Continent> d_continentList;
+    private String d_headCommand;
 
     /**
      * Gets the single instance of the class.
@@ -141,6 +142,14 @@ public class MapEditorEngine implements Engine {
      */
     public void addContinent(Continent p_continent) {
         d_continentList.add(p_continent);
+    }
+
+    public String getHeadCommand() {
+        return d_headCommand;
+    }
+
+    public void setHeadCommand(String p_headCommand) {
+        d_headCommand=p_headCommand;
     }
 
     /**
