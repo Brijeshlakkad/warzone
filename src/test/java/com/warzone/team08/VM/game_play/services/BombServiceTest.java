@@ -11,10 +11,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class tests various operations performed during the execution of the bomb command.
@@ -49,14 +52,15 @@ public class BombServiceTest {
      * @throws EntityNotFoundException   Throws if entity not found.
      */
     @Before
-    public void before() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
+    public void before() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
         // (Re)initialise the VM.
         VirtualMachine.getInstance().initialise();
 
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
-        assert d_TestFilePath != null;
-        l_editMapService.handleLoadMap(d_TestFilePath.getPath());
+        assertNotNull(d_TestFilePath);
+        String l_url = new URI(d_TestFilePath.getPath()).getPath();
+        l_editMapService.handleLoadMap(l_url);
 
         Player l_player1 = new Player();
         Player l_player2 = new Player();

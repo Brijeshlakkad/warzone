@@ -53,9 +53,9 @@ public class BombService implements Order {
      * Checks whether the given command is executable or not(valid or not).
      *
      * @return True if the command is valid, false otherwise.
-     * @throws EntityNotFoundException  Throws if the given country is not found in the list of available countries.
-     * @throws InvalidCommandException  Throws if the command is invalid.
-     * @throws InvalidInputException    Throws in case of invalid input.
+     * @throws EntityNotFoundException Throws if the given country is not found in the list of available countries.
+     * @throws InvalidCommandException Throws if the command is invalid.
+     * @throws InvalidInputException   Throws in case of invalid input.
      */
     public boolean valid() throws EntityNotFoundException, InvalidCommandException, InvalidInputException {
         if (this.getAttackedCountry().getOwnedBy() != d_player) {
@@ -72,9 +72,9 @@ public class BombService implements Order {
     /**
      * Performs actual bomb operation.
      *
-     * @throws InvalidInputException    Throws if user input is invalid.
-     * @throws EntityNotFoundException  Throws if the given country is not found in the list of available countries.
-     * @throws InvalidCommandException  Throws if the command is invalid.
+     * @throws InvalidInputException   Throws if user input is invalid.
+     * @throws EntityNotFoundException Throws if the given country is not found in the list of available countries.
+     * @throws InvalidCommandException Throws if the command is invalid.
      */
     public void execute() throws InvalidInputException, EntityNotFoundException, InvalidCommandException {
         Country l_country;
@@ -119,12 +119,14 @@ public class BombService implements Order {
      */
     public boolean isNotNegotiation() throws EntityNotFoundException {
         List<Player> l_negotiationPlayer = d_player.getNegotiationplayers();
-        Player l_player2 = this.getAttackedCountry().getOwnedBy();
-        for(Player l_loopPlayer : l_negotiationPlayer)
-        {
-            if(l_loopPlayer.equals(l_player2))
-            {
-                return false;
+        if (l_negotiationPlayer == null) {
+            return true;
+        } else {
+            Player l_player2 = this.getAttackedCountry().getOwnedBy();
+            for (Player l_loopPlayer : l_negotiationPlayer) {
+                if (l_loopPlayer.equals(l_player2)) {
+                    return false;
+                }
             }
         }
         return true;

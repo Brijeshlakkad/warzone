@@ -149,10 +149,14 @@ public class AdvanceOrderService implements Order {
      */
     public boolean isNotNegotiation() throws EntityNotFoundException {
         List<Player> l_negotiationPlayer = d_player.getNegotiationplayers();
-        Player l_player2 = this.getCountryTo().getOwnedBy();
-        for (Player l_loopPlayer : l_negotiationPlayer) {
-            if (l_loopPlayer.equals(l_player2)) {
-                return false;
+        if (l_negotiationPlayer == null) {
+            return true;
+        } else {
+            Player l_player2 = this.getCountryTo().getOwnedBy();
+            for (Player l_loopPlayer : l_negotiationPlayer) {
+                if (l_loopPlayer.equals(l_player2)) {
+                    return false;
+                }
             }
         }
         return true;
