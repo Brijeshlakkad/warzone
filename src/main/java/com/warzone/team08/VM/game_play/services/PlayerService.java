@@ -70,7 +70,7 @@ public class PlayerService {
      * @return Value of response of the request.
      * @throws EntityNotFoundException If the player with provided name not found.
      */
-    public String remove(String p_playerName) throws EntityNotFoundException, ResourceNotFoundException, IOException, InvalidInputException {
+    public String remove(String p_playerName) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         // We can check if the continent exists before filtering?
         // Filters the continent list using the continent name
         Player l_player = d_playerRepository.findByPlayerName(p_playerName);

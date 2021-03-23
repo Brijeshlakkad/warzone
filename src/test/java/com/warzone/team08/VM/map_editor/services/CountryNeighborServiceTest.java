@@ -1,6 +1,8 @@
 package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
@@ -54,7 +56,7 @@ public class CountryNeighborServiceTest {
      * @throws EntityNotFoundException Throws if data tag is absent in map file.
      */
     @Test(expected = EntityNotFoundException.class)
-    public void testWrongCountryValues() throws EntityNotFoundException {
+    public void testWrongCountryValues() throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         //If both country name and neighbor country name are invalid(Do not exists in map file).
         d_CountryNeighbourService.add("ABC", "DEF");
 
@@ -72,7 +74,7 @@ public class CountryNeighborServiceTest {
      * @throws EntityNotFoundException Throws if data tag is absent in map file.
      */
     @Test(expected = Test.None.class)
-    public void testAdd() throws EntityNotFoundException {
+    public void testAdd() throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
 
         String l_addResponse = d_CountryNeighbourService.add("Mercury-South", "Mercury-West");
         assertNotNull(l_addResponse);
