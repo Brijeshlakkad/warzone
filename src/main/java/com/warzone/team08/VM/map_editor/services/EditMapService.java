@@ -51,7 +51,7 @@ public class EditMapService implements SingleCommand {
         d_continentService = new ContinentService();
         d_countryService = new CountryService();
         d_countryNeighborService = new CountryNeighborService();
-        d_logEntryBuffer=LogEntryBuffer.getLogger();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -74,7 +74,7 @@ public class EditMapService implements SingleCommand {
             EntityNotFoundException {
         // (Re) initialise engine.
         d_mapEditorEngine.initialise();
-        d_mapEditorEngine.setHeadCommand("editmap");
+        d_mapEditorEngine.setLoadingMap(true);
         if (new File(p_filePath).exists()) {
             try {
                 // Try to retrieve the file
@@ -298,15 +298,15 @@ public class EditMapService implements SingleCommand {
             InvalidInputException,
             AbsentTagException,
             EntityNotFoundException {
-        String l_logResponse="\n---EDITMAP---\n";
-        String l_response="";
+        String l_logResponse = "\n---EDITMAP---\n";
+        String l_response = "";
         if (!p_commandValues.isEmpty()) {
             // Resolve file path using absolute path of user data directory.
             String resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));
-            int l_index=resolvedPathToFile.lastIndexOf('\\');
-            l_response=this.handleLoadMap(resolvedPathToFile);
-            d_logEntryBuffer.dataChanged("editmap",l_logResponse+resolvedPathToFile.substring(l_index+1)+" "+l_response+"\n");
-            d_mapEditorEngine.setHeadCommand("edit");
+            int l_index = resolvedPathToFile.lastIndexOf('\\');
+            l_response = this.handleLoadMap(resolvedPathToFile);
+            d_logEntryBuffer.dataChanged("editmap", l_logResponse + resolvedPathToFile.substring(l_index + 1) + " " + l_response + "\n");
+            d_mapEditorEngine.setLoadingMap(false);
             return l_response;
         } else {
             throw new InvalidInputException("File name is empty!");

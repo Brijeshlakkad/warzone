@@ -37,7 +37,6 @@ public class GameEngine {
     public static GameEngine getInstance() throws NullPointerException {
         if (d_Instance == null) {
             d_Instance = new GameEngine();
-            d_Instance.initialise();
         }
         return d_Instance;
     }

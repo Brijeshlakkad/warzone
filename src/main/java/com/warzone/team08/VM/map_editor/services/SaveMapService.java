@@ -41,7 +41,7 @@ public class SaveMapService implements SingleCommand {
      */
     public SaveMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
-        d_logEntryBuffer=LogEntryBuffer.getLogger();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -51,7 +51,7 @@ public class SaveMapService implements SingleCommand {
      * @return Value of response of the request.
      * @throws InvalidInputException Throws if the file write operation was not successful.
      */
-    public String saveToFile(File p_fileObject) throws InvalidInputException, ResourceNotFoundException {
+    public String saveToFile(File p_fileObject) throws InvalidInputException {
         try (Writer l_writer = new FileWriter(p_fileObject)) {
             l_writer.write("[" + "Continents" + "]\n");
 
@@ -78,10 +78,10 @@ public class SaveMapService implements SingleCommand {
             }
             // Re-initialise map editor engine data
             d_mapEditorEngine.initialise();
-            String l_fileName=p_fileObject.getName();
-            int l_index=l_fileName.lastIndexOf('\\');
-            String l_loggingMessage ="\n---SAVEMAP---"+"\n"+l_fileName.substring(l_index+1)+" saved successfully!\n";
-            d_logEntryBuffer.dataChanged("savemap", l_loggingMessage+"\n");
+            String l_fileName = p_fileObject.getName();
+            int l_index = l_fileName.lastIndexOf('\\');
+            String l_loggingMessage = "\n---SAVEMAP---" + "\n" + l_fileName.substring(l_index + 1) + " saved successfully!\n";
+            d_logEntryBuffer.dataChanged("savemap", l_loggingMessage + "\n");
             return "File saved successfully";
         } catch (IOException p_ioException) {
             throw new InvalidInputException("Error while saving the file!");
@@ -101,7 +101,7 @@ public class SaveMapService implements SingleCommand {
     public String execute(List<String> p_commandValues) throws InvalidInputException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException {
         // Validates the map before saving the file.
         ValidateMapService l_validateObj = new ValidateMapService();
-        l_validateObj.execute(null,"savemap");
+        l_validateObj.execute(null, "savemap");
 
         // Validates the file, gets the file object, and writes the data into it.
         return saveToFile(FileUtil.retrieveFile(PathResolverUtil.resolveFilePath(p_commandValues.get(0))));

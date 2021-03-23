@@ -3,7 +3,6 @@ package com.warzone.team08.VM.game_play.services;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
-import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.PlayerRepository;
@@ -68,7 +67,7 @@ public class PlayerService {
      * @return Value of response of the request.
      * @throws EntityNotFoundException If the player with provided name not found.
      */
-    public String remove(String p_playerName) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+    public String remove(String p_playerName) throws EntityNotFoundException {
         // We can check if the continent exists before filtering?
         // Filters the continent list using the continent name
         Player l_player = d_playerRepository.findByPlayerName(p_playerName);

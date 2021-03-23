@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.entities.orders;
 
+import com.jakewharton.fliptables.FlipTable;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.constants.interfaces.Card;
@@ -9,6 +10,7 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.List;
@@ -31,6 +33,8 @@ public class BlockadeOrder extends Order {
      */
     private final CountryRepository d_countryRepository = new CountryRepository();
 
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
+
     /**
      * Sets the country name and current player object.
      *
@@ -39,10 +43,14 @@ public class BlockadeOrder extends Order {
      * @throws EntityNotFoundException Throws if the given country is not found in the list of available countries.
      */
     public BlockadeOrder(String p_targetCountry, Player p_owner)
-            throws
-            EntityNotFoundException {
+            throws EntityNotFoundException {
+        StringBuilder l_logResponse = new StringBuilder();
+        l_logResponse.append("\n" + p_owner.getName() + " turn to Issue Order:" + "\n");
+        l_logResponse.append("---BLOCKADE ORDER---:" + "\n");
         d_targetCountry = d_countryRepository.findFirstByCountryName(p_targetCountry);
         d_owner = p_owner;
+        l_logResponse.append("Blockade card to triple the armies in " + p_targetCountry + "\n");
+        d_logEntryBuffer.dataChanged("blockade", l_logResponse.toString());
     }
 
     /**
@@ -53,6 +61,8 @@ public class BlockadeOrder extends Order {
      * @throws CardNotFoundException Card doesn't found in the player's card list.
      */
     public void execute() throws InvalidOrderException, CardNotFoundException {
+        StringBuilder l_logResponse = new StringBuilder();
+        l_logResponse.append("\n" + "Executing " + d_owner.getName() + " Order:" + "\n");
         Country l_country;
         List<Country> l_countryList;
         Card l_requiredCard;
@@ -72,6 +82,13 @@ public class BlockadeOrder extends Order {
         }
         d_owner.setAssignedCountries(l_countryList);
         d_owner.removeCard(l_requiredCard);
+        l_logResponse.append(d_owner.getName() + " used the Blockade card to triple the army count of " + l_country.getCountryName() + " and remove it from Assigned Country list\n");
+        String[] l_header = {"COUNTRY", "ARMY COUNT"};
+        String[][] l_changeContent = {
+                {l_country.getCountryName(), String.valueOf(l_country.getNumberOfArmies())}
+        };
+        l_logResponse.append("\n Order Effect\n" + FlipTable.of(l_header, l_changeContent));
+        d_logEntryBuffer.dataChanged("blockade", l_logResponse.toString());
     }
 
     /**

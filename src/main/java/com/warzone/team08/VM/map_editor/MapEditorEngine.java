@@ -19,9 +19,9 @@ public class MapEditorEngine implements Engine {
      * Singleton instance of the class.
      */
     private static MapEditorEngine d_Instance;
-
     private List<Continent> d_continentList;
-    private String d_headCommand;
+
+    private boolean d_isLoadingMap = false;
 
     /**
      * Gets the single instance of the class.
@@ -145,19 +145,22 @@ public class MapEditorEngine implements Engine {
     }
 
     /**
-     * Gets the headCommand name
-     * @return headCommand
+     * Gets the state of the loading-map.
+     *
+     * @return True if the map is being loaded using the file.
      */
-    public String getHeadCommand() {
-        return d_headCommand;
+    public boolean getLoadingMap() {
+        return d_isLoadingMap;
     }
 
     /**
-     * Sets the headCommand name
-     * @param p_headCommand headCommand
+     * Sets the state of the loading-map functionalities: loadmap and editmap. This will be true if any of the above
+     * command is being used to load the map.
+     *
+     * @param p_loadingMap True if the map is being loaded using the file.
      */
-    public void setHeadCommand(String p_headCommand) {
-        d_headCommand=p_headCommand;
+    public void setLoadingMap(boolean p_loadingMap) {
+        d_isLoadingMap = p_loadingMap;
     }
 
     /**

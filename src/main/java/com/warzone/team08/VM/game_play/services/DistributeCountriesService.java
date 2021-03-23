@@ -38,7 +38,7 @@ public class DistributeCountriesService implements SingleCommand {
     public DistributeCountriesService() {
         d_countryList = MapEditorEngine.getInstance().getCountryList();
         d_gamePlayEngine = GamePlayEngine.getInstance();
-        d_logEntryBuffer=LogEntryBuffer.getLogger();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -136,12 +136,12 @@ public class DistributeCountriesService implements SingleCommand {
      * @throws VMException           If any exception from while players in <code>GameLoop</code>.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws VMException, IllegalStateException{
+    public String execute(List<String> p_commandValues) throws VMException, IllegalStateException {
         // Check if players have been added.
         // What if only one player is available?
         if (!GamePlayEngine.getInstance().getPlayerList().isEmpty()) {
             String l_response = distributeCountries();
-            d_logEntryBuffer.dataChanged("assigncountries", "\n---ASSIGNCOUNTRIES---\n"+l_response+"\n"+this.getPlayerCountries()+"\n*******GAME LOOP BEGINS*******\n");
+            d_logEntryBuffer.dataChanged("assigncountries", "\n---ASSIGNCOUNTRIES---\n" + l_response + "\n" + this.getPlayerCountries() + "\n*******GAME LOOP BEGINS*******\n");
             return l_response;
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");
@@ -150,18 +150,19 @@ public class DistributeCountriesService implements SingleCommand {
 
     /**
      * This method return the String of countries associated with each player.
+     *
      * @return string of player's countries.
      */
-    public String getPlayerCountries(){
-        String l_playerContent="";
-        for(Player l_player:d_gamePlayEngine.getPlayerList()){
-            List<Country> l_countries=l_player.getAssignedCountries();
-            List<String> l_names=new ArrayList<>();
-            for(Country l_country:l_countries){
+    public String getPlayerCountries() {
+        String l_playerContent = "";
+        for (Player l_player : d_gamePlayEngine.getPlayerList()) {
+            List<Country> l_countries = l_player.getAssignedCountries();
+            List<String> l_names = new ArrayList<>();
+            for (Country l_country : l_countries) {
                 l_names.add(l_country.getCountryName());
             }
-            String l_countriesNames=String.join(",",l_names);
-            l_playerContent+=l_player.getName()+": "+l_names+"\n";
+            String l_countriesNames = String.join(",", l_names);
+            l_playerContent += l_player.getName() + ": " + l_names + "\n";
         }
         return l_playerContent;
     }

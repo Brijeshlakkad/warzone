@@ -31,11 +31,11 @@ public class ShowMapService implements SingleCommand {
      *
      * @throws EntityNotFoundException Throws if entity not found.
      */
-    public ShowMapService() throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+    public ShowMapService() throws EntityNotFoundException {
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_playerList = d_gamePlayEngine.getPlayerList();
         d_showMapService = new com.warzone.team08.VM.map_editor.services.ShowMapService();
-        d_logEntryBuffer=LogEntryBuffer.getLogger();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -83,7 +83,7 @@ public class ShowMapService implements SingleCommand {
     @Override
     public String execute(List<String> p_commandValues) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         StringBuilder l_playerContent = new StringBuilder();
-        String l_logResponse="";
+        String l_logResponse = "";
         int l_playerCount = 0;
         if (!this.d_playerList.isEmpty()) {
             for (Player l_player : d_playerList) {
@@ -92,8 +92,8 @@ public class ShowMapService implements SingleCommand {
                 l_playerContent.append("Total Reinforcement Count: " + l_player.getReinforcementCount() + "\n");
                 l_playerContent.append(this.showPlayerContent(l_player));
             }
-            l_logResponse=l_playerContent.toString() + "\n" + "CONNECTIVITY" + "\n" + d_showMapService.showNeighbourCountries();
-            d_logEntryBuffer.dataChanged("showmap","\n---SHOWMAP---\n"+l_logResponse);
+            l_logResponse = l_playerContent.toString() + "\n" + "CONNECTIVITY" + "\n" + d_showMapService.showNeighbourCountries();
+            d_logEntryBuffer.dataChanged("showmap", "\n---SHOWMAP---\n" + l_logResponse);
             return l_logResponse;
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");
