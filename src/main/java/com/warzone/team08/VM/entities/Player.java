@@ -2,10 +2,11 @@ package com.warzone.team08.VM.entities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warzone.team08.VM.VirtualMachine;
-import com.warzone.team08.VM.constants.enums.OrderType;
+import com.warzone.team08.VM.constants.enums.CardType;
+import com.warzone.team08.VM.constants.interfaces.Card;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.log.LogEntryBuffer;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.mappers.OrderMapper;
 import com.warzone.team08.VM.responses.CommandResponse;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.
@@ -37,21 +39,17 @@ public class Player {
     /**
      * List of cards owned by the player.
      */
-    private List<String> d_cards;
+    private List<Card> d_cards;
     private List<Country> d_assignedCountries;
     private int d_reinforcementsCount;
     private int d_remainingReinforcementCount;
-    private boolean d_canReinforce;
     private int d_assignedCountryCount;
+    private final List<Player> d_negotiatePlayer;
+
     /**
      * To map from <code>UserCommand</code> to <code>Order</code>.
      */
     private final OrderMapper d_orderMapper;
-
-    /**
-     * Keeps track of if the player has deployed the reinforcements of not.
-     */
-    private boolean d_hasDeployed;
 
     private final LogEntryBuffer d_logEntryBuffer;
 
@@ -65,10 +63,10 @@ public class Player {
         d_assignedCountries = new ArrayList<>();
         d_reinforcementsCount = 0;
         d_remainingReinforcementCount = 0;
-        d_canReinforce = true;
         d_assignedCountryCount = 0;
         d_orderMapper = new OrderMapper();
         d_logEntryBuffer = LogEntryBuffer.getLogger();
+        d_negotiatePlayer = new ArrayList<>();
     }
 
     /**
@@ -164,29 +162,11 @@ public class Player {
     }
 
     /**
-     * Adds the card to the list of cards owned by the player.
-     *
-     * @param p_card Card name
-     */
-    public void addCard(String p_card) {
-        d_cards.add(p_card);
-    }
-
-    /**
-     * Removes card from the list
-     *
-     * @param p_card Card name
-     */
-    public void removeCard(String p_card) {
-        d_cards.remove(p_card);
-    }
-
-    /**
      * Returns the list of cards owned by the player.
      *
      * @return List of cards owned by the player.
      */
-    public List<String> getCards() {
+    public List<Card> getCards() {
         return d_cards;
     }
 
@@ -218,56 +198,21 @@ public class Player {
     }
 
     /**
-     * Reduces the reinforcements. Checks if the player has already deployed the reinforcements.
-     *
-     * @return True if the player has deployed the reinforcements.
-     */
-    public boolean isHasDeployed() {
-        return d_hasDeployed;
-    }
-
-    /**
-     * Sets the value indicating that if the player has deployed the reinforcements.
-     *
-     * @param p_hasDeployed Value of true if the player has deployed the reinforcements.
-     */
-    public void setHasDeployed(boolean p_hasDeployed) {
-        d_hasDeployed = p_hasDeployed;
-    }
-
-    /**
-     * Calculates the number of remaining reinforcements for the player.
-     * <p>Shows error if the player orders more than
-     * reinforcements than in possession. This method also sets the remaining number of reinforcements left for the
-     * future use.
-     *
-     * @param p_usedReinforcementCount Total number of used reinforcements.
-     * @return True if the player can reinforce the armies; false otherwise.
-     */
-    public boolean canPlayerReinforce(int p_usedReinforcementCount) {
-        if (this.getRemainingReinforcementCount() == 0) {
-            return false;
-        }
-        int l_remainingReinforcementCount = this.getRemainingReinforcementCount() - p_usedReinforcementCount;
-        if (l_remainingReinforcementCount < 0) {
-            return false;
-        }
-        this.setRemainingReinforcementCount(l_remainingReinforcementCount);
-        return true;
-    }
-
-    /**
      * Gets order from the user and stores the order for the player.
      *
-     * @throws ReinforcementOutOfBoundException If the player doesn't have enough reinforcement to issue the order.
-     * @throws InvalidCommandException          If there is an error while preprocessing the user command.
-     * @throws InvalidArgumentException         If the mentioned value is not of expected type.
-     * @throws EntityNotFoundException          If the target country not found.
-     * @throws ExecutionException               If any error while processing concurrent thread.
-     * @throws InterruptedException             If scheduled thread was interrupted.
+     * @return True if the player doesn't want to being asked to issue order.
+     * @throws InvalidCommandException  If there is an error while preprocessing the user command.
+     * @throws InvalidArgumentException If the mentioned value is not of expected type.
+     * @throws EntityNotFoundException  If the target country not found.
+     * @throws ExecutionException       If any error while processing concurrent thread.
+     * @throws InterruptedException     If scheduled thread was interrupted.
      */
-    public void issueOrder() throws
-            ReinforcementOutOfBoundException, InvalidCommandException, EntityNotFoundException, ExecutionException, InterruptedException, InvalidArgumentException, ResourceNotFoundException, InvalidInputException {
+    public boolean issueOrder() throws
+            InvalidCommandException,
+            EntityNotFoundException,
+            ExecutionException,
+            InterruptedException,
+            InvalidArgumentException {
         // Requests user interface for input from user.
         String l_responseVal = "";
         String l_loggingMessage = "";
@@ -279,26 +224,18 @@ public class Player {
         } while (l_responseVal.isEmpty());
         try {
             ObjectMapper l_objectMapper = new ObjectMapper();
+            // Map user response to Order object.
             CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
-            Order l_newOrder = d_orderMapper.toOrder(l_commandResponse, this);
-            if (l_newOrder.getType() == OrderType.deploy) {
-                l_loggingMessage += "---DEPLOY ORDER---:" + "\n";
-                DeployOrder l_deployOrder = (DeployOrder) l_newOrder;
-                if (this.getAssignedCountries().contains(l_deployOrder.getTargetCountry())) {
-                    if (this.getRemainingReinforcementCount() != 0 && this.canPlayerReinforce(l_deployOrder.getNumOfReinforcements())) {
-                        l_loggingMessage += "Deploy " + l_deployOrder.getNumOfReinforcements() + " armies in " + l_deployOrder.getTargetCountry().getCountryName() + "\n";
-                        d_logEntryBuffer.dataChanged("deploy", l_loggingMessage);
-                        this.addOrder(l_deployOrder);
-                    } else {
-                        throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");
-                    }
-                } else {
-                    throw new InvalidCommandException("You can deploy the reinforcements only in your assigned countries");
-                }
+            if (l_commandResponse.isDone()) {
+                return true;
             }
+            this.addOrder(d_orderMapper.toOrder(l_commandResponse, this));
         } catch (IOException p_ioException) {
             throw new InvalidCommandException("Unrecognised input!");
         }
+
+        // Default player will be asked to issue order until they enter "done"
+        return false;
     }
 
     /**
@@ -340,5 +277,104 @@ public class Player {
         else {
             throw new OrderOutOfBoundException("No order left for execution.");
         }
+    }
+
+    /**
+     * Gets the player order list.
+     *
+     * @return the list of orders.
+     */
+    public List<Order> getOrders() {
+        return d_orders;
+    }
+
+    /**
+     * Used for add player between which negotiation happend.
+     *
+     * @param p_player is the player with whom current player negotiate.
+     */
+    public void addNegotiatePlayer(Player p_player) {
+        d_negotiatePlayer.add(p_player);
+    }
+
+    /**
+     * Used for remove player after 1 turn as diplomacy card effect ended.
+     *
+     * @param p_player is the player with whom current player did negotiation.
+     */
+    public void removeNegotiatePlayer(Player p_player) {
+        d_negotiatePlayer.remove(p_player);
+    }
+
+    /**
+     * Gets the negotiated player list.
+     *
+     * @return the list of players.
+     */
+    public List<Player> getFriendPlayers() {
+        return d_negotiatePlayer;
+    }
+
+    /**
+     * This method checks whether or not this player has not negotiated with other player.
+     *
+     * @param p_otherPlayer Other player.
+     * @return True if the players has no peace treaty signed.
+     */
+    public boolean isNotNegotiation(Player p_otherPlayer) {
+        for (Player l_loopPlayer : this.getFriendPlayers()) {
+            if (l_loopPlayer.equals(p_otherPlayer)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether this player has the provided card.
+     *
+     * @param p_cardType Card type.
+     * @return True if player has the card; false otherwise.
+     */
+    public boolean hasCard(CardType p_cardType) {
+        List<Card> l_filteredCards = this.d_cards.stream().filter(p_card ->
+                p_card.getType() == p_cardType
+        ).collect(Collectors.toList());
+        return l_filteredCards.size() > 0;
+    }
+
+    /**
+     * Adds the card to the list of cards owned by the player.
+     *
+     * @param p_card Card name.
+     */
+    public void addCard(Card p_card) {
+        d_cards.add(p_card);
+    }
+
+    /**
+     * Gets the card of specific type from this player's card list.
+     *
+     * @param p_cardType Card type.
+     * @return True if player has the card; false otherwise.
+     * @throws CardNotFoundException Card not found in the player's card list.
+     */
+    public Card getCard(CardType p_cardType) throws CardNotFoundException {
+        List<Card> l_filteredCards = this.d_cards.stream().filter(p_card ->
+                p_card.getType() == p_cardType
+        ).collect(Collectors.toList());
+        if (l_filteredCards.size() > 0) {
+            return l_filteredCards.get(0);
+        }
+        throw new CardNotFoundException(String.format("Player doesn't have %s card", p_cardType.d_jsonValue));
+    }
+
+    /**
+     * Removes the card of specific type from this player's card list.
+     *
+     * @param p_card Card to be removed.
+     */
+    public void removeCard(Card p_card) {
+        this.d_cards.remove(p_card);
     }
 }

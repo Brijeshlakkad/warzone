@@ -21,6 +21,12 @@ public class AssignReinforcementService {
      * Singleton instance of <code>MapEditorEngine</code>.
      */
     public MapEditorEngine d_mapEditorEngine;
+
+    /**
+     * Singleton instance of <code>GamePlayEngine</code>.
+     */
+    public GamePlayEngine d_gamePlayEngine;
+
     /**
      * Map representing continent and its member countries.
      */
@@ -33,6 +39,7 @@ public class AssignReinforcementService {
      */
     public AssignReinforcementService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
+        d_gamePlayEngine = GamePlayEngine.getInstance();
     }
 
     /**
@@ -80,7 +87,7 @@ public class AssignReinforcementService {
     public void execute() throws EntityNotFoundException {
         d_continentCountryList = d_mapEditorEngine.getContinentCountryMap();
 
-        for (Player l_player : GamePlayEngine.getInstance().getPlayerList()) {
+        for (Player l_player : d_gamePlayEngine.getPlayerList()) {
             int l_continentValue = 0;
             for (Continent l_continent : d_mapEditorEngine.getContinentList()) {
 

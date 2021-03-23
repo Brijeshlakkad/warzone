@@ -2,18 +2,22 @@ package com.warzone.team08.VM.phases;
 
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.VMException;
+import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.ExecuteOrderService;
 
 /**
  * Implements the method available for this phase of game.
+ *
+ * @author Brijesh Lakkad
+ * @version 1.0
  */
-public class Fortify extends MainPlay {
+public class Execute extends MainPlay {
     /**
      * Parameterised constructor to create an instance of <code>Fortify</code>.
      *
      * @param p_gameEngine Instance of the game engine.
      */
-    Fortify(GameEngine p_gameEngine) {
+    Execute(GameEngine p_gameEngine) {
         super(p_gameEngine);
     }
 
@@ -29,7 +33,7 @@ public class Fortify extends MainPlay {
      * {@inheritDoc}
      */
     @Override
-    public void attack() throws VMException {
+    public void issueOrder() throws VMException {
         invalidCommand();
     }
 
@@ -40,7 +44,6 @@ public class Fortify extends MainPlay {
     public void fortify() {
         ExecuteOrderService l_executeOrderService = new ExecuteOrderService();
         l_executeOrderService.execute();
-        d_gameEngine.setGamePhase(new Reinforcement(d_gameEngine));
     }
 
     /**
@@ -48,6 +51,7 @@ public class Fortify extends MainPlay {
      */
     @Override
     public void nextState() {
+        GamePlayEngine.incrementIndex();
         d_gameEngine.setGamePhase(new Reinforcement(d_gameEngine));
     }
 }

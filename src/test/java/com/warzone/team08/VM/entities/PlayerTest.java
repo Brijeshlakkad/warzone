@@ -104,23 +104,5 @@ public class PlayerTest {
         d_commandLineInterface.setIn(new ByteArrayInputStream(l_orderInput.getBytes()));
         GamePlayEngine.getInstance().getPlayerList().get(0).issueOrder();
     }
-
-    /**
-     * Tests the player issue order functionality when the player enters more reinforcements to deploy than possessing.
-     *
-     * @throws VMException          If any exception while processing the issue order request.
-     * @throws ExecutionException   Throws if error occurs in execution.
-     * @throws InterruptedException Throws if interruption occurs during normal execution.
-     */
-    @Test(expected = ReinforcementOutOfBoundException.class)
-    public void testOutOfReinforcementIssueOrder() throws VMException, ExecutionException, InterruptedException {
-        // User input text.
-        String d_outOfResourcesOrderInput = "deploy Mercury-South 14";
-
-        d_commandLineInterface.setIn(new ByteArrayInputStream(d_outOfResourcesOrderInput.getBytes()));
-
-        // Below will throw <code>ReinforcementOutOfBoundException</code> exception.
-        GamePlayEngine.getInstance().getPlayerList().get(0).issueOrder();
-    }
 }
 

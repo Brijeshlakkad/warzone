@@ -4,7 +4,7 @@ import com.warzone.team08.VM.constants.enums.MapModelType;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.log.LogEntryBuffer;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
