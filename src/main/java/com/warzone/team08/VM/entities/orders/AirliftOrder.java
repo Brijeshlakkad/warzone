@@ -1,9 +1,12 @@
 package com.warzone.team08.VM.entities.orders;
 
+import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.OrderType;
+import com.warzone.team08.VM.constants.interfaces.Card;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
@@ -69,17 +72,16 @@ public class AirliftOrder implements Order {
      *
      * @throws InvalidOrderException If the order can not be performed due to an invalid country, an invalid number of
      *                               armies, or other invalid input.
+     * @throws CardNotFoundException Card doesn't found in the player's card list.
      */
     @Override
-    public void execute() throws InvalidOrderException {
+    public void execute() throws InvalidOrderException, CardNotFoundException {
         // Verify that all the conditions has been fulfilled for the airlift command.
+        Card l_requiredCard;
         if (d_sourceCountry.getOwnedBy() == d_owner && d_targetCountry.getOwnedBy() == d_owner) {
-            if (d_owner.getCards().contains("airlift")) {
-                if (d_sourceCountry.getNumberOfArmies() < d_numOfArmies) {
-                    throw new InvalidOrderException("Source country not have entered amount of armies for airlift!");
-                }
-            } else {
-                throw new InvalidOrderException("Airlift card is not available with the player!");
+            l_requiredCard = d_owner.getCard(CardType.AIRLIFT);
+            if (d_sourceCountry.getNumberOfArmies() < d_numOfArmies) {
+                throw new InvalidOrderException("Source country not have entered amount of armies for airlift!");
             }
         } else {
             throw new InvalidOrderException("You have to select source and target country both from your owned countries!");
@@ -91,6 +93,6 @@ public class AirliftOrder implements Order {
         l_targetCountryArmies += d_numOfArmies;
         d_sourceCountry.setNumberOfArmies(l_sourceCountryArmies);
         d_targetCountry.setNumberOfArmies(l_targetCountryArmies);
-        d_owner.removeCard("airlift");
+        d_owner.removeCard(l_requiredCard);
     }
 }

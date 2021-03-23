@@ -4,6 +4,8 @@ import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.entities.cards.BlockadeCard;
+import com.warzone.team08.VM.entities.cards.BombCard;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
@@ -83,15 +85,17 @@ public class BombOrderTest {
      *
      * @throws EntityNotFoundException Throws if entity not found.
      * @throws InvalidOrderException   Throws if exception while executing the order.
+     * @throws CardNotFoundException   Card doesn't found in the player's card list.
      */
     @Test(expected = Test.None.class)
-    public void testBombOperationWithBombCard() throws EntityNotFoundException, InvalidOrderException {
+    public void testBombOperationWithBombCard()
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
 
         //Assigning bomb card manually
-        l_player1.addCard("bomb");
+        l_player1.addCard(new BombCard());
         BombOrder l_bombOrder = new BombOrder(l_player2AssignCountries.get(0).getCountryName(), l_player1);
         l_player2AssignCountries.get(0).setNumberOfArmies(10);
         int l_armies = l_player2AssignCountries.get(0).getNumberOfArmies();
@@ -104,15 +108,17 @@ public class BombOrderTest {
      *
      * @throws EntityNotFoundException Throws if entity not found.
      * @throws InvalidOrderException   Throws if exception while executing the order.
+     * @throws CardNotFoundException   Card doesn't found in the player's card list.
      */
-    @Test(expected = InvalidOrderException.class)
-    public void testBombOperationWithOutBombCard() throws EntityNotFoundException, InvalidOrderException {
+    @Test(expected = CardNotFoundException.class)
+    public void testBombOperationWithOutBombCard()
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
 
         //Assigning blockade card manually.
-        l_player1.addCard("blockade");
+        l_player1.addCard(new BlockadeCard());
         BombOrder l_bombOrder = new BombOrder(l_player2AssignCountries.get(0).getCountryName(), l_player1);
         l_player2AssignCountries.get(0).setNumberOfArmies(10);
         int l_armies = l_player2AssignCountries.get(0).getNumberOfArmies();
@@ -125,9 +131,11 @@ public class BombOrderTest {
      *
      * @throws EntityNotFoundException Throws if entity not found.
      * @throws InvalidOrderException   Throws if exception while executing the order.
+     * @throws CardNotFoundException   Card doesn't found in the player's card list.
      */
     @Test(expected = InvalidOrderException.class)
-    public void testBombOperationOnPlayerOwnedCountry() throws EntityNotFoundException, InvalidOrderException {
+    public void testBombOperationOnPlayerOwnedCountry()
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
         Player l_player1 = d_playerList.get(0);
         List<Country> l_assignCountries = l_player1.getAssignedCountries();
         BombOrder l_bombOrder = new BombOrder(l_assignCountries.get(0).getCountryName(), l_player1);
@@ -139,15 +147,17 @@ public class BombOrderTest {
      *
      * @throws EntityNotFoundException Throws if entity not found.
      * @throws InvalidOrderException   Throws if exception while executing the order.
+     * @throws CardNotFoundException   Card doesn't found in the player's card list.
      */
-    @Test(expected = InvalidOrderException.class)
-    public void testCardSuccessfullyRemoved() throws EntityNotFoundException, InvalidOrderException {
+    @Test(expected = CardNotFoundException.class)
+    public void testCardSuccessfullyRemoved()
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
 
         //Assigning bomb card manually.
-        l_player1.addCard("bomb");
+        l_player1.addCard(new BombCard());
         BombOrder l_bombOrder = new BombOrder(l_player2AssignCountries.get(0).getCountryName(), l_player1);
         l_bombOrder.execute();
 

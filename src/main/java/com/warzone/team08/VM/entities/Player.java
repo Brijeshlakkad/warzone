@@ -2,11 +2,10 @@ package com.warzone.team08.VM.entities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.CardType;
+import com.warzone.team08.VM.constants.interfaces.Card;
 import com.warzone.team08.VM.constants.interfaces.Order;
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.exceptions.InvalidArgumentException;
-import com.warzone.team08.VM.exceptions.InvalidCommandException;
-import com.warzone.team08.VM.exceptions.OrderOutOfBoundException;
+import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.mappers.OrderMapper;
 import com.warzone.team08.VM.responses.CommandResponse;
 
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.
@@ -38,7 +38,7 @@ public class Player {
     /**
      * List of cards owned by the player.
      */
-    private List<String> d_cards;
+    private List<Card> d_cards;
     private List<Country> d_assignedCountries;
     private int d_reinforcementsCount;
     private int d_remainingReinforcementCount;
@@ -158,29 +158,11 @@ public class Player {
     }
 
     /**
-     * Adds the card to the list of cards owned by the player.
-     *
-     * @param p_card Card name
-     */
-    public void addCard(String p_card) {
-        d_cards.add(p_card);
-    }
-
-    /**
-     * Removes card from the list
-     *
-     * @param p_card Card name
-     */
-    public void removeCard(String p_card) {
-        d_cards.remove(p_card);
-    }
-
-    /**
      * Returns the list of cards owned by the player.
      *
      * @return List of cards owned by the player.
      */
-    public List<String> getCards() {
+    public List<Card> getCards() {
         return d_cards;
     }
 
@@ -340,5 +322,53 @@ public class Player {
             }
         }
         return true;
+    }
+
+    /**
+     * Checks whether this player has the provided card.
+     *
+     * @param p_cardType Card type.
+     * @return True if player has the card; false otherwise.
+     */
+    public boolean hasCard(CardType p_cardType) {
+        List<Card> l_filteredCards = this.d_cards.stream().filter(p_card ->
+                p_card.getType() == p_cardType
+        ).collect(Collectors.toList());
+        return l_filteredCards.size() > 0;
+    }
+
+    /**
+     * Adds the card to the list of cards owned by the player.
+     *
+     * @param p_card Card name.
+     */
+    public void addCard(Card p_card) {
+        d_cards.add(p_card);
+    }
+
+    /**
+     * Gets the card of specific type from this player's card list.
+     *
+     * @param p_cardType Card type.
+     * @return True if player has the card; false otherwise.
+     * @throws CardNotFoundException Card not found in the player's card list.
+     */
+    public Card getCard(CardType p_cardType) throws CardNotFoundException {
+        List<Card> l_filteredCards = this.d_cards.stream().filter(p_card ->
+                p_card.getType() == p_cardType
+        ).collect(Collectors.toList());
+        if (l_filteredCards.size() > 0) {
+            return l_filteredCards.get(0);
+        }
+        throw new CardNotFoundException(String.format("Player doesn't have %s card", p_cardType.d_jsonValue));
+    }
+
+    /**
+     * Removes the card of specific type from this player's card list.
+     *
+     * @param p_card Card to be removed.
+     */
+    public void removeCard(Card p_card) {
+        this.d_cards.remove(p_card);
     }
 }

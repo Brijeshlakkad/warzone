@@ -1,8 +1,11 @@
 package com.warzone.team08.VM.entities.orders;
 
+import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.OrderType;
+import com.warzone.team08.VM.constants.interfaces.Card;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.repositories.PlayerRepository;
 
@@ -36,11 +39,16 @@ public class NegotiateOrder implements Order {
 
     /**
      * Executes the method for adding player in each-others negotiation list.
+     *
+     * @throws CardNotFoundException Card doesn't found in the player's card list.
      */
     @Override
-    public void execute() {
+    public void execute() throws CardNotFoundException {
+        // Get diplomacy card.
+        Card l_requiredCard = d_player1.getCard(CardType.DIPLOMACY);
         d_player1.addNegotiatePlayer(d_player2);
         d_player2.addNegotiatePlayer(d_player1);
+        d_player1.removeCard(l_requiredCard);
     }
 
     /**

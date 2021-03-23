@@ -4,6 +4,7 @@ import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.entities.cards.BombCard;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
@@ -173,8 +174,8 @@ public class AdvanceOrderTest {
         l_country1.setNumberOfArmies(20);
         l_country2.setNumberOfArmies(5);
 
-        //Manually assigning a card.
-        d_player1.addCard("bomb");
+        // Manually assigning a card.
+        d_player1.addCard(new BombCard());
         AdvanceOrder l_advanceOrder = new AdvanceOrder(l_country1.getCountryName(), l_country2.getCountryName(), "10", d_player1);
         l_advanceOrder.execute();
         assertEquals(10, l_country1.getNumberOfArmies());
@@ -201,8 +202,8 @@ public class AdvanceOrderTest {
         l_country1.setNumberOfArmies(10);
         l_country2.setNumberOfArmies(5);
 
-        //Manually assigning a card.
-        d_player1.addCard("bomb");
+        // Manually assigning a card.
+        d_player1.addCard(new BombCard());
         AdvanceOrder l_advanceOrder = new AdvanceOrder(l_country1.getCountryName(), l_country2.getCountryName(), "6", d_player1);
         l_advanceOrder.execute();
         assertEquals(6, l_country1.getNumberOfArmies());

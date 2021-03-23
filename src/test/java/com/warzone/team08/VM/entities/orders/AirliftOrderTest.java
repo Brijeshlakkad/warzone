@@ -4,6 +4,8 @@ import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.entities.cards.AirliftCard;
+import com.warzone.team08.VM.entities.cards.BombCard;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
@@ -82,16 +84,17 @@ public class AirliftOrderTest {
      * @throws EntityNotFoundException  Throws if entity not found.
      * @throws InvalidArgumentException Throws if the input is invalid.
      * @throws InvalidOrderException    Throws if exception while executing the order.
+     * @throws CardNotFoundException    Card doesn't found in the player's card list.
      */
     @Test
     public void testExecute()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
         l_playerAssignCountries.get(1).setNumberOfArmies(5);
         int l_expected = l_playerAssignCountries.get(1).getNumberOfArmies();
-        l_player.addCard("airlift");
+        l_player.addCard(new AirliftCard());
 
         AirliftOrder l_airliftOrder = new AirliftOrder(l_playerAssignCountries.get(0).getCountryName(), l_playerAssignCountries.get(1).getCountryName(), "2", l_player);
         l_airliftOrder.execute();
@@ -104,17 +107,18 @@ public class AirliftOrderTest {
      * @throws EntityNotFoundException  Throws if entity not found.
      * @throws InvalidArgumentException Throws if the input is invalid.
      * @throws InvalidOrderException    Throws if exception while executing the order.
+     * @throws CardNotFoundException    Card doesn't found in the player's card list.
      */
     //not have airlift card
-    @Test(expected = InvalidOrderException.class)
+    @Test(expected = CardNotFoundException.class)
     public void testPlayerHasCard()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
         l_playerAssignCountries.get(1).setNumberOfArmies(5);
         int l_expected = l_playerAssignCountries.get(1).getNumberOfArmies();
-        l_player.addCard("bomb");
+        l_player.addCard(new BombCard());
 
         AirliftOrder l_airliftOrder = new AirliftOrder(l_playerAssignCountries.get(0).getCountryName(), l_playerAssignCountries.get(1).getCountryName(), "2", l_player);
         l_airliftOrder.execute();
@@ -126,16 +130,17 @@ public class AirliftOrderTest {
      * @throws EntityNotFoundException  Throws if entity not found.
      * @throws InvalidArgumentException Throws if the input is invalid.
      * @throws InvalidOrderException    Throws if exception while executing the order.
+     * @throws CardNotFoundException    Card doesn't found in the player's card list.
      */
     //try to transfer into other's country
     @Test(expected = InvalidOrderException.class)
     public void testPlayerNotAirliftInOthersCountry()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         List<Country> l_playerAssignCountries1 = l_player2.getAssignedCountries();
-        l_player.addCard("airlift");
+        l_player.addCard(new AirliftCard());
 
         AirliftOrder l_airliftOrder = new AirliftOrder(l_playerAssignCountries.get(0).getCountryName(), l_playerAssignCountries1.get(0).getCountryName(), "2", l_player);
         l_airliftOrder.execute();
@@ -147,16 +152,17 @@ public class AirliftOrderTest {
      * @throws EntityNotFoundException  Throws if entity not found.
      * @throws InvalidArgumentException Throws if the input is invalid.
      * @throws InvalidOrderException    Throws if exception while executing the order.
+     * @throws CardNotFoundException    Card doesn't found in the player's card list.
      */
     @Test(expected = InvalidOrderException.class)
     public void testPlayerHasEnteredArmies()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
         l_playerAssignCountries.get(1).setNumberOfArmies(5);
         int l_expected = l_playerAssignCountries.get(1).getNumberOfArmies();
-        l_player.addCard("airlift");
+        l_player.addCard(new AirliftCard());
 
         AirliftOrder l_airliftOrder = new AirliftOrder(l_playerAssignCountries.get(0).getCountryName(), l_playerAssignCountries.get(1).getCountryName(), "8", l_player);
         l_airliftOrder.execute();

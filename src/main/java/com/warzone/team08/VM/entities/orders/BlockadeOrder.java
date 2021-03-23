@@ -1,9 +1,12 @@
 package com.warzone.team08.VM.entities.orders;
 
+import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.OrderType;
+import com.warzone.team08.VM.constants.interfaces.Card;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
 import com.warzone.team08.VM.repositories.CountryRepository;
@@ -47,14 +50,14 @@ public class BlockadeOrder implements Order {
      *
      * @throws InvalidOrderException If the order can not be performed due to an invalid country, an invalid number * of
      *                               armies, or other invalid input.
+     * @throws CardNotFoundException Card doesn't found in the player's card list.
      */
-    public void execute() throws InvalidOrderException {
+    public void execute() throws InvalidOrderException, CardNotFoundException {
         Country l_country;
         List<Country> l_countryList;
+        Card l_requiredCard;
         if (d_targetCountry.getOwnedBy() == d_owner) {
-            if (!d_owner.getCards().contains("blockade")) {
-                throw new InvalidOrderException("Blockade card is not available with the player.");
-            }
+            l_requiredCard = d_owner.getCard(CardType.BLOCKADE);
         } else {
             throw new InvalidOrderException("You have selected opponent player's country to perform blockade operation.");
         }
@@ -68,7 +71,7 @@ public class BlockadeOrder implements Order {
             throw new InvalidOrderException("You can not perform blockade operation as you don't own this country");
         }
         d_owner.setAssignedCountries(l_countryList);
-        d_owner.removeCard("blockade");
+        d_owner.removeCard(l_requiredCard);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.constants.interfaces;
 
 import com.warzone.team08.VM.constants.enums.OrderType;
+import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
 
 /**
@@ -17,8 +18,9 @@ public interface Order {
      *
      * @throws InvalidOrderException If the order can not be performed due to an invalid country, an invalid number of
      *                               armies, or other invalid input.
+     * @throws CardNotFoundException Card doesn't found in the player's card list.
      */
-    void execute() throws InvalidOrderException;
+    void execute() throws InvalidOrderException, CardNotFoundException;
 
     /**
      * Gets the type of the order.
