@@ -217,7 +217,14 @@ public class ValidateMapService implements SingleCommand {
         }
     }
 
-    public String execute(List<String> p_commandValues,String s) throws InvalidMapException, EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+    /**
+     * Initiate all the validation procedures. Checks all the validation and replies to the execute method.
+     *
+     * @param p_commandValues Values of command entered by user if any.
+     * @param p_headCommand name of headCommand
+     * @return Value of the response.
+     */
+    public String execute(List<String> p_commandValues,String p_headCommand) throws InvalidMapException, EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         //Checks map has atleast 1 continent
         if (d_mapEditorEngine.getContinentList().size() > 0) {
             //Control value should be as per the warzone rules

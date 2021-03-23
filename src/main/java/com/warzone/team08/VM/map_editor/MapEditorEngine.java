@@ -144,10 +144,18 @@ public class MapEditorEngine implements Engine {
         d_continentList.add(p_continent);
     }
 
+    /**
+     * Gets the headCommand name
+     * @return headCommand
+     */
     public String getHeadCommand() {
         return d_headCommand;
     }
 
+    /**
+     * Sets the headCommand name
+     * @param p_headCommand headCommand
+     */
     public void setHeadCommand(String p_headCommand) {
         d_headCommand=p_headCommand;
     }

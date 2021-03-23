@@ -11,12 +11,19 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Date;
 
+/**
+ * This class acts as a Observer to update the data in a log file.
+ * @author MILESH
+ * @author RUTVIK
+ */
 public class LogWriter extends Observer {
     private final String d_pathToFile;
     private final File d_targetFile;
 
     /**
-     * @throws ResourceNotFoundException
+     * Constructor to initialize the file name and object.
+     * @throws ResourceNotFoundException Throws if not able to find the file.
+     * @param p_observable Observable object for observer
      */
     public LogWriter(Observable p_observable) throws ResourceNotFoundException {
         super(p_observable);
@@ -26,6 +33,11 @@ public class LogWriter extends Observer {
         d_targetFile = FileUtil.createFileIfNotExists(d_pathToFile);
     }
 
+    /**
+     * This method implements the update method of Observer interface to write data in file.
+     * @param p_observable Observable object with whom this observer in attached.
+     * @throws InvalidInputException Throws if file name is not valid
+     */
     @Override
     public void update(Observable p_observable) throws InvalidInputException {
         String l_message = ((LogEntryBuffer) p_observable).getMessage();

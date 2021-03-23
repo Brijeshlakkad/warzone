@@ -8,6 +8,9 @@ import java.io.IOException;
 /**
  * This interface defines the methods to implement the Observable.
  * @author MILESH
+ * @throws ResourceNotFoundException Throws if file not found.
+ * @throws InvalidInputException Throws if file name is not valid.
+ * @throws IOException Throws if ioexception occurs.
  */
 public interface Observable {
     public void attach(Observer o);

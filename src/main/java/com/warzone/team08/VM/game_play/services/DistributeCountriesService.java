@@ -148,6 +148,10 @@ public class DistributeCountriesService implements SingleCommand {
         }
     }
 
+    /**
+     * This method return the String of countries associated with each player.
+     * @return string of player's countries.
+     */
     public String getPlayerCountries(){
         String l_playerContent="";
         for(Player l_player:d_gamePlayEngine.getPlayerList()){

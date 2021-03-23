@@ -18,10 +18,18 @@ public class LogEntryBuffer implements Observable {
     private String d_headCommand;
     private static LogEntryBuffer d_instance;
 
+    /**
+     * Constructor to initialize the data members
+     */
     private LogEntryBuffer() {
         d_observerList = new ArrayList<>();
     }
 
+    /**
+     * Gets the single instance of the class.
+     *
+     * @return Value of the instance.
+     */
     public static LogEntryBuffer getLogger() {
         if (d_instance == null) {
             d_instance = new LogEntryBuffer();
@@ -29,16 +37,30 @@ public class LogEntryBuffer implements Observable {
         return d_instance;
     }
 
+    /**
+     * This method adds the observers to the list.
+     * @param p_observer Observer object
+     */
     @Override
     public void attach(Observer p_observer) {
         d_observerList.add(p_observer);
     }
 
+    /**
+     * This method removes the observer from the list.
+     * @param p_observer Observer Object
+     */
     @Override
     public void detach(Observer p_observer) {
         d_observerList.remove(p_observer);
     }
 
+    /**
+     * This method notifies all the observers whenever data changes.
+     * @param p_o Observable object
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException Throws if file name is not valid.
+     */
     @Override
     public void notifyObservers(Observable p_o) throws ResourceNotFoundException, InvalidInputException {
         for (Observer l_observer : d_observerList) {
@@ -50,14 +72,29 @@ public class LogEntryBuffer implements Observable {
         }
     }
 
+    /**
+     * Gets the message to store in file.
+     * @return Message to store
+     */
     public String getMessage() {
         return d_message;
     }
 
+    /**
+     * Sets the message which will be stored in file.
+     * @param p_message message to store
+     */
     public void setMessage(String p_message) {
         d_message = p_message;
     }
 
+    /**
+     * This method will be called whenerever there will be change in any services.
+     * @param p_headCommand head command name
+     * @param p_message message to save in file
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException Throws if file name is not valid.
+     */
     public void dataChanged(String p_headCommand, String p_message) throws ResourceNotFoundException, InvalidInputException {
         d_headCommand = p_headCommand;
         d_message = p_message;
@@ -65,10 +102,18 @@ public class LogEntryBuffer implements Observable {
         d_message = "";
     }
 
+    /**
+     * Gets the name of head command
+     * @return head command name
+     */
     public String getHeadCommand() {
         return d_headCommand;
     }
 
+    /**
+     * Sets the head commanmd name
+     * @param p_headCommand head command name
+     */
     public void setHeadCommand(String p_headCommand) {
         d_headCommand = p_headCommand;
     }
