@@ -22,7 +22,7 @@ import java.util.List;
  * @author CHARIT
  * @version 2.0
  */
-public class BombOrder implements Order {
+public class BombOrder extends Order {
     private final Country d_targetCountry;
     private final Player d_owner;
 
@@ -87,5 +87,13 @@ public class BombOrder implements Order {
     @Override
     public OrderType getType() {
         return OrderType.bomb;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void expire() {
+        // Does nothing.
     }
 }

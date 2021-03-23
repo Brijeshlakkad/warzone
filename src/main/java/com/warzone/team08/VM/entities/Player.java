@@ -223,7 +223,7 @@ public class Player {
             if (l_commandResponse.isDone()) {
                 return true;
             }
-            this.addExecutedOrder(d_orderMapper.toOrder(l_commandResponse, this));
+            this.addOrder(d_orderMapper.toOrder(l_commandResponse, this));
         } catch (IOException p_ioException) {
             throw new InvalidCommandException("Unrecognised input!");
         }

@@ -15,7 +15,7 @@ import com.warzone.team08.VM.repositories.CountryRepository;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public class DeployOrder implements Order {
+public class DeployOrder extends Order {
     private final Player d_owner;
     private final Country d_targetCountry;
     private final int d_numOfArmies;
@@ -89,5 +89,13 @@ public class DeployOrder implements Order {
      */
     public OrderType getType() {
         return OrderType.deploy;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void expire() {
+        // Does nothing.
     }
 }

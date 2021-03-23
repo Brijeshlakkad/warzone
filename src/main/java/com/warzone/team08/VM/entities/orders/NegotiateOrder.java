@@ -16,7 +16,7 @@ import com.warzone.team08.VM.repositories.PlayerRepository;
  * @author Deep Patel
  * @version 2.0
  */
-public class NegotiateOrder implements Order {
+public class NegotiateOrder extends Order {
     private final Player d_player1;
     private final Player d_player2;
 
@@ -58,5 +58,14 @@ public class NegotiateOrder implements Order {
      */
     public OrderType getType() {
         return OrderType.negotiate;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void expire() {
+        d_player1.removeNegotiatePlayer(d_player2);
+        d_player2.removeNegotiatePlayer(d_player1);
     }
 }

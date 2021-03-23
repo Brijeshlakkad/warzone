@@ -29,6 +29,21 @@ public class ExecuteOrderService {
         GamePlayEngine l_gamePlayEngine = GameEngine.GAME_PLAY_ENGINE();
         l_gamePlayEngine.setCurrentPlayerTurn(l_gamePlayEngine.getCurrentPlayerForExecutionPhase());
 
+        // Iterate over and execute the orders which were supposed to be executed in this phase.
+        GamePlayEngine.getInstance().getCurrentFutureOrders().forEach(l_futureOrder -> {
+            try {
+                l_futureOrder.execute();
+            } catch (InvalidOrderException | CardNotFoundException p_e) {
+                VirtualMachine.getInstance().stderr(p_e.getMessage());
+            }
+        });
+
+        // Expire orders which had been executed and are not valid anymore.
+        GamePlayEngine.getInstance().getExpiredFutureOrders().forEach(l_futureOrder -> {
+            l_futureOrder.expire();
+            GamePlayEngine.getInstance().removeFutureOrder(l_futureOrder);
+        });
+
         while (finishedExecutingOrders.size() != l_gamePlayEngine.getPlayerList().size()) {
             // Find player who has remaining orders to execute.
             Player l_currentPlayer;
@@ -40,8 +55,10 @@ public class ExecuteOrderService {
             try {
                 // Get the next order
                 Order l_currentOrder = l_currentPlayer.nextOrder();
-                // Use VirtualMachine.stdout()
-                l_currentOrder.execute();
+                // If order supposed to be executed in the next phase.
+                if (l_currentOrder.getExecutionIndex() == GamePlayEngine.getCurrentExecutionIndex()) {
+                    l_currentOrder.execute();
+                }
 
                 VirtualMachine.getInstance().stdout(String.format("\nExecuted %s", l_currentOrder.toString()));
 
@@ -50,9 +67,9 @@ public class ExecuteOrderService {
                     finishedExecutingOrders.add(l_currentPlayer);
                 }
             } catch (CardNotFoundException |
-                    InvalidOrderException |
-                    OrderOutOfBoundException p_e) {
+                    InvalidOrderException p_e) {
                 VirtualMachine.getInstance().stderr(p_e.getMessage());
+            } catch (OrderOutOfBoundException p_e) {
                 finishedExecutingOrders.add(l_currentPlayer);
             }
         }
