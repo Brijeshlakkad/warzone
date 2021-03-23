@@ -35,6 +35,15 @@ public class PredefinedUserCommand {
     private CommandSpecification d_commandSpecification;
 
     /**
+     * Specifies how many values are required for this command. Can only be used with
+     * <code>CommandSpecification#CAN_RUN_ALONE_WITH_VALUE</code>.
+     * The default value the command can have is one.
+     *
+     * @see CommandSpecification#CAN_RUN_ALONE_WITH_VALUE
+     */
+    private int d_numOfValues = 1;
+
+    /**
      * Command represents that <code>GameEngine</code> is had requested CLI for user input.
      */
     private boolean d_isGameEngineCommand = false;
@@ -151,6 +160,24 @@ public class PredefinedUserCommand {
      */
     public CommandSpecification getCommandSpecification() {
         return d_commandSpecification;
+    }
+
+    /**
+     * Gets the number of values to be used with this command.
+     *
+     * @return Value of number of values.
+     */
+    public int getNumOfValues() {
+        return d_numOfValues;
+    }
+
+    /**
+     * Sets the number of values to be used with this command.
+     *
+     * @param p_numOfValues Value of number of values.
+     */
+    public void setNumOfValues(int p_numOfValues) {
+        d_numOfValues = p_numOfValues;
     }
 
     /**

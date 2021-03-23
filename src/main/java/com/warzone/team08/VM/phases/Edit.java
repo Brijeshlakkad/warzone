@@ -13,6 +13,9 @@ import java.util.List;
  * <p>
  * This state represents a group of states, and defines the behavior that is common to all the states in its group. All
  * the states in its group need to extend this class.
+ *
+ * @author Brijesh Lakkad
+ * @version 1.0
  */
 public abstract class Edit extends Phase {
     /**
@@ -63,7 +66,7 @@ public abstract class Edit extends Phase {
      * {@inheritDoc}
      */
     @Override
-    public void attack() throws VMException {
+    public void issueOrder() throws VMException {
         invalidCommand();
     }
 

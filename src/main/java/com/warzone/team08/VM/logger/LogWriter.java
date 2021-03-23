@@ -1,4 +1,4 @@
-package com.warzone.team08.VM.log;
+package com.warzone.team08.VM.logger;
 
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;

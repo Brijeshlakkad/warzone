@@ -9,11 +9,11 @@ package com.warzone.team08.VM.constants.enums;
  * @version 1.0
  */
 public enum OrderType {
-    deploy("deploy"),
     advance("advance"),
-    bomb("bomb"),
-    blockade("blockade"),
     airlift("airlift"),
+    blockade("blockade"),
+    bomb("bomb"),
+    deploy("deploy"),
     negotiate("negotiate");
 
     /**

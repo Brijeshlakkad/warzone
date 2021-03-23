@@ -5,29 +5,51 @@ import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.services.AssignReinforcementService;
 
 /**
+ * Concrete state of the <code>Phase</code>. Extends the <code>MainPlay</code>.
  *
+ * @author Brijesh Lakkad
+ * @version 1.0
  */
 public class Reinforcement extends MainPlay {
-
-    Reinforcement(GameEngine p_ge) {
-        super(p_ge);
+    /**
+     * Parameterised constructor to create an instance of <code>Preload</code>.
+     *
+     * @param p_gameEngine Instance of the game engine.
+     */
+    Reinforcement(GameEngine p_gameEngine) {
+        super(p_gameEngine);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void reinforce() throws VMException {
         AssignReinforcementService l_reinforcementService = new AssignReinforcementService();
         l_reinforcementService.execute();
-        d_gameEngine.setGamePhase(new Attack(d_gameEngine));
     }
 
-    public void attack() throws VMException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void issueOrder() throws VMException {
         invalidCommand();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void fortify() throws VMException {
         invalidCommand();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void nextState() {
-        d_gameEngine.setGamePhase(new Attack(d_gameEngine));
+        d_gameEngine.setGamePhase(new IssueOrder(d_gameEngine));
     }
 }

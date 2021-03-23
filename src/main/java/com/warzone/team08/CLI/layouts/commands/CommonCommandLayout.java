@@ -21,7 +21,8 @@ public class CommonCommandLayout implements CommandLayout {
     List<PredefinedUserCommand> d_userCommands;
 
     /**
-     * Creates the instance of <code>PredefinedUserCommand</code> and sets its variables and adds into the list of user commands.
+     * Creates the instance of <code>PredefinedUserCommand</code> and sets its variables and adds into the list of user
+     * commands.
      */
     public CommonCommandLayout() {
         d_userCommands = new ArrayList<>();
@@ -43,6 +44,12 @@ public class CommonCommandLayout implements CommandLayout {
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
         l_userCommand.setGamePhaseMethodName("showMap");
         l_userCommand.setGameEngineCommand(true);
+        d_userCommands.add(l_userCommand);
+
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("done");
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
+        l_userCommand.setOrderCommand(true);
         d_userCommands.add(l_userCommand);
     }
 

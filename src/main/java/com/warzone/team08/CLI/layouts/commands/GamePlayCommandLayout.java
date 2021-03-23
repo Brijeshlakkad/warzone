@@ -64,6 +64,53 @@ public class GamePlayCommandLayout implements CommandLayout {
         l_userCommand.setHeadCommand("deploy");
         l_userCommand.setOrderCommand(true);
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfValues(2);
+        d_userCommands.add(l_userCommand);
+
+        // Example of the command:
+        // > advance countrynamefrom countynameto numarmies
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("advance");
+        l_userCommand.setOrderCommand(true);
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfValues(3);
+        d_userCommands.add(l_userCommand);
+
+
+        // Example of the command:
+        // > bomb countryID
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("bomb");
+        l_userCommand.setOrderCommand(true);
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfValues(1);
+        d_userCommands.add(l_userCommand);
+
+        // Example of the command:
+        // > blockade countryID
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("blockade");
+        l_userCommand.setOrderCommand(true);
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfValues(1);
+        d_userCommands.add(l_userCommand);
+
+        // Example of the command:
+        // > airlift sourcecountryID targetcountryID numarmies
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("airlift");
+        l_userCommand.setOrderCommand(true);
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfValues(3);
+        d_userCommands.add(l_userCommand);
+
+        // Example of the command:
+        // > negotiate playerID
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("negotiate");
+        l_userCommand.setOrderCommand(true);
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfValues(1);
         d_userCommands.add(l_userCommand);
     }
 

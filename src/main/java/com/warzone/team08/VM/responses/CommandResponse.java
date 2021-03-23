@@ -55,4 +55,13 @@ public class CommandResponse {
     public void setCommandValues(List<String> d_commandValues) {
         this.d_commandValues = d_commandValues;
     }
+
+    /**
+     * Gets true if the player doesn't want to continue issuing the orders.
+     *
+     * @return Value of true if the player doesn't want to issue any order.
+     */
+    public boolean isDone() {
+        return getHeadCommand().equals("done");
+    }
 }

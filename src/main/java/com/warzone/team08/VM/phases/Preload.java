@@ -9,6 +9,9 @@ import java.util.List;
 
 /**
  * <code>Preload</code> phase of the game phase. This is the initial phase of the game.
+ *
+ * @author Brijesh Lakkad
+ * @version 1.0
  */
 public class Preload extends Edit {
     /**

@@ -7,7 +7,7 @@ import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
-import com.warzone.team08.VM.log.LogEntryBuffer;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 

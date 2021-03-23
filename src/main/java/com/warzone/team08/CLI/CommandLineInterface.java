@@ -66,12 +66,12 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
     /**
      * Stores the user command to be processed in <code>run</code> method in hthe next iteration of this thread.
      */
-    private Queue<UserCommand> d_userCommandQueue = new LinkedList<>();
+    private final Queue<UserCommand> d_userCommandQueue = new LinkedList<>();
 
     /**
      * Service to take action for the user command.l
      */
-    private RequestService d_requestService = new RequestService();
+    private final RequestService d_requestService;
 
     /**
      * <code>ReentrantLock</code> to lock the shared data.
@@ -81,7 +81,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
     /**
      * Instance of <code>Application</code>.
      */
-    private Application d_application;
+    private final Application d_application;
 
     /**
      * Default constructor. Initializes thread, <code>UserCommandMapper</code>, and <code>RequestService</code>.
@@ -210,7 +210,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
      * @param p_message Represents the message.
      */
     public void stdout(String p_message) {
-        if (p_message.equals("GAME_ENGINE_TO_WAIT")) {
+        if (p_message.equals("GAME_ENGINE_STOPPED")) {
             this.setInteractionState(UserInteractionState.WAIT);
         } else {
             System.out.println(p_message);

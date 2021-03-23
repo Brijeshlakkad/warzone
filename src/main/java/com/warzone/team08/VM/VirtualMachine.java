@@ -39,8 +39,8 @@ public class VirtualMachine {
     public static VirtualMachine newInstance() {
         d_Instance = new VirtualMachine();
         // Default exception handler.
-        ExceptionHandler l_exceptionHandler = new ExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(l_exceptionHandler);
+//        ExceptionHandler l_exceptionHandler = new ExceptionHandler();
+//        Thread.setDefaultUncaughtExceptionHandler(l_exceptionHandler);
         return d_Instance;
     }
 

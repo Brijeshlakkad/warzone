@@ -2,8 +2,8 @@ package com.warzone.team08.VM;
 
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
-import com.warzone.team08.VM.log.LogEntryBuffer;
-import com.warzone.team08.VM.log.LogWriter;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
+import com.warzone.team08.VM.logger.LogWriter;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.phases.Phase;
 import com.warzone.team08.VM.phases.Preload;

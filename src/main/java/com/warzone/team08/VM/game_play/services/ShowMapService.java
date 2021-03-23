@@ -8,7 +8,7 @@ import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
-import com.warzone.team08.VM.log.LogEntryBuffer;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.util.LinkedList;
 import java.util.List;
