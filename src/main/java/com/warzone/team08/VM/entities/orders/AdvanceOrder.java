@@ -29,7 +29,7 @@ import static java.lang.Math.round;
  *
  * @author CHARIT
  */
-public class AdvanceOrder implements Order {
+public class AdvanceOrder extends Order {
     private final Country d_countryFrom;
     private final Country d_countryTo;
     private int d_numOfArmies;
@@ -145,5 +145,14 @@ public class AdvanceOrder implements Order {
     @Override
     public OrderType getType() {
         return OrderType.advance;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void expire() {
+        // Does nothing.
     }
 }

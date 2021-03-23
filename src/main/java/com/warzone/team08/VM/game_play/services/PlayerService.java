@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.game_play.services;
 
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.entities.cards.DiplomacyCard;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;

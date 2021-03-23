@@ -21,7 +21,7 @@ import java.util.List;
  * @author CHARIT
  * @version 2.0
  */
-public class BlockadeOrder implements Order {
+public class BlockadeOrder extends Order {
     private final Country d_targetCountry;
     private final Player d_owner;
     public static final int CONSTANT = 3;
@@ -82,5 +82,13 @@ public class BlockadeOrder implements Order {
     @Override
     public OrderType getType() {
         return OrderType.blockade;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void expire() {
+        // Does nothing.
     }
 }

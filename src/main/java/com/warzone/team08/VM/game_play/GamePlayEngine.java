@@ -3,6 +3,7 @@ package com.warzone.team08.VM.game_play;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.Engine;
+import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.GameLoopIllegalStateException;
 import com.warzone.team08.VM.exceptions.VMException;
@@ -13,6 +14,7 @@ import com.warzone.team08.VM.phases.Reinforcement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages players and their orders runtime information; Responsible for executing orders in round-robin fashion.
@@ -53,6 +55,16 @@ public class GamePlayEngine implements Engine {
      * Thread created by <code>GamePlayEngine</code>. This thread should be responsive to interruption.
      */
     private Thread d_LoopThread;
+
+    /**
+     * Keeps track of the execution-index; it helps to decide order execution and expiration phase.
+     */
+    private static int d_currentExecutionIndex = 0;
+
+    /**
+     * List of the future orders which are supposed to be executed later in the future iterations.
+     */
+    private final List<Order> d_futurePhaseOrders = new ArrayList<>();
 
     /**
      * Gets the single instance of the <code>GamePlayEngine</code> class.
@@ -176,6 +188,63 @@ public class GamePlayEngine implements Engine {
      */
     public void setCurrentPlayerForExecutionPhase(int p_currentPlayerForExecutionPhase) {
         d_currentPlayerForExecutionPhase = p_currentPlayerForExecutionPhase;
+    }
+
+    /**
+     * Gets the current execution index. This index helps to keep track of orders; some of those should be executed and
+     * others of those should be expired during this loop iteration.
+     *
+     * @return Value of the index.
+     */
+    public static int getCurrentExecutionIndex() {
+        return d_currentExecutionIndex;
+    }
+
+    /**
+     * Gets the list of future orders which should be executed during this phase.
+     *
+     * @return Value of the list of orders.
+     */
+    public List<Order> getCurrentFutureOrders() {
+        return d_futurePhaseOrders.stream().filter(p_futureOrder ->
+                p_futureOrder.getExecutionIndex() == d_currentExecutionIndex
+        ).collect(Collectors.toList());
+    }
+
+    /**
+     * Gets the list of future orders which are going to be expired after this loop iteration.
+     *
+     * @return Value of the list of orders.
+     */
+    public List<Order> getExpiredFutureOrders() {
+        return d_futurePhaseOrders.stream().filter(p_futureOrder ->
+                p_futureOrder.getExpiryIndex() >= d_currentExecutionIndex
+        ).collect(Collectors.toList());
+    }
+
+    /**
+     * Adds the order to be executed in future iteration.
+     *
+     * @param p_futureOrder Value of the order to be added.
+     */
+    public void addFutureOrder(Order p_futureOrder) {
+        this.d_futurePhaseOrders.add(p_futureOrder);
+    }
+
+    /**
+     * Removes the order. This method is onlt being called if the order has been expired.
+     *
+     * @param p_futureOrder Value of the order to be added.
+     */
+    public void removeFutureOrder(Order p_futureOrder) {
+        this.d_futurePhaseOrders.remove(p_futureOrder);
+    }
+
+    /**
+     * Increments the current-execution-index.
+     */
+    public static void incrementIndex() {
+        d_currentExecutionIndex++;
     }
 
     /**

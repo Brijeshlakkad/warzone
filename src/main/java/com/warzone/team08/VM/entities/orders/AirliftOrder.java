@@ -18,7 +18,7 @@ import com.warzone.team08.VM.repositories.CountryRepository;
  * @author Deep Patel
  * @version 2.0
  */
-public class AirliftOrder implements Order {
+public class AirliftOrder extends Order {
     private final Country d_sourceCountry;
     private final Country d_targetCountry;
     private final int d_numOfArmies;
@@ -94,5 +94,13 @@ public class AirliftOrder implements Order {
         d_sourceCountry.setNumberOfArmies(l_sourceCountryArmies);
         d_targetCountry.setNumberOfArmies(l_targetCountryArmies);
         d_owner.removeCard(l_requiredCard);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void expire() {
+        // Does nothing.
     }
 }
