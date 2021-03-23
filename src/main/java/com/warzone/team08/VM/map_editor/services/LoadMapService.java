@@ -2,6 +2,7 @@ package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.utils.PathResolverUtil;
 
@@ -15,6 +16,8 @@ import java.util.List;
  * @author Brijesh Lakkad
  */
 public class LoadMapService implements SingleCommand {
+    private LogEntryBuffer d_logEntryBuffer=new LogEntryBuffer();
+
     /**
      * Handles the load map operation for user command.
      *
@@ -43,11 +46,12 @@ public class LoadMapService implements SingleCommand {
             try {
                 // Validates the map before saving the file.
                 ValidateMapService l_validateObj = new ValidateMapService();
-                l_validateObj.execute(null);
+                l_validateObj.execute(null,"loadmap");
             } catch (InvalidMapException | EntityNotFoundException l_e) {
                 MapEditorEngine.getInstance().initialise();
                 throw l_e;
             }
+            d_logEntryBuffer.dataChanged("loadmap","\n---LOADMAP---\n"+response+"\n");
             return response;
         } catch (ArrayIndexOutOfBoundsException p_e) {
             throw new InvalidInputException("File name is empty!");

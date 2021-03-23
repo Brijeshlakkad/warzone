@@ -3,6 +3,9 @@ package com.warzone.team08.VM.map_editor.services;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
@@ -31,6 +34,8 @@ public class CountryService {
      */
     private final CountryRepository d_countryRepository;
 
+    private final LogEntryBuffer d_logEntryBuffer;
+
     /**
      * Initializes different object.
      */
@@ -38,6 +43,7 @@ public class CountryService {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -48,7 +54,7 @@ public class CountryService {
      * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public String add(String p_countryName, String p_continentName) throws EntityNotFoundException {
+    public String add(String p_countryName, String p_continentName) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         Country l_country = new Country(d_mapEditorEngine.getCountryList().size() + 1);
         l_country.setCountryName(p_countryName);
 
@@ -58,6 +64,9 @@ public class CountryService {
 
         // Save country to continent
         l_continent.addCountry(l_country);
+        if(d_mapEditorEngine.getHeadCommand()=="edit") {
+            d_logEntryBuffer.dataChanged("editcountry", "\n---EDITCOUNTRY---\n" + l_country.getCountryName()+" is added to the country list of"+l_continent.getContinentName() +"\n" );
+        }
 
         return String.format("%s country added!", p_countryName);
     }
@@ -93,13 +102,16 @@ public class CountryService {
      * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public String remove(String p_countryName) throws EntityNotFoundException {
+    public String remove(String p_countryName) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);
         l_country.getContinent().removeCountry(l_country);
 
         List<Country> l_neighborOfCountryList = d_countryRepository.findByNeighbourOfCountries(l_country);
         for (Country l_neighborOfCountry : l_neighborOfCountryList) {
             l_neighborOfCountry.removeNeighbourCountry(l_country);
+        }
+        if(d_mapEditorEngine.getHeadCommand()=="edit") {
+            d_logEntryBuffer.dataChanged("editcountry", "\n---EDITCOUNTRY---\n" + l_country.getCountryName()+" is removed to the country list of"+l_country.getContinent().getContinentName() +"\n" );
         }
 
         return String.format("%s country removed!", p_countryName);

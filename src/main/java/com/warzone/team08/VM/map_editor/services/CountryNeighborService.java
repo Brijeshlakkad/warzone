@@ -2,6 +2,9 @@ package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
@@ -20,6 +23,7 @@ public class CountryNeighborService {
      */
     private final MapEditorEngine d_mapEditorEngine;
     private final CountryRepository d_countryRepository;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * Initializes different objects.
@@ -27,6 +31,7 @@ public class CountryNeighborService {
     public CountryNeighborService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_countryRepository = new CountryRepository();
+        d_logEntryBuffer=new LogEntryBuffer();
     }
 
     /**
@@ -37,9 +42,12 @@ public class CountryNeighborService {
      * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public String add(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
+    public String add(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);
         Country l_neighborCountry = d_countryRepository.findFirstByCountryName(p_neighborCountryName);
+        if(d_mapEditorEngine.getHeadCommand()=="edit") {
+            d_logEntryBuffer.dataChanged("editneighbor", "\n---EDITNEIGHBOR---\n" + p_neighborCountryName+" is set as neighbor of "+p_countryName +"\n" );
+        }
         return this.add(l_country, l_neighborCountry);
     }
 
@@ -63,10 +71,13 @@ public class CountryNeighborService {
      * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public String remove(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException {
+    public String remove(String p_countryName, String p_neighborCountryName) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);
         Country l_neighborCountry = d_countryRepository.findFirstByCountryName(p_neighborCountryName);
 
+        if(d_mapEditorEngine.getHeadCommand()=="edit") {
+            d_logEntryBuffer.dataChanged("editneighbor", "\n---EDITNEIGHBOR---\n" + p_neighborCountryName+" is removed as a neighbor of "+p_countryName +"\n" );
+        }
         return this.remove(l_country, l_neighborCountry);
     }
 

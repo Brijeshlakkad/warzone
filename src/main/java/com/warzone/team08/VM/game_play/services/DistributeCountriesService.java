@@ -11,6 +11,7 @@ import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,11 +142,7 @@ public class DistributeCountriesService implements SingleCommand {
         // What if only one player is available?
         if (!GamePlayEngine.getInstance().getPlayerList().isEmpty()) {
             String l_response = distributeCountries();
-//            try {
             d_logEntryBuffer.dataChanged("assigncountries", "\n---ASSIGNCOUNTRIES---\n"+l_response+"\n"+this.getPlayerCountries()+"\n*******GAME LOOP BEGINS*******\n");
-//            } catch (IOException p_e) {
-//                p_e.printStackTrace();
-//            }
             return l_response;
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");
