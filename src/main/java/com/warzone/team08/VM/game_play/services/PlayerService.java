@@ -37,7 +37,7 @@ public class PlayerService {
     public PlayerService() {
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_playerRepository = new PlayerRepository();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

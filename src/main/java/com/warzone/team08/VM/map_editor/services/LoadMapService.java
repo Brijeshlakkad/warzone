@@ -16,7 +16,7 @@ import java.util.List;
  * @author Brijesh Lakkad
  */
 public class LoadMapService implements SingleCommand {
-    private LogEntryBuffer d_logEntryBuffer=new LogEntryBuffer();
+    private LogEntryBuffer d_logEntryBuffer=LogEntryBuffer.getLogger();
 
     /**
      * Handles the load map operation for user command.

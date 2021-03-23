@@ -68,7 +68,7 @@ public class Player {
         d_canReinforce = true;
         d_assignedCountryCount = 0;
         d_orderMapper = new OrderMapper();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -141,8 +141,7 @@ public class Player {
      *
      * @param p_county Country object.
      */
-    public void removeCountry(Country p_county)
-    {
+    public void removeCountry(Country p_county) {
         d_assignedCountries.remove(p_county);
     }
 
@@ -167,7 +166,7 @@ public class Player {
     /**
      * Adds the card to the list of cards owned by the player.
      *
-     * @param p_card  Card name
+     * @param p_card Card name
      */
     public void addCard(String p_card) {
         d_cards.add(p_card);
@@ -176,10 +175,9 @@ public class Player {
     /**
      * Removes card from the list
      *
-     * @param p_card  Card name
+     * @param p_card Card name
      */
-    public void removeCard(String p_card)
-    {
+    public void removeCard(String p_card) {
         d_cards.remove(p_card);
     }
 
@@ -272,24 +270,24 @@ public class Player {
             ReinforcementOutOfBoundException, InvalidCommandException, EntityNotFoundException, ExecutionException, InterruptedException, InvalidArgumentException, ResourceNotFoundException, InvalidInputException {
         // Requests user interface for input from user.
         String l_responseVal = "";
-        String l_loggingMessage="";
+        String l_loggingMessage = "";
         do {
             VirtualMachine.getInstance().stdout(String.format("\nPlayer: %s--------\nUSAGE: You can check map details\n> showmap <return>", this.d_name, this.d_remainingReinforcementCount));
             Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Issue Order:"));
             l_responseVal = l_responseOfFuture.get();
-            l_loggingMessage="\n"+this.d_name+" turn to Issue Order:"+"\n";
+            l_loggingMessage = "\n" + this.d_name + " turn to Issue Order:" + "\n";
         } while (l_responseVal.isEmpty());
         try {
             ObjectMapper l_objectMapper = new ObjectMapper();
             CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
             Order l_newOrder = d_orderMapper.toOrder(l_commandResponse, this);
             if (l_newOrder.getType() == OrderType.deploy) {
-                l_loggingMessage+="---DEPLOY ORDER---:"+"\n";
+                l_loggingMessage += "---DEPLOY ORDER---:" + "\n";
                 DeployOrder l_deployOrder = (DeployOrder) l_newOrder;
                 if (this.getAssignedCountries().contains(l_deployOrder.getTargetCountry())) {
                     if (this.getRemainingReinforcementCount() != 0 && this.canPlayerReinforce(l_deployOrder.getNumOfReinforcements())) {
-                        l_loggingMessage+="Deploy "+l_deployOrder.getNumOfReinforcements()+" armies in "+l_deployOrder.getTargetCountry().getCountryName()+"\n";
-                        d_logEntryBuffer.dataChanged("deploy",l_loggingMessage);
+                        l_loggingMessage += "Deploy " + l_deployOrder.getNumOfReinforcements() + " armies in " + l_deployOrder.getTargetCountry().getCountryName() + "\n";
+                        d_logEntryBuffer.dataChanged("deploy", l_loggingMessage);
                         this.addOrder(l_deployOrder);
                     } else {
                         throw new ReinforcementOutOfBoundException("You don't have enough reinforcements.");

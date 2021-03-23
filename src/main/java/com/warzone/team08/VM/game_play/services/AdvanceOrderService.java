@@ -53,7 +53,7 @@ public class AdvanceOrderService implements Order {
         d_countryTo = p_countryTo;
         d_numOfArmies = p_numOfArmies;
         d_player = p_player;
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

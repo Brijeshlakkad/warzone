@@ -41,7 +41,7 @@ public class ShowMapService implements SingleCommand {
         d_continentCountryMap = d_mapEditorEngine.getContinentCountryMap();
         d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

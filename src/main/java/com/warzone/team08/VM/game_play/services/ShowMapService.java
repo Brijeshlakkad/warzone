@@ -35,7 +35,7 @@ public class ShowMapService implements SingleCommand {
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_playerList = d_gamePlayEngine.getPlayerList();
         d_showMapService = new com.warzone.team08.VM.map_editor.services.ShowMapService();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

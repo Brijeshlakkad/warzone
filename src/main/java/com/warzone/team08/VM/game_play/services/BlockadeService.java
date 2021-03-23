@@ -34,7 +34,7 @@ public class BlockadeService implements Order {
     public BlockadeService(String p_countryId, Player p_player) {
         d_countryId = String.valueOf(p_countryId);
         d_player = p_player;
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

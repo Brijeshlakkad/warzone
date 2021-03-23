@@ -9,15 +9,28 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Date;
 
-public class LogWriter implements Observer{
+public class LogWriter extends Observer {
+    private final String d_pathToFile;
+    private final File d_targetFile;
+
+    /**
+     * @throws ResourceNotFoundException
+     */
+    public LogWriter(Observable p_observable) throws ResourceNotFoundException {
+        super(p_observable);
+        String l_timestamp = String.valueOf(new Date().getTime() % 100);
+        String l_FileName = l_timestamp.concat("_log_file.txt");
+        d_pathToFile = PathResolverUtil.resolveFilePath(l_FileName);
+        d_targetFile = FileUtil.createFileIfNotExists(d_pathToFile);
+    }
+
     @Override
     public void update(Observable p_observable) throws InvalidInputException {
-        File l_file = new File("C:\\Users\\MILESH\\Downloads\\War Zone Team08\\log.txt");
-        //File l_file= FileUtil.retrieveFile(PathResolverUtil.resolveFilePath("logFile.txt"));
         String l_message = ((LogEntryBuffer) p_observable).getMessage();
-        try (Writer l_writer = new FileWriter(l_file, true)) {
-            l_writer.write(l_message);
+        try (Writer l_writer = new FileWriter(d_targetFile, true)) {
+            l_writer.append(l_message);
         } catch (IOException p_ioException) {
             throw new InvalidInputException("Error while saving the file!");
         }

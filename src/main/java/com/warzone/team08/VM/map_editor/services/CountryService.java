@@ -43,7 +43,7 @@ public class CountryService {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

@@ -31,7 +31,7 @@ public class CountryNeighborService {
     public CountryNeighborService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_countryRepository = new CountryRepository();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

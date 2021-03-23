@@ -18,9 +18,9 @@ import java.util.List;
 import static java.lang.Math.floor;
 
 /**
- * This class implements the operations required to be perform when the Bomb card is used.
- * When bomb card is used then it simple halves the number of armies available in the country on which the bomb operation is performed.
- * A player can perform bomb operation on the countries owned by the other players only.
+ * This class implements the operations required to be perform when the Bomb card is used. When bomb card is used then
+ * it simple halves the number of armies available in the country on which the bomb operation is performed. A player can
+ * perform bomb operation on the countries owned by the other players only.
  *
  * @author CHARIT
  * @version 2.0
@@ -40,7 +40,7 @@ public class BombService implements Order {
     public BombService(String p_countryId, Player p_player) {
         d_countryId = String.valueOf(p_countryId);
         d_player = p_player;
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -57,9 +57,9 @@ public class BombService implements Order {
      * Checks whether the given command is executable or not(valid or not).
      *
      * @return True if the command is valid, false otherwise.
-     * @throws EntityNotFoundException  Throws if the given country is not found in the list of available countries.
-     * @throws InvalidCommandException  Throws if the command is invalid.
-     * @throws InvalidInputException    Throws in case of invalid input.
+     * @throws EntityNotFoundException Throws if the given country is not found in the list of available countries.
+     * @throws InvalidCommandException Throws if the command is invalid.
+     * @throws InvalidInputException   Throws in case of invalid input.
      */
     public boolean valid() throws EntityNotFoundException, InvalidCommandException, InvalidInputException {
         if (this.getAttackedCountry().getOwnedBy() != d_player) {
@@ -76,14 +76,14 @@ public class BombService implements Order {
     /**
      * Performs actual bomb operation.
      *
-     * @throws InvalidInputException    Throws if user input is invalid.
-     * @throws EntityNotFoundException  Throws if the given country is not found in the list of available countries.
-     * @throws InvalidCommandException  Throws if the command is invalid.
+     * @throws InvalidInputException   Throws if user input is invalid.
+     * @throws EntityNotFoundException Throws if the given country is not found in the list of available countries.
+     * @throws InvalidCommandException Throws if the command is invalid.
      */
     public void execute() throws InvalidInputException, EntityNotFoundException, InvalidCommandException {
         Country l_country;
         List<Country> l_countryList;
-        String l_logResponse="\n---BOMB ORDER---\n";
+        String l_logResponse = "\n---BOMB ORDER---\n";
         if (valid()) {
             try {
                 List<Country> l_neighbourCountryList = new ArrayList<>();
@@ -97,12 +97,12 @@ public class BombService implements Order {
                     l_country.setNumberOfArmies(l_finalArmies);
                     //Remove card from list
                     d_player.removeCard("bomb");
-                    l_logResponse+=d_player.getName()+" used Bomb card to half the army count of "+l_country.getCountryName();
-                    String[] l_header={"COUNTRY","ARMY COUNT"};
-                    String[][] l_changeContent={
+                    l_logResponse += d_player.getName() + " used Bomb card to half the army count of " + l_country.getCountryName();
+                    String[] l_header = {"COUNTRY", "ARMY COUNT"};
+                    String[][] l_changeContent = {
                             {l_country.getCountryName(), String.valueOf(l_country.getNumberOfArmies())}
                     };
-                    l_logResponse+="\n Order Effect\n"+ FlipTable.of(l_header, l_changeContent);
+                    l_logResponse += "\n Order Effect\n" + FlipTable.of(l_header, l_changeContent);
                     d_logEntryBuffer.dataChanged("bomb", l_logResponse);
                 } else {
                     throw new InvalidArgumentException("Invalid Country Name is provided!! Country must be a neighboring country.");

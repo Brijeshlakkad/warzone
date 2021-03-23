@@ -33,7 +33,7 @@ public class ValidateMapService implements SingleCommand {
 
     public ValidateMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**
@@ -218,7 +218,6 @@ public class ValidateMapService implements SingleCommand {
     }
 
     public String execute(List<String> p_commandValues,String s) throws InvalidMapException, EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
-        String l_logResponse="\n---VALIDATEMAP---\n";
         //Checks map has atleast 1 continent
         if (d_mapEditorEngine.getContinentList().size() > 0) {
             //Control value should be as per the warzone rules
@@ -231,30 +230,23 @@ public class ValidateMapService implements SingleCommand {
                         if (isContinentConnectedSubgraph()) {
                             //Check that continent is a connected sub-graph
                             if (isMapConnectedGraph()) {
-                                //if(s=="savemap"|| s=="loadmap")
                                 return "Map validation passed successfully!";
                             } else {
-                                //d_logEntryBuffer.dataChanged("validatemap",l_logResponse+"map must be a connected graph!\n");
                                 throw new InvalidMapException("map must be a connected graph!");
                             }
                         } else {
-                            //d_logEntryBuffer.dataChanged("validatemap",l_logResponse+"Continent must be a connected sub-graph!\n");
                             throw new InvalidMapException("Continent must be a connected sub-graph!");
                         }
                     } else {
-                        //d_logEntryBuffer.dataChanged("validatemap",l_logResponse+"Total continents must be lesser or equal to the countries!\n");
                         throw new InvalidMapException("Total continents must be lesser or equal to the countries!");
                     }
                 } else {
-                    //d_logEntryBuffer.dataChanged("validatemap",l_logResponse+"At least one country required!\n");
                     throw new InvalidMapException("At least one country required!");
                 }
             } else {
-                //d_logEntryBuffer.dataChanged("validatemap",l_logResponse+"ControlValue is not valid!\n");
                 throw new InvalidMapException("ControlValue is not valid!");
             }
         } else {
-            //d_logEntryBuffer.dataChanged("validatemap",l_logResponse+"At least one continent required!\n");
             throw new InvalidMapException("At least one continent required!");
         }
     }

@@ -11,7 +11,6 @@ import com.warzone.team08.VM.log.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class DistributeCountriesService implements SingleCommand {
     public DistributeCountriesService() {
         d_countryList = MapEditorEngine.getInstance().getCountryList();
         d_gamePlayEngine = GamePlayEngine.getInstance();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

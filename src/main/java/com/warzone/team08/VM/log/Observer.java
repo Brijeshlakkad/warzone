@@ -7,8 +7,16 @@ import java.io.IOException;
 
 /**
  * This interface is defines the methods to implement Observer.
+ *
  * @author MILESH
  */
-public interface Observer {
-    public void update(Observable p_observable_state) throws IOException, ResourceNotFoundException, InvalidInputException;
+public abstract class Observer {
+    Observable d_observable;
+
+    public Observer(Observable p_observable) {
+        d_observable = p_observable;
+        d_observable.attach(this);
+    }
+
+    public abstract void update(Observable p_observable_state) throws IOException, ResourceNotFoundException, InvalidInputException;
 }

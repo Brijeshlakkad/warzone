@@ -38,7 +38,7 @@ public class AirliftService{
         d_targetCountryId = p_targetCountryId;
         d_numarmies = p_numarmies;
         d_player = p_player;
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

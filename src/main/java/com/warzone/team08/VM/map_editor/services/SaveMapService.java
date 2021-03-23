@@ -41,7 +41,7 @@ public class SaveMapService implements SingleCommand {
      */
     public SaveMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**

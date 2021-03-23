@@ -1,6 +1,5 @@
 package com.warzone.team08.VM.log;
 
-import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 
@@ -10,16 +9,24 @@ import java.util.List;
 
 /**
  * This class implements the Observable to notify the observers about the changes happen during any actions.
+ *
  * @author MILESH
  */
 public class LogEntryBuffer implements Observable {
     private List<Observer> d_observerList;
     private String d_message;
     private String d_headCommand;
+    private static LogEntryBuffer d_instance;
 
-    public LogEntryBuffer() {
-        d_observerList=new ArrayList<>();
-        d_observerList.add(new LogWriter());
+    private LogEntryBuffer() {
+        d_observerList = new ArrayList<>();
+    }
+
+    public static LogEntryBuffer getLogger() {
+        if (d_instance == null) {
+            d_instance = new LogEntryBuffer();
+        }
+        return d_instance;
     }
 
     @Override
@@ -34,7 +41,7 @@ public class LogEntryBuffer implements Observable {
 
     @Override
     public void notifyObservers(Observable p_o) throws ResourceNotFoundException, InvalidInputException {
-        for(Observer l_observer:d_observerList){
+        for (Observer l_observer : d_observerList) {
             try {
                 l_observer.update(p_o);
             } catch (IOException p_e) {
@@ -51,11 +58,11 @@ public class LogEntryBuffer implements Observable {
         d_message = p_message;
     }
 
-    public void dataChanged(String p_headCommand,String p_message) throws ResourceNotFoundException, InvalidInputException {
-        d_headCommand=p_headCommand;
-        d_message=p_message;
+    public void dataChanged(String p_headCommand, String p_message) throws ResourceNotFoundException, InvalidInputException {
+        d_headCommand = p_headCommand;
+        d_message = p_message;
         notifyObservers(this);
-        d_message="";
+        d_message = "";
     }
 
     public String getHeadCommand() {

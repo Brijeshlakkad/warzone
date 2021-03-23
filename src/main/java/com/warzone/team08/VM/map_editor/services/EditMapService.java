@@ -51,7 +51,7 @@ public class EditMapService implements SingleCommand {
         d_continentService = new ContinentService();
         d_countryService = new CountryService();
         d_countryNeighborService = new CountryNeighborService();
-        d_logEntryBuffer=new LogEntryBuffer();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**
