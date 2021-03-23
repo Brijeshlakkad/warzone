@@ -13,7 +13,7 @@ public enum CommandSpecification {
     CAN_RUN_ALONE,
     /**
      * Command can run without argument key but needs the value(s) to run
-     * For this specification, command layout will also need to use ArgumentSpecification to specify how many arguments it needs to run
+     * For this specification, command layout will also need to use <code>ArgumentSpecification</code> to specify how many arguments it needs to run
      */
     CAN_RUN_ALONE_WITH_VALUE,
     /**

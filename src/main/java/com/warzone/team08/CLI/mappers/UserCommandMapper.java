@@ -165,7 +165,10 @@ public class UserCommandMapper {
         if (p_predefinedUserCommand.getCommandSpecification() == CommandSpecification.CAN_RUN_ALONE_WITH_VALUE) {
             // Means the user has not provided the value required with the command
             if (p_numOfKeys == 0)
-                throw new InvalidArgumentException("Value not provided");
+                throw new InvalidArgumentException("Value not provided!");
+            if (p_numOfKeys != p_predefinedUserCommand.getNumOfValues()) {
+                throw new InvalidArgumentException("Required values are missing!");
+            }
             return true;
         }
         return false;
