@@ -7,6 +7,9 @@ import java.util.List;
 
 /**
  * Implements the method available for this phase of game.
+ *
+ * @author Brijesh Lakkad
+ * @version 1.0
  */
 public class End extends Phase {
     /**
@@ -110,7 +113,7 @@ public class End extends Phase {
      * {@inheritDoc}
      */
     @Override
-    public void attack() throws VMException {
+    public void issueOrder() throws VMException {
         invalidCommand();
     }
 

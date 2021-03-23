@@ -10,6 +10,9 @@ import java.util.List;
 
 /**
  * Concrete state of the <code>Phase</code>. Extends the <code>Edit</code>.
+ *
+ * @author Brijesh Lakkad
+ * @version 1.0
  */
 public class PostLoad extends Edit {
     /**

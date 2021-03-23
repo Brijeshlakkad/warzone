@@ -1,12 +1,12 @@
-package com.warzone.team08.VM.game_play.services;
+package com.warzone.team08.VM.entities.orders;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
-import com.warzone.team08.VM.entities.orders.AirliftOrder;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -79,11 +79,13 @@ public class AirliftOrderTest {
     /**
      * checks that execute method working properly.
      *
-     * @throws EntityNotFoundException Throws if entity not found.
-     * @throws InvalidOrderException   Throws if exception while executing the order.
+     * @throws EntityNotFoundException  Throws if entity not found.
+     * @throws InvalidArgumentException Throws if the input is invalid.
+     * @throws InvalidOrderException    Throws if exception while executing the order.
      */
     @Test
-    public void testExecute() throws EntityNotFoundException, InvalidOrderException {
+    public void testExecute()
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -99,12 +101,14 @@ public class AirliftOrderTest {
     /**
      * checks that player has airlift card.
      *
-     * @throws EntityNotFoundException Throws if entity not found.
-     * @throws InvalidOrderException   Throws if exception while executing the order.
+     * @throws EntityNotFoundException  Throws if entity not found.
+     * @throws InvalidArgumentException Throws if the input is invalid.
+     * @throws InvalidOrderException    Throws if exception while executing the order.
      */
     //not have airlift card
     @Test(expected = InvalidOrderException.class)
-    public void testPlayerHasCard() throws EntityNotFoundException, InvalidOrderException {
+    public void testPlayerHasCard()
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -119,12 +123,14 @@ public class AirliftOrderTest {
     /**
      * checks that player will not airlift armies in others country.
      *
-     * @throws EntityNotFoundException Throws if entity not found.
-     * @throws InvalidOrderException   Throws if exception while executing the order.
+     * @throws EntityNotFoundException  Throws if entity not found.
+     * @throws InvalidArgumentException Throws if the input is invalid.
+     * @throws InvalidOrderException    Throws if exception while executing the order.
      */
     //try to transfer into other's country
     @Test(expected = InvalidOrderException.class)
-    public void testPlayerNotAirliftInOthersCountry() throws EntityNotFoundException, InvalidOrderException {
+    public void testPlayerNotAirliftInOthersCountry()
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
         Player l_player = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
@@ -138,11 +144,13 @@ public class AirliftOrderTest {
     /**
      * method test that source country has entered number of armies for airlifted.
      *
-     * @throws EntityNotFoundException Throws if entity not found.
-     * @throws InvalidOrderException   Throws if exception while executing the order.
+     * @throws EntityNotFoundException  Throws if entity not found.
+     * @throws InvalidArgumentException Throws if the input is invalid.
+     * @throws InvalidOrderException    Throws if exception while executing the order.
      */
     @Test(expected = InvalidOrderException.class)
-    public void testPlayerHasEnteredArmies() throws EntityNotFoundException, InvalidOrderException {
+    public void testPlayerHasEnteredArmies()
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);

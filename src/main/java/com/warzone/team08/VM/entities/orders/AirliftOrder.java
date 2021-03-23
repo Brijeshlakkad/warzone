@@ -1,11 +1,11 @@
 package com.warzone.team08.VM.entities.orders;
 
-import com.warzone.team08.CLI.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
@@ -44,6 +44,10 @@ public class AirliftOrder implements Order {
         d_targetCountry = d_countryRepository.findFirstByCountryName(p_targetCountry);
         try {
             d_numOfArmies = Integer.parseInt(p_numOfArmies);
+            // Checks if the number of moved armies is less than zero.
+            if (d_numOfArmies < 0) {
+                throw new InvalidArgumentException("Number of armies can not be negative.");
+            }
         } catch (NumberFormatException p_e) {
             throw new InvalidArgumentException("Number of reinforcements is not a number!");
         }

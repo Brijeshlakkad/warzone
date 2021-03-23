@@ -210,7 +210,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
      * @param p_message Represents the message.
      */
     public void stdout(String p_message) {
-        if (p_message.equals("GAME_ENGINE_TO_WAIT")) {
+        if (p_message.equals("GAME_ENGINE_STOPPED")) {
             this.setInteractionState(UserInteractionState.WAIT);
         } else {
             System.out.println(p_message);

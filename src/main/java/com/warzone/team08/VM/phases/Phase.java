@@ -41,6 +41,9 @@ import java.util.List;
  * </ul>
  * <p>
  * In each state, to go down in the above list, nextState() can be used, except for <code>Fortify</code>, which goes back to <code>Reinforcement</code> state.
+ *
+ * @author Brijesh Lakkad
+ * @version 1.0
  */
 public abstract class Phase {
     /**
@@ -188,7 +191,7 @@ public abstract class Phase {
      * @throws VMException Base class of any exception during the operation.
      * @see com.warzone.team08.VM.game_play.services.IssueOrderService
      */
-    abstract public void attack() throws VMException;
+    abstract public void issueOrder() throws VMException;
 
     /**
      * <code>GameEngine</code> executes each player's orders; Being called when the game phase enters the loop of

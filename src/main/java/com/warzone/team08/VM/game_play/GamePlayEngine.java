@@ -1,8 +1,15 @@
 package com.warzone.team08.VM.game_play;
 
-import com.warzone.team08.VM.constants.enums.GameLoopState;
+import com.warzone.team08.VM.GameEngine;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.Engine;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.exceptions.GameLoopIllegalStateException;
+import com.warzone.team08.VM.exceptions.VMException;
+import com.warzone.team08.VM.phases.Execute;
+import com.warzone.team08.VM.phases.IssueOrder;
+import com.warzone.team08.VM.phases.PlaySetup;
+import com.warzone.team08.VM.phases.Reinforcement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,17 +50,9 @@ public class GamePlayEngine implements Engine {
     private int d_currentPlayerForExecutionPhase = 0;
 
     /**
-     * Represents the current state of the game loop.
-     * <ul>
-     *     <li>not_available</li>
-     *     <li>assign_reinforcements</li>
-     *     <li>issue_order</li>
-     *     <li>execute_order</li>
-     * </ul>
-     *
-     * @see GameLoopState for more information.
+     * Thread created by <code>GamePlayEngine</code>. This thread should be responsive to interruption.
      */
-    private static GameLoopState d_GameLoopState;
+    private Thread d_LoopThread;
 
     /**
      * Gets the single instance of the <code>GamePlayEngine</code> class.
@@ -81,25 +80,6 @@ public class GamePlayEngine implements Engine {
     @Override
     public void initialise() {
         d_playerList = new ArrayList<>();
-        setGameLoopState(GameLoopState.NOT_AVAILABLE);
-    }
-
-    /**
-     * Gets the state of <code>GameLoop</code>.
-     *
-     * @return Value of the state.
-     */
-    public static GameLoopState getGameLoopState() {
-        return d_GameLoopState;
-    }
-
-    /**
-     * Sets the state of <code>GameLoop</code>.
-     *
-     * @param p_d_GameLoopState Value of the state.
-     */
-    public static void setGameLoopState(GameLoopState p_d_GameLoopState) {
-        d_GameLoopState = p_d_GameLoopState;
     }
 
     /**
@@ -199,9 +179,50 @@ public class GamePlayEngine implements Engine {
     }
 
     /**
+     * Starts the thread to iterate through various <code>GameLoopState</code> states. Channels the exception to
+     * <code>stderr</code> method.
+     */
+    public void startGameLoop() {
+        if (d_LoopThread != null && d_LoopThread.isAlive()) {
+            d_LoopThread.interrupt();
+        }
+        d_LoopThread = new Thread(() -> {
+            GameEngine l_gameEngine = GameEngine.getInstance();
+            try {
+                if (l_gameEngine.getGamePhase().getClass().equals(PlaySetup.class)) {
+                    l_gameEngine.getGamePhase().nextState();
+                } else {
+                    throw new GameLoopIllegalStateException("Illegal state transition!");
+                }
+                // Responsive to thread interruption.
+                while (!Thread.currentThread().isInterrupted()) {
+                    if (l_gameEngine.getGamePhase().getClass().equals(Reinforcement.class)) {
+                        l_gameEngine.getGamePhase().reinforce();
+                    }
+                    if (l_gameEngine.getGamePhase().getClass().equals(IssueOrder.class)) {
+                        l_gameEngine.getGamePhase().issueOrder();
+                    }
+                    if (l_gameEngine.getGamePhase().getClass().equals(Execute.class)) {
+                        l_gameEngine.getGamePhase().fortify();
+                    }
+                    l_gameEngine.getGamePhase().nextState();
+                }
+            } catch (VMException p_vmException) {
+                VirtualMachine.getInstance().stderr(p_vmException.getMessage());
+            } finally {
+                // This will set CLI#UserInteractionState to WAIT
+                VirtualMachine.getInstance().stdout("GAME_ENGINE_STOPPED");
+            }
+        });
+        d_LoopThread.start();
+    }
+
+    /**
      * {@inheritDoc} Shuts the <code>GamePlayEngine</code>.
      */
     public void shutdown() {
-        // Does nothing
+        // Interrupt thread if it is alive.
+        if (d_LoopThread != null && d_LoopThread.isAlive())
+            d_LoopThread.interrupt();
     }
 }

@@ -34,6 +34,8 @@ public class ExecuteOrderService {
             do {
                 l_currentPlayer = l_gamePlayEngine.getCurrentPlayer();
             } while (finishedExecutingOrders.contains(l_currentPlayer));
+
+            VirtualMachine.getInstance().stdout(String.format("\nExecuting %s's order", l_currentPlayer.getName()));
             try {
                 // Get the next order
                 Order l_currentOrder = l_currentPlayer.nextOrder();

@@ -9,7 +9,10 @@ import java.util.List;
 
 /**
  * Concrete state of <code>Play</code>. This class is being used to add player(s) to the game and let players assign
- * countries
+ * countries.
+ *
+ * @author Brijesh Lakkad
+ * @version 1.0
  */
 public class PlaySetup extends Play {
     /**
@@ -40,7 +43,10 @@ public class PlaySetup extends Play {
      */
     public String assignCountries(List<String> p_arguments) throws VMException {
         DistributeCountriesService l_distributeCountriesService = new DistributeCountriesService();
-        return l_distributeCountriesService.execute(p_arguments);
+        String l_responseValue = l_distributeCountriesService.execute(p_arguments);
+        // Start game loop.
+        this.d_gameEngine.GAME_PLAY_ENGINE().startGameLoop();
+        return l_responseValue;
     }
 
     /**
@@ -53,7 +59,7 @@ public class PlaySetup extends Play {
     /**
      * {@inheritDoc}
      */
-    public void attack() throws VMException {
+    public void issueOrder() throws VMException {
         invalidCommand();
     }
 

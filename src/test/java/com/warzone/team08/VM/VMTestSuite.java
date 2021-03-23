@@ -1,5 +1,6 @@
 package com.warzone.team08.VM;
 
+import com.warzone.team08.VM.entities.EntityTestSuite;
 import com.warzone.team08.VM.entities.PlayerTest;
 import com.warzone.team08.VM.game_play.GamePlayTestSuite;
 import com.warzone.team08.VM.map_editor.MapEditorTestSuite;
@@ -15,7 +16,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         GamePlayTestSuite.class,
         MapEditorTestSuite.class,
-        PlayerTest.class
+        EntityTestSuite.class
 })
 public class VMTestSuite {
     // This class remains empty, it is used only as a holder for the above annotations.
