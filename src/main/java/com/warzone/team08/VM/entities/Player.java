@@ -6,6 +6,7 @@ import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.interfaces.Card;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.mappers.OrderMapper;
 import com.warzone.team08.VM.responses.CommandResponse;
 
@@ -50,6 +51,8 @@ public class Player {
      */
     private final OrderMapper d_orderMapper;
 
+    private final LogEntryBuffer d_logEntryBuffer;
+
     /**
      * Initializes variables required to handle player state.
      */
@@ -62,6 +65,7 @@ public class Player {
         d_remainingReinforcementCount = 0;
         d_assignedCountryCount = 0;
         d_orderMapper = new OrderMapper();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
         d_negotiatePlayer = new ArrayList<>();
     }
 
@@ -211,10 +215,12 @@ public class Player {
             InvalidArgumentException {
         // Requests user interface for input from user.
         String l_responseVal = "";
+        String l_loggingMessage = "";
         do {
             VirtualMachine.getInstance().stdout(String.format("\nPlayer: %s--------\nUSAGE: You can check map details\n> showmap <return>", this.d_name, this.d_remainingReinforcementCount));
             Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Issue Order:"));
             l_responseVal = l_responseOfFuture.get();
+            l_loggingMessage = "\n" + this.d_name + " turn to Issue Order:" + "\n";
         } while (l_responseVal.isEmpty());
         try {
             ObjectMapper l_objectMapper = new ObjectMapper();

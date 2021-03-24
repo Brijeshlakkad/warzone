@@ -35,9 +35,6 @@ public class RequestServiceTest {
      */
     @Before
     public void before() {
-        MapEditorEngine.getInstance().initialise();
-        GameEngine.getInstance().setGamePhase(new PostLoad(GameEngine.getInstance()));
-
         d_userCommand = new UserCommand(UserCommandLayout.matchAndGetUserCommand("editcontinent"));
 
         // When user enters editcontinent -add continentID 12
@@ -46,6 +43,9 @@ public class RequestServiceTest {
 
         Application l_application = new Application();
         l_application.handleApplicationStartup();
+
+        MapEditorEngine.getInstance().initialise();
+        GameEngine.getInstance().setGamePhase(new PostLoad(GameEngine.getInstance()));
     }
 
     /**

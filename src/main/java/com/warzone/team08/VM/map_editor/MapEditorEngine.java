@@ -19,8 +19,9 @@ public class MapEditorEngine implements Engine {
      * Singleton instance of the class.
      */
     private static MapEditorEngine d_Instance;
-
     private List<Continent> d_continentList;
+
+    private boolean d_isLoadingMap = false;
 
     /**
      * Gets the single instance of the class.
@@ -141,6 +142,25 @@ public class MapEditorEngine implements Engine {
      */
     public void addContinent(Continent p_continent) {
         d_continentList.add(p_continent);
+    }
+
+    /**
+     * Gets the state of the loading-map.
+     *
+     * @return True if the map is being loaded using the file.
+     */
+    public boolean getLoadingMap() {
+        return d_isLoadingMap;
+    }
+
+    /**
+     * Sets the state of the loading-map functionalities: loadmap and editmap. This will be true if any of the above
+     * command is being used to load the map.
+     *
+     * @param p_loadingMap True if the map is being loaded using the file.
+     */
+    public void setLoadingMap(boolean p_loadingMap) {
+        d_isLoadingMap = p_loadingMap;
     }
 
     /**

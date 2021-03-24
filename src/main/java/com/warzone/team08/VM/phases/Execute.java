@@ -1,6 +1,8 @@
 package com.warzone.team08.VM.phases;
 
 import com.warzone.team08.VM.GameEngine;
+import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.ExecuteOrderService;
@@ -41,7 +43,7 @@ public class Execute extends MainPlay {
      * {@inheritDoc}
      */
     @Override
-    public void fortify() {
+    public void fortify() throws ResourceNotFoundException, InvalidInputException {
         ExecuteOrderService l_executeOrderService = new ExecuteOrderService();
         l_executeOrderService.execute();
     }

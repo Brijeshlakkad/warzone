@@ -5,6 +5,7 @@ import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidMapException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
@@ -19,15 +20,17 @@ import java.util.Stack;
  * @author Deep Patel
  * @author Brijesh Lakkad
  */
-
 public class ValidateMapService implements SingleCommand {
     /**
      * Engine to store and retrieve map data.
      */
     private final MapEditorEngine d_mapEditorEngine;
 
+    private final LogEntryBuffer d_logEntryBuffer;
+
     public ValidateMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -167,10 +170,63 @@ public class ValidateMapService implements SingleCommand {
      *
      * @param p_commandValues Values of command entered by user if any.
      * @return Value of the response.
+     * @throws InvalidMapException     If the map is not valid.
+     * @throws EntityNotFoundException If the entity not found.
      */
     @Override
     public String execute(List<String> p_commandValues) throws InvalidMapException, EntityNotFoundException {
+        String l_logResponse = "\n---VALIDATEMAP---\n";
         //Checks map has atleast 1 continent
+        if (d_mapEditorEngine.getContinentList().size() > 0) {
+            //Control value should be as per the warzone rules
+            if (validationControlValue(d_mapEditorEngine.getContinentList())) {
+                //Check for the minimum number of countries required
+                if (d_mapEditorEngine.getCountryList().size() > 1) {
+                    //check that every continent should have at least 1 country
+                    if (d_mapEditorEngine.getCountryList().size() >= d_mapEditorEngine.getContinentList().size()) {
+                        //check every country is reachable
+                        if (isContinentConnectedSubgraph()) {
+                            //Check that continent is a connected sub-graph
+                            if (isMapConnectedGraph()) {
+                                d_logEntryBuffer.dataChanged("validatemap", l_logResponse + "Map validation passed successfully!\n");
+                                return "Map validation passed successfully!";
+                            } else {
+                                d_logEntryBuffer.dataChanged("validatemap", l_logResponse + "map must be a connected graph!\n");
+                                throw new InvalidMapException("map must be a connected graph!");
+                            }
+                        } else {
+                            d_logEntryBuffer.dataChanged("validatemap", l_logResponse + "Continent must be a connected sub-graph!\n");
+                            throw new InvalidMapException("Continent must be a connected sub-graph!");
+                        }
+                    } else {
+                        d_logEntryBuffer.dataChanged("validatemap", l_logResponse + "Total continents must be lesser or equal to the countries!\n");
+                        throw new InvalidMapException("Total continents must be lesser or equal to the countries!");
+                    }
+                } else {
+                    d_logEntryBuffer.dataChanged("validatemap", l_logResponse + "At least one country required!\n");
+                    throw new InvalidMapException("At least one country required!");
+                }
+            } else {
+                d_logEntryBuffer.dataChanged("validatemap", l_logResponse + "ControlValue is not valid!\n");
+                throw new InvalidMapException("ControlValue is not valid!");
+            }
+        } else {
+            d_logEntryBuffer.dataChanged("validatemap", l_logResponse + "At least one continent required!\n");
+            throw new InvalidMapException("At least one continent required!");
+        }
+    }
+
+    /**
+     * Initiate all the validation procedures. Checks all the validation and replies to the execute method.
+     *
+     * @param p_commandValues Values of command entered by user if any.
+     * @param p_headCommand   name of headCommand
+     * @return Value of the response.
+     * @throws InvalidMapException     If the map is not valid.
+     * @throws EntityNotFoundException If the entity not found.
+     */
+    public String execute(List<String> p_commandValues, String p_headCommand) throws InvalidMapException, EntityNotFoundException {
+        //Checks map has at least 1 continent
         if (d_mapEditorEngine.getContinentList().size() > 0) {
             //Control value should be as per the warzone rules
             if (validationControlValue(d_mapEditorEngine.getContinentList())) {

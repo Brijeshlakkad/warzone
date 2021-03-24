@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.map_editor.services;
 
+import com.warzone.team08.Application;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.AbsentTagException;
 import org.junit.Before;
@@ -34,6 +35,8 @@ public class LoadMapServiceTest {
      */
     @BeforeClass
     public static void beforeClass() {
+        Application l_application = new Application();
+        l_application.handleApplicationStartup();
         d_testCorruptedFilePath = LoadMapServiceTest.class.getClassLoader().getResource("test_map_files/test_blank_data_fields.map");
         d_testCorrectFilePath = LoadMapServiceTest.class.getClassLoader().getResource("map_files/solar.map");
     }

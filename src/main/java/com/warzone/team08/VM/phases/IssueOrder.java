@@ -1,6 +1,8 @@
 package com.warzone.team08.VM.phases;
 
 import com.warzone.team08.VM.GameEngine;
+import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.services.IssueOrderService;
 
@@ -32,7 +34,7 @@ public class IssueOrder extends MainPlay {
      * {@inheritDoc}
      */
     @Override
-    public void issueOrder() {
+    public void issueOrder() throws ResourceNotFoundException, InvalidInputException {
         IssueOrderService l_issueOrderService = new IssueOrderService();
         l_issueOrderService.execute();
     }

@@ -88,7 +88,7 @@ public class BlockadeOrderTest {
      */
     @Test(expected = Test.None.class)
     public void testBlockadeOperationWithBlockadeCard()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
         Player l_player1 = d_playerList.get(0);
         List<Country> l_player1AssignCountries = l_player1.getAssignedCountries();
         l_player1.addCard(new BlockadeCard());
@@ -107,9 +107,10 @@ public class BlockadeOrderTest {
      * @throws InvalidOrderException   Throws if exception while executing the order.
      * @throws CardNotFoundException   Card doesn't found in the player's card list.
      */
+
     @Test(expected = CardNotFoundException.class)
     public void testBlockadeOperationWithOutBlockadeCard()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
         Player l_player1 = d_playerList.get(0);
         List<Country> l_player1AssignCountries = l_player1.getAssignedCountries();
         l_player1.addCard(new BombCard());
@@ -130,7 +131,7 @@ public class BlockadeOrderTest {
      */
     @Test(expected = InvalidOrderException.class)
     public void testBlockadeOperationOnOtherPlayerOwnedCountry()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
@@ -147,7 +148,8 @@ public class BlockadeOrderTest {
      * @throws CardNotFoundException   Card doesn't found in the player's card list.
      */
     @Test(expected = CardNotFoundException.class)
-    public void testCardSuccessfullyRemoved() throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
+    public void testCardSuccessfullyRemoved() throws
+            EntityNotFoundException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
         Player l_player1 = d_playerList.get(0);
         List<Country> l_player1AssignCountries = l_player1.getAssignedCountries();
         l_player1.addCard(new BlockadeCard());

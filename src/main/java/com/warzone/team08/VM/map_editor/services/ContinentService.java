@@ -3,6 +3,7 @@ package com.warzone.team08.VM.map_editor.services;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 
@@ -21,6 +22,7 @@ public class ContinentService {
      */
     private final MapEditorEngine d_mapEditorEngine;
     private final ContinentRepository d_continentRepository;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * Initialization of different objects.
@@ -28,6 +30,7 @@ public class ContinentService {
     public ContinentService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentRepository = new ContinentRepository();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -45,6 +48,9 @@ public class ContinentService {
             l_continent.setContinentName(p_continentName);
             l_continent.setContinentControlValue(l_parsedControlValue);
             d_mapEditorEngine.addContinent(l_continent);
+            if (!d_mapEditorEngine.getLoadingMap()) {
+                d_logEntryBuffer.dataChanged("editcontinent", "\n---EDITCONTINENT---\n" + l_continent.getContinentName() + " is added to the list!\n");
+            }
             return String.format("%s continent added!", p_continentName);
         } catch (Exception e) {
             throw new InvalidInputException("Continent control value is not in valid format!");
@@ -65,8 +71,10 @@ public class ContinentService {
         List<Continent> l_filteredContinentList = d_mapEditorEngine.getContinentList().stream()
                 .filter(p_continent -> !p_continent.equals(l_continent)
                 ).collect(Collectors.toList());
-
         d_mapEditorEngine.setContinentList(l_filteredContinentList);
+        if (!d_mapEditorEngine.getLoadingMap()) {
+            d_logEntryBuffer.dataChanged("editcontinent", "\n---EDITCONTINENT---\n" + l_continent.getContinentName() + " is removed to the list!\n");
+        }
         return String.format("%s continent removed!", p_continentName);
     }
 }

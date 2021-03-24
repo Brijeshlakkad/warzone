@@ -7,6 +7,7 @@ import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.PlayerRepository;
 
 
@@ -25,6 +26,8 @@ public class NegotiateOrder extends Order {
      */
     private final PlayerRepository d_playerRepository = new PlayerRepository();
 
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
+
     /**
      * Parameterised constructor initialize player with whom negotiation is happened.
      *
@@ -33,8 +36,13 @@ public class NegotiateOrder extends Order {
      * @throws EntityNotFoundException Throws if the country with the given name doesn't exist.
      */
     public NegotiateOrder(Player p_thisPlayer, String p_otherPlayer) throws EntityNotFoundException {
+        StringBuilder l_logResponse = new StringBuilder();
+        l_logResponse.append("\n" + p_thisPlayer.getName() + " turn to Issue Order:" + "\n");
+        l_logResponse.append("---NEGOTIATE ORDER---:" + "\n");
         d_player1 = p_thisPlayer;
         d_player2 = d_playerRepository.findByPlayerName(p_otherPlayer);
+        l_logResponse.append("Negotiate card to perform negotiation between " + p_thisPlayer.getName() + " and " + p_otherPlayer + "\n");
+        d_logEntryBuffer.dataChanged("advance", l_logResponse.toString());
     }
 
     /**
@@ -44,11 +52,15 @@ public class NegotiateOrder extends Order {
      */
     @Override
     public void execute() throws CardNotFoundException {
+        StringBuilder l_logResponse = new StringBuilder();
+        l_logResponse.append("\n" + "Executing " + d_player1.getName() + " Order:" + "\n");
         // Get diplomacy card.
         Card l_requiredCard = d_player1.getCard(CardType.DIPLOMACY);
         d_player1.addNegotiatePlayer(d_player2);
         d_player2.addNegotiatePlayer(d_player1);
         d_player1.removeCard(l_requiredCard);
+        l_logResponse.append("\n Order Effect\n" + "Negotiating between " + d_player1.getName() + " and " + d_player2.getName() + "\n");
+        d_logEntryBuffer.dataChanged("negotiate", l_logResponse.toString());
     }
 
     /**
