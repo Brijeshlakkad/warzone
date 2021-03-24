@@ -165,4 +165,25 @@ public class BombOrderTest {
         //So it will raise InvalidCommandException.
         l_bombOrder.execute();
     }
+
+    /**
+     * test that in case of negotiation bomb order will not execute.
+     *
+     * @throws InvalidOrderException Throws if exception while executing the order.
+     * @throws CardNotFoundException Card doesn't found in the player's card list.
+     * @throws EntityNotFoundException Throws if entity not found.
+     */
+    @Test (expected = Test.None.class)
+    public void testNegotiate() throws InvalidOrderException, CardNotFoundException, EntityNotFoundException {
+        Player l_player1 = d_playerList.get(0);
+        Player l_player2 = d_playerList.get(1);
+        l_player1.addNegotiatePlayer(l_player2);
+
+        List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
+        int l_expectedArmies = l_player2AssignCountries.get(0).getNumberOfArmies();
+        l_player1.addCard(new BombCard());
+        BombOrder l_bombOrder = new BombOrder(l_player2AssignCountries.get(0).getCountryName(), l_player1);
+        l_bombOrder.execute();
+        assertEquals(l_player2AssignCountries.get(0).getNumberOfArmies(),l_expectedArmies);
+    }
 }

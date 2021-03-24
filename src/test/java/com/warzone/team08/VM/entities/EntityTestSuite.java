@@ -16,7 +16,8 @@ import org.junit.runners.Suite;
         BlockadeOrderTest.class,
         BombOrderTest.class,
         DeployOrderTest.class,
-        PlayerTest.class
+        PlayerTest.class,
+        NegotiateOrderTest.class
 })
 public class EntityTestSuite {
     // This class remains empty, it is used only as a holder for the above annotations

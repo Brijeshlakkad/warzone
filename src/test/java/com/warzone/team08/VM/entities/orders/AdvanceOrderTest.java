@@ -210,4 +210,30 @@ public class AdvanceOrderTest {
         assertEquals(1, l_country2.getNumberOfArmies());
         assertEquals(d_player2, l_country2.getOwnedBy());
     }
+
+    /**
+     * test that in case of negotiation advance order will not execute.
+     *
+     * @throws EntityNotFoundException  Throws if entity not found.
+     * @throws InvalidArgumentException Throws if the input is invalid.
+     * @throws InvalidOrderException    Throws if exception while executing the order.
+     */
+    @Test(expected = Test.None.class)
+    public void testNegotiation()
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
+        Country l_country1 = d_player1.getAssignedCountries().get(4);
+        Country l_country2 = d_player2.getAssignedCountries().get(0);
+
+        //Randomly assigning armies to source country and destination country.
+        l_country1.setNumberOfArmies(10);
+        l_country2.setNumberOfArmies(5);
+
+        //Negotiation between 2 players
+        d_player1.addNegotiatePlayer(d_player2);
+
+        AdvanceOrder l_advanceOrder = new AdvanceOrder(l_country1.getCountryName(), l_country2.getCountryName(), "6", d_player1);
+        l_advanceOrder.execute();
+        assertEquals(10, l_country1.getNumberOfArmies());
+        assertEquals(5,l_country2.getNumberOfArmies());
+    }
 }
