@@ -187,4 +187,14 @@ public class AdvanceOrder extends Order {
     public void expire() {
         // Does nothing.
     }
+
+    /**
+     * Returns the string describing player order.
+     *
+     * @return String representing player orders.
+     */
+    @Override
+    public String toString() {
+        return String.format("%s %s %s %s", getType().getJsonValue(), d_countryFrom.getCountryName(), d_countryTo.getCountryName(), d_numOfArmies);
+    }
 }

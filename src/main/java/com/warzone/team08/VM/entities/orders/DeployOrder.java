@@ -88,16 +88,6 @@ public class DeployOrder extends Order {
     }
 
     /**
-     * Returns the string describing player order.
-     *
-     * @return String representing player orders.
-     */
-    @Override
-    public String toString() {
-        return String.format("Deploy order of %s player: %s %s", d_owner.getName(), d_targetCountry.getCountryName(), d_numOfArmies);
-    }
-
-    /**
      * Gets the type of order.
      *
      * @return Value of the order type.
@@ -112,5 +102,15 @@ public class DeployOrder extends Order {
     @Override
     public void expire() {
         // Does nothing.
+    }
+
+    /**
+     * Returns the string describing player order.
+     *
+     * @return String representing player orders.
+     */
+    @Override
+    public String toString() {
+        return String.format("%s %s %s", getType().getJsonValue(), d_targetCountry.getCountryName(), d_numOfArmies);
     }
 }
