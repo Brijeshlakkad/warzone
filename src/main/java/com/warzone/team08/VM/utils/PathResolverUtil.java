@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.utils;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -23,18 +24,40 @@ public class PathResolverUtil {
     /**
      * Folder from or to save/load user files.
      */
-    private final String USER_DATA_DIRECTORY = "War Zone Team08";
+    private final String USER_DATA_DIRECTORY = "War_Zone_Team08";
 
     /**
-     * Directory where logs will be saved.
+     * Name of the directory to save log files.
      */
-    private final String USER_LOG_DIRECTORY = "logs";
+    private final String USER_LOG_DIRECTORY = "War_Zone_Logs";
+
+    /**
+     * Path to the directory of logs.
+     */
+    private final Path USER_LOG_DIRECTORY_PATH;
 
     /**
      * Instance can not be created outside the class. (private)
      */
     private PathResolverUtil() {
         USER_DATA_DIRECTORY_PATH = Paths.get(System.getProperty("user.home"), "Downloads", USER_DATA_DIRECTORY);
+        USER_LOG_DIRECTORY_PATH = Paths.get(System.getProperty("user.home"), "Downloads", USER_LOG_DIRECTORY);
+
+        // Create user directories if it doesn't exist.
+        this.createDirectory(USER_DATA_DIRECTORY_PATH.toString());
+        this.createDirectory(USER_LOG_DIRECTORY_PATH.toString());
+    }
+
+    /**
+     * Creates the directory.
+     *
+     * @param p_filePath Path to the directory.
+     */
+    public void createDirectory(String p_filePath) {
+        File l_file = new File(p_filePath);
+        if (!l_file.exists()) {
+            l_file.mkdir();
+        }
     }
 
     /**
@@ -63,8 +86,8 @@ public class PathResolverUtil {
      *
      * @return Value of the path.
      */
-    public static String getLogDirectoryName() {
-        return PathResolverUtil.getInstance().USER_LOG_DIRECTORY;
+    public static Path getLogDirectoryPath() {
+        return PathResolverUtil.getInstance().USER_LOG_DIRECTORY_PATH;
     }
 
     /**
@@ -84,6 +107,6 @@ public class PathResolverUtil {
      * @return Value of the absolute path to the file.
      */
     public static String resolveLogPath(String p_filePath) {
-        return Paths.get(getUserDataDirectoryPath().toString(), getLogDirectoryName(), p_filePath).toString();
+        return Paths.get(getLogDirectoryPath().toString(), p_filePath).toString();
     }
 }
