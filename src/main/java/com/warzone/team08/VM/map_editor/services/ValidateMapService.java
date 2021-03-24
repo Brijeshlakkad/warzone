@@ -100,7 +100,7 @@ public class ValidateMapService implements SingleCommand {
         int l_connectedGraphCount = 0;
 
         List<Country> l_countryList = d_mapEditorEngine.getCountryList();
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < l_countryList.size(); i++) {
             List<Country> l_visitedCountry = new ArrayList<>();
             Stack<Country> l_stack = new Stack<>();
             Country l_country = l_countryList.get(i);
@@ -138,7 +138,7 @@ public class ValidateMapService implements SingleCommand {
                 ++l_connectedGraphCount;
             }
         }
-        if (l_connectedGraphCount == 2) {
+        if (l_connectedGraphCount == l_countryList.size()) {
             l_isValid = true;
         }
         return l_isValid;

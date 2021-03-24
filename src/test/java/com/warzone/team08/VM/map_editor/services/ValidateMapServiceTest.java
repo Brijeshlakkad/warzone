@@ -81,6 +81,6 @@ public class ValidateMapServiceTest {
         d_editMapService.handleLoadMap(l_url);
 
         String l_actualValue = d_validateMapService.execute(null);
-        assertNotNull(l_actualValue);
+        assertEquals(l_actualValue,"Map validation passed successfully!");
     }
 }
