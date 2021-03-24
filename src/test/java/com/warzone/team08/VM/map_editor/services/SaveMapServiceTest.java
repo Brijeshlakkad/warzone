@@ -60,7 +60,7 @@ public class SaveMapServiceTest {
      *                                 List will throw this error.
      */
     @Before
-    public void addContentToTheMapFile() throws InvalidInputException, EntityNotFoundException {
+    public void addContentToTheMapFile() throws InvalidInputException, EntityNotFoundException, ResourceNotFoundException {
         d_ContinentService.add("Asia", "10");
         d_ContinentService.add("Australia", "15");
         d_CountryService.add("Delhi", "Asia");

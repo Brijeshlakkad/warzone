@@ -18,18 +18,23 @@ public class PathResolverUtil {
     /**
      * Represents the path to the user data directory.
      */
-    private Path d_user_data_directory_path;
+    private final Path USER_DATA_DIRECTORY_PATH;
 
     /**
      * Folder from or to save/load user files.
      */
-    private String d_user_data_directory = "War Zone Team08";
+    private final String USER_DATA_DIRECTORY = "War Zone Team08";
+
+    /**
+     * Directory where logs will be saved.
+     */
+    private final String USER_LOG_DIRECTORY = "logs";
 
     /**
      * Instance can not be created outside the class. (private)
      */
     private PathResolverUtil() {
-        d_user_data_directory_path = Paths.get(System.getProperty("user.home"), "Downloads", d_user_data_directory);
+        USER_DATA_DIRECTORY_PATH = Paths.get(System.getProperty("user.home"), "Downloads", USER_DATA_DIRECTORY);
     }
 
     /**
@@ -50,7 +55,16 @@ public class PathResolverUtil {
      * @return Value of the path.
      */
     public static Path getUserDataDirectoryPath() {
-        return PathResolverUtil.getInstance().d_user_data_directory_path;
+        return PathResolverUtil.getInstance().USER_DATA_DIRECTORY_PATH;
+    }
+
+    /**
+     * Gets the string value of the log directory.
+     *
+     * @return Value of the path.
+     */
+    public static String getLogDirectoryName() {
+        return PathResolverUtil.getInstance().USER_LOG_DIRECTORY;
     }
 
     /**
@@ -61,5 +75,15 @@ public class PathResolverUtil {
      */
     public static String resolveFilePath(String p_filePath) {
         return Paths.get(getUserDataDirectoryPath().toString(), p_filePath).toString();
+    }
+
+    /**
+     * Uses the user data directory and log folder paths to resolve absolute the path to the file.
+     *
+     * @param p_filePath Name of the file.
+     * @return Value of the absolute path to the file.
+     */
+    public static String resolveLogPath(String p_filePath) {
+        return Paths.get(getUserDataDirectoryPath().toString(), getLogDirectoryName(), p_filePath).toString();
     }
 }

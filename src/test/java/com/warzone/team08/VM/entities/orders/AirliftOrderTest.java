@@ -88,7 +88,7 @@ public class AirliftOrderTest {
      */
     @Test
     public void testExecute()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -112,7 +112,7 @@ public class AirliftOrderTest {
     //not have airlift card
     @Test(expected = CardNotFoundException.class)
     public void testPlayerHasCard()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -135,7 +135,7 @@ public class AirliftOrderTest {
     //try to transfer into other's country
     @Test(expected = InvalidOrderException.class)
     public void testPlayerNotAirliftInOthersCountry()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
         Player l_player = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
@@ -156,7 +156,7 @@ public class AirliftOrderTest {
      */
     @Test(expected = InvalidOrderException.class)
     public void testPlayerHasEnteredArmies()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);

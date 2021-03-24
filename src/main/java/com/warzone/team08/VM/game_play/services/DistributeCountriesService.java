@@ -7,6 +7,7 @@ import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
@@ -29,12 +30,15 @@ public class DistributeCountriesService implements SingleCommand {
 
     private final GamePlayEngine d_gamePlayEngine;
 
+    private final LogEntryBuffer d_logEntryBuffer;
+
     /**
      * Constructor for instantiating required objects.
      */
     public DistributeCountriesService() {
         d_countryList = MapEditorEngine.getInstance().getCountryList();
         d_gamePlayEngine = GamePlayEngine.getInstance();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -136,9 +140,30 @@ public class DistributeCountriesService implements SingleCommand {
         // Check if players have been added.
         // What if only one player is available?
         if (!GamePlayEngine.getInstance().getPlayerList().isEmpty()) {
-            return distributeCountries();
+            String l_response = distributeCountries();
+            d_logEntryBuffer.dataChanged("assigncountries", "\n---ASSIGNCOUNTRIES---\n" + l_response + "\n" + this.getPlayerCountries() + "\n*******GAME LOOP BEGINS*******\n");
+            return l_response;
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");
         }
+    }
+
+    /**
+     * This method return the String of countries associated with each player.
+     *
+     * @return string of player's countries.
+     */
+    public String getPlayerCountries() {
+        String l_playerContent = "";
+        for (Player l_player : d_gamePlayEngine.getPlayerList()) {
+            List<Country> l_countries = l_player.getAssignedCountries();
+            List<String> l_names = new ArrayList<>();
+            for (Country l_country : l_countries) {
+                l_names.add(l_country.getCountryName());
+            }
+            String l_countriesNames = String.join(",", l_names);
+            l_playerContent += l_player.getName() + ": " + l_names + "\n";
+        }
+        return l_playerContent;
     }
 }

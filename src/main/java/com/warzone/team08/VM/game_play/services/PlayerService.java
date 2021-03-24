@@ -5,6 +5,7 @@ import com.warzone.team08.VM.entities.cards.DiplomacyCard;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.PlayerRepository;
 
 /**
@@ -26,12 +27,15 @@ public class PlayerService {
      */
     private final PlayerRepository d_playerRepository;
 
+    private final LogEntryBuffer d_logEntryBuffer;
+
     /**
      * Initialization of different objects.
      */
     public PlayerService() {
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_playerRepository = new PlayerRepository();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -47,6 +51,7 @@ public class PlayerService {
                 Player l_player = new Player();
                 l_player.setName(p_playerName);
                 d_gamePlayEngine.addPlayer(l_player);
+                d_logEntryBuffer.dataChanged("gameplayer", "\n---GAMEPLAYER---\n" + p_playerName + " player added!\n");
                 return String.format("%s player added!", p_playerName);
             } catch (Exception e) {
                 throw new InvalidInputException("Player name is not valid");
@@ -68,6 +73,7 @@ public class PlayerService {
         // Filters the continent list using the continent name
         Player l_player = d_playerRepository.findByPlayerName(p_playerName);
         d_gamePlayEngine.removePlayer(l_player);
+        d_logEntryBuffer.dataChanged("gameplayer", "\n---GAMEPLAYER---\n" + p_playerName + " player removed!\n");
         return String.format("%s player removed!", p_playerName);
     }
 }

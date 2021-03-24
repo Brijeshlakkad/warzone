@@ -5,6 +5,9 @@ import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
@@ -24,6 +27,7 @@ public class ShowMapService implements SingleCommand {
     List<Continent> d_continentList;
     List<Country> d_countryList;
     Map<String, List<String>> d_continentCountryMap;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * Initializes different objects.
@@ -37,6 +41,7 @@ public class ShowMapService implements SingleCommand {
         d_continentCountryMap = d_mapEditorEngine.getContinentCountryMap();
         d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
+        d_logEntryBuffer=LogEntryBuffer.getLogger();
     }
 
     /**
@@ -139,9 +144,12 @@ public class ShowMapService implements SingleCommand {
      * @throws EntityNotFoundException Throws if file not found.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws EntityNotFoundException {
+    public String execute(List<String> p_commandValues) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+        String l_logResponse ="";
         if (!this.d_continentCountryMap.isEmpty() || !this.d_countryList.isEmpty()) {
-            return this.showContinentCountryContent() + "\n" + this.showNeighbourCountries();
+            l_logResponse =this.showContinentCountryContent() + "\n" + this.showNeighbourCountries();
+            d_logEntryBuffer.dataChanged("showmap","\n---SHOWMAP---\n"+ l_logResponse +"\n");
+            return l_logResponse;
         } else {
             throw new EntityNotFoundException("Please select file to show!");
         }

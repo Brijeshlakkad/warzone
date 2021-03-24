@@ -2,6 +2,7 @@ package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -49,7 +50,7 @@ public class ContinentServiceTest {
      * @throws InvalidInputException   Throws if country value is not number.
      */
     @Test(expected = Test.None.class)
-    public void testAddAndRemoveContinent() throws EntityNotFoundException, InvalidInputException {
+    public void testAddAndRemoveContinent() throws EntityNotFoundException, InvalidInputException, ResourceNotFoundException {
         String l_responseOfAddOp = d_ContinentService.add("Asia", "10");
         assertNotNull(l_responseOfAddOp);
 

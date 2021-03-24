@@ -7,6 +7,7 @@ import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.InvalidMapException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.utils.FileUtil;
 import com.warzone.team08.VM.utils.PathResolverUtil;
@@ -33,12 +34,14 @@ public class SaveMapService implements SingleCommand {
      * Engine to store and retrieve map data.
      */
     private final MapEditorEngine d_mapEditorEngine;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * Fetches the singleton instance of <code>MapEditorEngine</code>
      */
     public SaveMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -75,6 +78,10 @@ public class SaveMapService implements SingleCommand {
             }
             // Re-initialise map editor engine data
             d_mapEditorEngine.initialise();
+            String l_fileName = p_fileObject.getName();
+            int l_index = l_fileName.lastIndexOf('\\');
+            String l_loggingMessage = "\n---SAVEMAP---" + "\n" + l_fileName.substring(l_index + 1) + " saved successfully!\n";
+            d_logEntryBuffer.dataChanged("savemap", l_loggingMessage + "\n");
             return "File saved successfully";
         } catch (IOException p_ioException) {
             throw new InvalidInputException("Error while saving the file!");
@@ -94,7 +101,7 @@ public class SaveMapService implements SingleCommand {
     public String execute(List<String> p_commandValues) throws InvalidInputException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException {
         // Validates the map before saving the file.
         ValidateMapService l_validateObj = new ValidateMapService();
-        l_validateObj.execute(null);
+        l_validateObj.execute(null, "savemap");
 
         // Validates the file, gets the file object, and writes the data into it.
         return saveToFile(FileUtil.retrieveFile(PathResolverUtil.resolveFilePath(p_commandValues.get(0))));
