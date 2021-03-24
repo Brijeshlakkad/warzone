@@ -17,13 +17,13 @@ import java.util.List;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public abstract class Edit extends Phase {
+public abstract class MapEditor extends Phase {
     /**
      * Parameterised constructor to create an instance of <code>Edit</code>.
      *
      * @param p_gameEngine Instance of the game engine.
      */
-    Edit(GameEngine p_gameEngine) {
+    MapEditor(GameEngine p_gameEngine) {
         super(p_gameEngine);
     }
 

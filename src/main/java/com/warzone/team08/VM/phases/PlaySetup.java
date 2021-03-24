@@ -14,7 +14,7 @@ import java.util.List;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public class PlaySetup extends Play {
+public class PlaySetup extends GamePlay {
     /**
      * Parameterised constructor to create an instance of <code>PlaySetup</code>.
      *

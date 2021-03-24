@@ -16,14 +16,14 @@ import java.util.List;
  * </p>
  * <ul>
  *     <li>Phase</li>
- *     <li>Edit (abstract)</li>
+ *     <li>MapEditor (abstract)</li>
  *     <li>
  *         <ul>
  *          <li>Preload</li>
  *          <li>Postload</li>
  *         </ul>
  *     </li>
- *     <li>Play (abstract)</li>
+ *     <li>GamePlay (abstract)</li>
  *     <li>
  *         <ul>
  *           <li>PlaySetup</li>

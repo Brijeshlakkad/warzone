@@ -17,13 +17,13 @@ import java.util.List;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public abstract class Play extends Phase {
+public abstract class GamePlay extends Phase {
     /**
      * Parameterised constructor to create an instance of <code>Play</code>.
      *
      * @param p_gameEngine Instance of the game engine.
      */
-    Play(GameEngine p_gameEngine) {
+    GamePlay(GameEngine p_gameEngine) {
         super(p_gameEngine);
     }
 

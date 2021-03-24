@@ -13,7 +13,7 @@ import java.util.List;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public class Preload extends Edit {
+public class Preload extends MapEditor {
     /**
      * Parameterised constructor to create an instance of <code>Preload</code>.
      *

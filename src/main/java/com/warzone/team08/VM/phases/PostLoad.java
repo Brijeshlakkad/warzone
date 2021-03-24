@@ -14,7 +14,7 @@ import java.util.List;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public class PostLoad extends Edit {
+public class PostLoad extends MapEditor {
     /**
      * Parameterised constructor to create an instance of <code>PostLoad</code>.
      *

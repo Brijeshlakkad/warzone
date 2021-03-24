@@ -15,7 +15,7 @@ import java.util.List;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public abstract class MainPlay extends Play {
+public abstract class MainPlay extends GamePlay {
     /**
      * Parameterised constructor to create an instance of <code>MainPlay</code>.
      *
