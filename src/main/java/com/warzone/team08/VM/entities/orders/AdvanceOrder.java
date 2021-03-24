@@ -135,8 +135,8 @@ public class AdvanceOrder extends Order {
                 int l_defendersKilled = (int) round(l_attackingArmies * 0.6);
 
                 if (l_defendersKilled >= l_defendingArmies) {
-                    Player l_owner = d_countryTo.getOwnedBy();
-                    l_owner.removeCountry(d_countryTo);
+                    Player l_countryToOwner = d_countryTo.getOwnedBy();
+                    l_countryToOwner.removeCountry(d_countryTo);
 
                     // Owner changed.
                     d_countryTo.setOwnedBy(d_owner);
@@ -146,17 +146,17 @@ public class AdvanceOrder extends Order {
                     d_countryTo.setNumberOfArmies(l_attackingArmies - l_attackersKilled);
 
                     d_owner.addCard(AssignRandomCardService.randomCard());
-                    l_logResponse.append(l_owner + " won the attack!!!!\n" + l_owner.getName() + " moved " + l_attackingArmies + " armies from " + d_countryFrom.getCountryName() + " to attack on " + d_countryTo.getCountryName());
+                    l_logResponse.append(l_countryToOwner.getName() + " won the attack!!!!\n" + l_countryToOwner.getName() + " moved " + l_attackingArmies + " armies from " + d_countryFrom.getCountryName() + " to attack on " + d_countryTo.getCountryName());
                     String[] l_header = {"COUNTRY", "ARMY COUNT", "PREVIOUS OWNER", "NEW OWNER"};
                     String[][] l_changeContent = {
-                            {d_countryTo.getCountryName(), String.valueOf(d_countryTo.getNumberOfArmies()), l_owner.getName(), d_owner.getName()}
+                            {d_countryTo.getCountryName(), String.valueOf(d_countryTo.getNumberOfArmies()), l_countryToOwner.getName(), d_owner.getName()}
                     };
                     l_logResponse.append("\n Order Effect\n" + FlipTable.of(l_header, l_changeContent));
                     d_logEntryBuffer.dataChanged("advance", l_logResponse.toString());
                 } else {
                     d_countryFrom.setNumberOfArmies(d_countryFrom.getNumberOfArmies() + l_attackingArmies - l_attackersKilled);
                     d_countryTo.setNumberOfArmies(l_defendingArmies - l_defendersKilled);
-                    l_logResponse.append(d_owner + " did not won the attack!!!!\n" + d_owner.getName() + " moved " + l_attackingArmies + " armies from " + d_countryFrom.getCountryName() + " to attack on " + d_countryTo.getCountryName());
+                    l_logResponse.append(d_owner.getName() + " did not won the attack!!!!\n" + d_owner.getName() + " moved " + l_attackingArmies + " armies from " + d_countryFrom.getCountryName() + " to attack on " + d_countryTo.getCountryName());
                     String[] l_header = {"COUNTRY", "ARMY COUNT"};
                     String[][] l_changeContent = {
                             {d_countryTo.getCountryName(), String.valueOf(d_countryTo.getNumberOfArmies())},
@@ -186,5 +186,15 @@ public class AdvanceOrder extends Order {
     @Override
     public void expire() {
         // Does nothing.
+    }
+
+    /**
+     * Returns the string describing player order.
+     *
+     * @return String representing player orders.
+     */
+    @Override
+    public String toString() {
+        return String.format("%s %s %s %s", getType().getJsonValue(), d_countryFrom.getCountryName(), d_countryTo.getCountryName(), d_numOfArmies);
     }
 }

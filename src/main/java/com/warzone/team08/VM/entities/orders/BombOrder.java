@@ -114,4 +114,14 @@ public class BombOrder extends Order {
     public void expire() {
         // Does nothing.
     }
+
+    /**
+     * Returns the string describing player order.
+     *
+     * @return String representing player orders.
+     */
+    @Override
+    public String toString() {
+        return String.format("%s %s", getType().getJsonValue(), d_targetCountry.getCountryName());
+    }
 }

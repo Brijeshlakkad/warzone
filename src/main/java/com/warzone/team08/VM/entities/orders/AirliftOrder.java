@@ -65,16 +65,6 @@ public class AirliftOrder extends Order {
     }
 
     /**
-     * Gets the type of order.
-     *
-     * @return Value of the order type.
-     */
-    @Override
-    public OrderType getType() {
-        return OrderType.airlift;
-    }
-
-    /**
      * Performs the airlift operation by transferring armies.
      *
      * @throws InvalidOrderException If the order can not be performed due to an invalid country, an invalid number of
@@ -114,10 +104,30 @@ public class AirliftOrder extends Order {
     }
 
     /**
+     * Gets the type of order.
+     *
+     * @return Value of the order type.
+     */
+    @Override
+    public OrderType getType() {
+        return OrderType.airlift;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public void expire() {
         // Does nothing.
+    }
+
+    /**
+     * Returns the string describing player order.
+     *
+     * @return String representing player orders.
+     */
+    @Override
+    public String toString() {
+        return String.format("%s %s %s %s", getType().getJsonValue(), d_sourceCountry.getCountryName(), d_targetCountry.getCountryName(), d_numOfArmies);
     }
 }

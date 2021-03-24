@@ -80,4 +80,14 @@ public class NegotiateOrder extends Order {
         d_player1.removeNegotiatePlayer(d_player2);
         d_player2.removeNegotiatePlayer(d_player1);
     }
+
+    /**
+     * Returns the string describing player order.
+     *
+     * @return String representing player orders.
+     */
+    @Override
+    public String toString() {
+        return String.format("%s %s", getType().getJsonValue(), d_player2.getName());
+    }
 }
