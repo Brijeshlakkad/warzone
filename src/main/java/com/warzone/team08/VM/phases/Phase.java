@@ -255,7 +255,7 @@ public abstract class Phase {
             Method l_methodReference = p_target.getClass().getMethod(p_methodName, l_valueTypes);
             return (String) l_methodReference.invoke(p_target, l_values);
         } catch (InvocationTargetException p_invocationTargetException) {
-            throw new VMException(p_invocationTargetException.getMessage());
+            throw new VMException(p_invocationTargetException.getCause().getMessage());
         } catch (NoSuchMethodException | IllegalAccessException p_e) {
             this.invalidCommand();
         }
