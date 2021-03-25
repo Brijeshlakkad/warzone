@@ -41,7 +41,7 @@ public class ShowMapService implements SingleCommand {
         d_continentCountryMap = d_mapEditorEngine.getContinentCountryMap();
         d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
-        d_logEntryBuffer=LogEntryBuffer.getLogger();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -145,10 +145,11 @@ public class ShowMapService implements SingleCommand {
      */
     @Override
     public String execute(List<String> p_commandValues) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
-        String l_logResponse ="";
+        String l_logResponse = "";
         if (!this.d_continentCountryMap.isEmpty() || !this.d_countryList.isEmpty()) {
-            l_logResponse =this.showContinentCountryContent() + "\n" + this.showNeighbourCountries();
-            d_logEntryBuffer.dataChanged("showmap","\n---SHOWMAP---\n"+ l_logResponse +"\n");
+            l_logResponse = this.showContinentCountryContent() + "\n" + this.showNeighbourCountries();
+            // Logging
+            d_logEntryBuffer.dataChanged("showmap", l_logResponse);
             return l_logResponse;
         } else {
             throw new EntityNotFoundException("Please select file to show!");

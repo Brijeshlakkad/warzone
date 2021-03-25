@@ -78,10 +78,13 @@ public class SaveMapService implements SingleCommand {
             }
             // Re-initialise map editor engine data
             d_mapEditorEngine.initialise();
+
+            // Logging
             String l_fileName = p_fileObject.getName();
             int l_index = l_fileName.lastIndexOf('\\');
-            String l_loggingMessage = "\n---SAVEMAP---" + "\n" + l_fileName.substring(l_index + 1) + " saved successfully!\n";
-            d_logEntryBuffer.dataChanged("savemap", l_loggingMessage + "\n");
+            String l_loggingMessage = l_fileName.substring(l_index + 1) + " saved successfully!\n";
+            d_logEntryBuffer.dataChanged("savemap", l_loggingMessage);
+
             return "File saved successfully";
         } catch (IOException p_ioException) {
             throw new InvalidInputException("Error while saving the file!");

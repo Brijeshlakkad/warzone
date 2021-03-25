@@ -16,7 +16,7 @@ import java.util.List;
  * @author Brijesh Lakkad
  */
 public class LoadMapService implements SingleCommand {
-    private LogEntryBuffer d_logEntryBuffer=LogEntryBuffer.getLogger();
+    private LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
 
     /**
      * Handles the load map operation for user command.
@@ -46,12 +46,13 @@ public class LoadMapService implements SingleCommand {
             try {
                 // Validates the map before saving the file.
                 ValidateMapService l_validateObj = new ValidateMapService();
-                l_validateObj.execute(null,"loadmap");
+                l_validateObj.execute(null, "loadmap");
             } catch (InvalidMapException | EntityNotFoundException l_e) {
                 MapEditorEngine.getInstance().initialise();
                 throw l_e;
             }
-            d_logEntryBuffer.dataChanged("loadmap","\n---LOADMAP---\n"+response+"\n");
+            // Logging
+            d_logEntryBuffer.dataChanged("loadmap", response);
             return response;
         } catch (ArrayIndexOutOfBoundsException p_e) {
             throw new InvalidInputException("File name is empty!");

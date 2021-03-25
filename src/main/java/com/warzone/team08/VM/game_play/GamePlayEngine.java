@@ -218,7 +218,7 @@ public class GamePlayEngine implements Engine {
      */
     public List<Order> getExpiredFutureOrders() {
         return d_futurePhaseOrders.stream().filter(p_futureOrder ->
-                p_futureOrder.getExpiryIndex() >= d_currentExecutionIndex
+                p_futureOrder.getExpiryIndex() <= d_currentExecutionIndex
         ).collect(Collectors.toList());
     }
 

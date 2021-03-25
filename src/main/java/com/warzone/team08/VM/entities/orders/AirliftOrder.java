@@ -45,15 +45,10 @@ public class AirliftOrder extends Order {
      */
     public AirliftOrder(String p_sourceCountry, String p_targetCountry, String p_numOfArmies, Player p_owner)
             throws EntityNotFoundException, InvalidArgumentException {
-        StringBuilder l_logResponse = new StringBuilder();
-        l_logResponse.append("\n" + p_owner.getName() + " turn to Issue Order:" + "\n");
-        l_logResponse.append("---AIRLIFT ORDER---:" + "\n");
         d_sourceCountry = d_countryRepository.findFirstByCountryName(p_sourceCountry);
         d_targetCountry = d_countryRepository.findFirstByCountryName(p_targetCountry);
         try {
             d_numOfArmies = Integer.parseInt(p_numOfArmies);
-            l_logResponse.append("Airlift " + p_numOfArmies + " armies from " + p_sourceCountry + " to " + p_targetCountry + "\n");
-            d_logEntryBuffer.dataChanged("airlift", l_logResponse.toString());
             // Checks if the number of moved armies is less than zero.
             if (d_numOfArmies < 0) {
                 throw new InvalidArgumentException("Number of armies can not be negative.");
@@ -93,6 +88,8 @@ public class AirliftOrder extends Order {
         d_sourceCountry.setNumberOfArmies(l_sourceCountryArmies);
         d_targetCountry.setNumberOfArmies(l_targetCountryArmies);
         d_owner.removeCard(l_requiredCard);
+
+        // Logging
         l_logResponse.append(d_owner.getName() + " used the Airlift card to move " + d_numOfArmies + " armies from " + d_sourceCountry.getCountryName() + " to " + d_targetCountry.getCountryName() + "\n");
         String[] l_header = {"COUNTRY", "ARMY COUNT"};
         String[][] l_changeContent = {

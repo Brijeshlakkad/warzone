@@ -103,8 +103,10 @@ public class ShowMapService implements SingleCommand {
                 }
                 l_playerContent.append(this.showPlayerContent(l_player));
             }
+
+            // Logging
             l_logResponse = l_playerContent.toString() + "\n" + "CONNECTIVITY" + "\n" + d_showMapService.showNeighbourCountries();
-            d_logEntryBuffer.dataChanged("showmap", "\n---SHOWMAP---\n" + l_logResponse);
+            d_logEntryBuffer.dataChanged("showmap", l_logResponse);
             return l_logResponse;
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");

@@ -44,7 +44,7 @@ public class CountryNeighborService {
         Country l_country = d_countryRepository.findFirstByCountryName(p_countryName);
         Country l_neighborCountry = d_countryRepository.findFirstByCountryName(p_neighborCountryName);
         if (!d_mapEditorEngine.getLoadingMap()) {
-            d_logEntryBuffer.dataChanged("editneighbor", "\n---EDITNEIGHBOR---\n" + p_neighborCountryName + " is set as neighbor of " + p_countryName + "\n");
+            d_logEntryBuffer.dataChanged("editneighbor", p_neighborCountryName + " is set as neighbor of " + p_countryName);
         }
         return this.add(l_country, l_neighborCountry);
     }
@@ -74,7 +74,7 @@ public class CountryNeighborService {
         Country l_neighborCountry = d_countryRepository.findFirstByCountryName(p_neighborCountryName);
 
         if (!d_mapEditorEngine.getLoadingMap()) {
-            d_logEntryBuffer.dataChanged("editneighbor", "\n---EDITNEIGHBOR---\n" + p_neighborCountryName + " is removed as a neighbor of " + p_countryName + "\n");
+            d_logEntryBuffer.dataChanged("editneighbor", p_neighborCountryName + " is removed as a neighbor of " + p_countryName);
         }
         return this.remove(l_country, l_neighborCountry);
     }

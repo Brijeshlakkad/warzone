@@ -141,7 +141,8 @@ public class DistributeCountriesService implements SingleCommand {
         // What if only one player is available?
         if (!GamePlayEngine.getInstance().getPlayerList().isEmpty()) {
             String l_response = distributeCountries();
-            d_logEntryBuffer.dataChanged("assigncountries", "\n---ASSIGNCOUNTRIES---\n" + l_response + "\n" + this.getPlayerCountries() + "\n*******GAME LOOP BEGINS*******\n");
+            // Logging
+            d_logEntryBuffer.dataChanged("assigncountries", l_response + "\n" + this.getPlayerCountries());
             return l_response;
         } else {
             throw new EntityNotFoundException("Please, add players to show game status!");

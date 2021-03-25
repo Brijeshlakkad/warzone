@@ -298,14 +298,13 @@ public class EditMapService implements SingleCommand {
             InvalidInputException,
             AbsentTagException,
             EntityNotFoundException {
-        String l_logResponse = "\n---EDITMAP---\n";
         String l_response = "";
         if (!p_commandValues.isEmpty()) {
             // Resolve file path using absolute path of user data directory.
             String resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));
             int l_index = resolvedPathToFile.lastIndexOf('\\');
             l_response = this.handleLoadMap(resolvedPathToFile);
-            d_logEntryBuffer.dataChanged("editmap", l_logResponse + resolvedPathToFile.substring(l_index + 1) + " " + l_response + "\n");
+            d_logEntryBuffer.dataChanged("editmap", resolvedPathToFile.substring(l_index + 1) + " " + l_response);
             d_mapEditorEngine.setLoadingMap(false);
             return l_response;
         } else {

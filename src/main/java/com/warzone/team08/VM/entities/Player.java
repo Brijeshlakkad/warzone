@@ -53,7 +53,7 @@ public class Player {
      */
     private final OrderMapper d_orderMapper;
 
-    private final LogEntryBuffer d_logEntryBuffer;
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
 
     /**
      * Initializes variables required to handle player state.
@@ -67,7 +67,6 @@ public class Player {
         d_assignedCountryCount = 0;
         d_orderMapper = new OrderMapper();
         d_cards = new ArrayList<>();
-        d_logEntryBuffer = LogEntryBuffer.getLogger();
         d_negotiatePlayer = new ArrayList<>();
     }
 
@@ -235,21 +234,23 @@ public class Player {
             InvalidArgumentException {
         // Requests user interface for input from user.
         String l_responseVal = "";
-        String l_loggingMessage = "";
         do {
             VirtualMachine.getInstance().stdout(String.format("\nPlayer: %s--------\nUSAGE: You can check map details\n> showmap <return>", this.d_name, this.d_remainingReinforcementCount));
             Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Issue Order:"));
             l_responseVal = l_responseOfFuture.get();
-            l_loggingMessage = "\n" + this.d_name + " turn to Issue Order:" + "\n";
+            d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_name));
         } while (l_responseVal.isEmpty());
         try {
             ObjectMapper l_objectMapper = new ObjectMapper();
             // Map user response to Order object.
             CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
             if (l_commandResponse.isDone()) {
+                d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's finished issuing the orders", this.d_name));
                 return true;
             }
-            this.addOrder(d_orderMapper.toOrder(l_commandResponse, this));
+            Order l_newOrder = d_orderMapper.toOrder(l_commandResponse, this);
+            d_logEntryBuffer.dataChanged("issue_order", l_newOrder.toString());
+            this.addOrder(l_newOrder);
         } catch (IOException p_ioException) {
             throw new InvalidCommandException("Unrecognised input!");
         }
@@ -342,12 +343,7 @@ public class Player {
      * @return True if the players has no peace treaty signed.
      */
     public boolean isNotNegotiation(Player p_otherPlayer) {
-        for (Player l_loopPlayer : this.getFriendPlayers()) {
-            if (l_loopPlayer.equals(p_otherPlayer)) {
-                return false;
-            }
-        }
-        return true;
+        return !this.getFriendPlayers().contains(p_otherPlayer);
     }
 
     /**

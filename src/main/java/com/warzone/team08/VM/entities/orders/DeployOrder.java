@@ -39,15 +39,10 @@ public class DeployOrder extends Order {
      */
     public DeployOrder(String p_targetCountry, String p_numOfArmies, Player p_owner)
             throws EntityNotFoundException, InvalidArgumentException {
-        StringBuilder l_logResponse = new StringBuilder();
-        l_logResponse.append("\n" + p_owner.getName() + " turn to Issue Order:" + "\n");
-        l_logResponse.append("---DEPLOY ORDER---:" + "\n");
         // Get the target country from repository.
         d_targetCountry = d_countryRepository.findFirstByCountryName(p_targetCountry);
         try {
             d_numOfArmies = Integer.parseInt(p_numOfArmies);
-            l_logResponse.append("Deploy " + p_numOfArmies + " armies in " + p_targetCountry + "\n");
-            d_logEntryBuffer.dataChanged("deploy", l_logResponse.toString());
             // Checks if the number of moved armies is less than zero.
             if (d_numOfArmies < 0) {
                 throw new InvalidArgumentException("Number of armies can not be negative.");
@@ -75,6 +70,8 @@ public class DeployOrder extends Order {
             d_owner.setRemainingReinforcementCount(l_remainingReinforcementCount);
             d_targetCountry.setNumberOfArmies(this.d_targetCountry.getNumberOfArmies() + this.d_numOfArmies);
             d_owner.addExecutedOrder(this);
+
+            // Logging
             l_logResponse.append("Deploying " + d_numOfArmies + " armies in " + d_targetCountry.getCountryName() + "\n");
             String[] l_header = {"COUNTRY", "ARMY COUNT"};
             String[][] l_changeContent = {

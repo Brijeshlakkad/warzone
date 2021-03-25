@@ -51,7 +51,7 @@ public class RequestService {
                     }
                 }
             }
-        } catch (ClassNotFoundException | IllegalAccessException p_e) {
+        } catch (NullPointerException | ClassNotFoundException | IllegalAccessException p_e) {
             throw new InvalidCommandException("Command not found!");
         } catch (NoSuchMethodException |
                 InvocationTargetException p_e) {

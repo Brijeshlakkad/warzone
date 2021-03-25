@@ -63,7 +63,7 @@ public class CountryService {
         // Save country to continent
         l_continent.addCountry(l_country);
         if (!d_mapEditorEngine.getLoadingMap()) {
-            d_logEntryBuffer.dataChanged("editcountry", "\n---EDITCOUNTRY---\n" + l_country.getCountryName() + " is added to the country list of" + l_continent.getContinentName() + "\n");
+            d_logEntryBuffer.dataChanged("editcountry", l_country.getCountryName() + " is added to the country list of" + l_continent.getContinentName());
         }
 
         return String.format("%s country added!", p_countryName);
@@ -109,7 +109,7 @@ public class CountryService {
             l_neighborOfCountry.removeNeighbourCountry(l_country);
         }
         if (!d_mapEditorEngine.getLoadingMap()) {
-            d_logEntryBuffer.dataChanged("editcountry", "\n---EDITCOUNTRY---\n" + l_country.getCountryName() + " is removed to the country list of" + l_country.getContinent().getContinentName() + "\n");
+            d_logEntryBuffer.dataChanged("editcountry", l_country.getCountryName() + " is removed to the country list of" + l_country.getContinent().getContinentName());
         }
 
         return String.format("%s country removed!", p_countryName);

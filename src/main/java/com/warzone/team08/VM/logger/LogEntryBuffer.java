@@ -72,7 +72,7 @@ public class LogEntryBuffer implements Observable {
      * @return Message to store
      */
     public String getMessage() {
-        return d_message;
+        return String.format("---%s---\n%s\n", this.getHeadCommand(), d_message);
     }
 
     /**

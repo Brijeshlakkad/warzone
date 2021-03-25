@@ -49,7 +49,8 @@ public class ContinentService {
             l_continent.setContinentControlValue(l_parsedControlValue);
             d_mapEditorEngine.addContinent(l_continent);
             if (!d_mapEditorEngine.getLoadingMap()) {
-                d_logEntryBuffer.dataChanged("editcontinent", "\n---EDITCONTINENT---\n" + l_continent.getContinentName() + " is added to the list!\n");
+                // Logging
+                d_logEntryBuffer.dataChanged("editcontinent", l_continent.getContinentName() + " is added to the list!");
             }
             return String.format("%s continent added!", p_continentName);
         } catch (Exception e) {
@@ -73,7 +74,8 @@ public class ContinentService {
                 ).collect(Collectors.toList());
         d_mapEditorEngine.setContinentList(l_filteredContinentList);
         if (!d_mapEditorEngine.getLoadingMap()) {
-            d_logEntryBuffer.dataChanged("editcontinent", "\n---EDITCONTINENT---\n" + l_continent.getContinentName() + " is removed to the list!\n");
+            // Logging
+            d_logEntryBuffer.dataChanged("editcontinent", l_continent.getContinentName() + " is removed to the list!");
         }
         return String.format("%s continent removed!", p_continentName);
     }

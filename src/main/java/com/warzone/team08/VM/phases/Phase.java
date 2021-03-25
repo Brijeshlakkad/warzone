@@ -3,6 +3,7 @@ package com.warzone.team08.VM.phases;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.exceptions.VMException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -255,8 +256,10 @@ public abstract class Phase {
             Method l_methodReference = p_target.getClass().getMethod(p_methodName, l_valueTypes);
             return (String) l_methodReference.invoke(p_target, l_values);
         } catch (InvocationTargetException p_invocationTargetException) {
+            LogEntryBuffer.getLogger().dataChanged("error", p_invocationTargetException.getCause().getMessage());
             throw new VMException(p_invocationTargetException.getCause().getMessage());
         } catch (NoSuchMethodException | IllegalAccessException p_e) {
+            LogEntryBuffer.getLogger().dataChanged("error", "Invalid command!");
             this.invalidCommand();
         }
         return null;

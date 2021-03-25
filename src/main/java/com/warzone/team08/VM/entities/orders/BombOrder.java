@@ -43,14 +43,9 @@ public class BombOrder extends Order {
      * @throws EntityNotFoundException Throws if the target country not found.
      */
     public BombOrder(String p_targetCountry, Player p_owner) throws EntityNotFoundException {
-        StringBuilder l_logResponse = new StringBuilder();
-        l_logResponse.append("\n" + p_owner.getName() + " turn to Issue Order:" + "\n");
-        l_logResponse.append("---BOMB ORDER---:" + "\n");
         // Get the target country from repository.
         d_targetCountry = d_countryRepository.findFirstByCountryName(p_targetCountry);
         d_owner = p_owner;
-        l_logResponse.append("Bomb card to half the armies in " + p_targetCountry + "\n");
-        d_logEntryBuffer.dataChanged("bomb", l_logResponse.toString());
     }
 
     /**
@@ -84,6 +79,8 @@ public class BombOrder extends Order {
                 l_country.setNumberOfArmies(l_finalArmies);
                 //Remove card from list
                 d_owner.removeCard(l_requiredCard);
+
+                // Logging
                 l_logResponse.append(d_owner.getName() + " used Bomb card to half the army count of " + l_country.getCountryName() + "\n");
                 String[] l_header = {"COUNTRY", "ARMY COUNT"};
                 String[][] l_changeContent = {
