@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.game_play.services;
 
 import com.jakewharton.fliptables.FlipTable;
+import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
@@ -12,6 +13,7 @@ import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class shows all countries and continents, armies on each country, ownership, and connectivity in a way that
@@ -88,8 +90,17 @@ public class ShowMapService implements SingleCommand {
         if (!this.d_playerList.isEmpty()) {
             for (Player l_player : d_playerList) {
                 l_playerContent.append("Player " + (++l_playerCount) + "\n");
-                l_playerContent.append("Total Deployed Army: " + (l_player.getReinforcementCount() - l_player.getRemainingReinforcementCount()) + "\n");
+                l_playerContent.append("Total Deployed Army (previously): " + (l_player.getReinforcementCount() - l_player.getRemainingReinforcementCount()) + "\n");
                 l_playerContent.append("Total Reinforcement Count: " + l_player.getReinforcementCount() + "\n");
+                if (l_player.getCards().size() <= 0) {
+                    l_playerContent.append("Player doesn't have any card yet.\n");
+                } else {
+                    // Show player's card with the total number of it.
+                    Map<CardType, Integer> l_cardTypeIntegerMap = l_player.getMapOfCardTypeAndNumber();
+                    for (CardType l_cardType : l_cardTypeIntegerMap.keySet()) {
+                        l_playerContent.append(String.format("%s card: %d\n", l_cardType.getJsonValue(), l_cardTypeIntegerMap.get(l_cardType)));
+                    }
+                }
                 l_playerContent.append(this.showPlayerContent(l_player));
             }
             l_logResponse = l_playerContent.toString() + "\n" + "CONNECTIVITY" + "\n" + d_showMapService.showNeighbourCountries();

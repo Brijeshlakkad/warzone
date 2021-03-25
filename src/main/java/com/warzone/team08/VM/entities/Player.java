@@ -12,7 +12,9 @@ import com.warzone.team08.VM.responses.CommandResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -57,7 +59,6 @@ public class Player {
      * Initializes variables required to handle player state.
      */
     public Player() {
-        d_cards = new ArrayList<>();
         d_orders = new ArrayList<>();
         d_executedOrders = new ArrayList<>();
         d_assignedCountries = new ArrayList<>();
@@ -65,6 +66,7 @@ public class Player {
         d_remainingReinforcementCount = 0;
         d_assignedCountryCount = 0;
         d_orderMapper = new OrderMapper();
+        d_cards = new ArrayList<>();
         d_logEntryBuffer = LogEntryBuffer.getLogger();
         d_negotiatePlayer = new ArrayList<>();
     }
@@ -168,6 +170,24 @@ public class Player {
      */
     public List<Card> getCards() {
         return d_cards;
+    }
+
+    /**
+     * Returns the list of mapping between the number of card-type the player is having and the card-type.
+     *
+     * @return Value of the list of mapping.
+     */
+    public Map<CardType, Integer> getMapOfCardTypeAndNumber() {
+        Map<CardType, Integer> l_cardTypeIntegerMap = new HashMap<>();
+        for (Card l_card : getCards()) {
+            CardType l_cardType = l_card.getType();
+            if (l_cardTypeIntegerMap.containsKey(l_cardType)) {
+                l_cardTypeIntegerMap.replace(l_cardType, l_cardTypeIntegerMap.get(l_cardType) + 1);
+            } else {
+                l_cardTypeIntegerMap.put(l_cardType, 1);
+            }
+        }
+        return l_cardTypeIntegerMap;
     }
 
     /**
