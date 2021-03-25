@@ -50,7 +50,7 @@ public class ContinentServiceTest {
      * @throws InvalidInputException   Throws if country value is not number.
      */
     @Test(expected = Test.None.class)
-    public void testAddAndRemoveContinent() throws EntityNotFoundException, InvalidInputException, ResourceNotFoundException {
+    public void testAddAndRemoveContinent() throws EntityNotFoundException, InvalidInputException{
         String l_responseOfAddOp = d_ContinentService.add("Asia", "10");
         assertNotNull(l_responseOfAddOp);
 
