@@ -2,9 +2,7 @@ package com.warzone.team08.VM.phases;
 
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.VMException;
-import com.warzone.team08.VM.map_editor.services.ContinentService;
-import com.warzone.team08.VM.map_editor.services.SaveMapService;
-import com.warzone.team08.VM.map_editor.services.ValidateMapService;
+import com.warzone.team08.VM.map_editor.services.*;
 
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class PostLoad extends MapEditor {
      */
     @Override
     public String editCountry(String l_serviceType, List<String> p_arguments) throws VMException {
-        return this.invokeMethod(new ContinentService(), l_serviceType, p_arguments);
+        return this.invokeMethod(new CountryService(), l_serviceType, p_arguments);
     }
 
     /**
@@ -53,7 +51,7 @@ public class PostLoad extends MapEditor {
      */
     @Override
     public String editNeighbor(String l_serviceType, List<String> p_arguments) throws VMException {
-        return this.invokeMethod(new ContinentService(), l_serviceType, p_arguments);
+        return this.invokeMethod(new CountryNeighborService(), l_serviceType, p_arguments);
     }
 
     /**

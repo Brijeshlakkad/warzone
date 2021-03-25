@@ -14,6 +14,9 @@ import java.util.Random;
  */
 public class AssignRandomCardService {
 
+    /**
+     * List of CardType objects indicating the card type.
+     */
     public static List<CardType> d_CardList = CardType.usableCardList();
 
     /**

@@ -21,6 +21,9 @@ public enum UserInteractionState {
      */
     GAME_ENGINE("game_engine");
 
+    /**
+     * Value of the state.
+     */
     public String d_jsonValue;
 
     /**

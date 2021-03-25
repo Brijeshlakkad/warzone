@@ -95,7 +95,7 @@ public class AdvanceOrderTest {
      */
     @Test(expected = EntityNotFoundException.class)
     public void testInvalidCountry()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
         //Randomly passing country name.
         AdvanceOrder l_advanceOrder = new AdvanceOrder("INDIA", "CANADA", "10", d_player1);
         l_advanceOrder.execute();
@@ -109,7 +109,7 @@ public class AdvanceOrderTest {
      * @throws InvalidArgumentException Throws if exception if any argument is invalid.
      */
     @Test(expected = InvalidArgumentException.class)
-    public void testInvalidNoOfArmies() throws EntityNotFoundException, InvalidArgumentException, ResourceNotFoundException, InvalidInputException {
+    public void testInvalidNoOfArmies() throws EntityNotFoundException, InvalidArgumentException {
         //Passing negative number of armies to move.
         new AdvanceOrder("Mercury-South", "Mercury-East", "-10", d_player1);
     }
@@ -124,7 +124,7 @@ public class AdvanceOrderTest {
      */
     @Test(expected = InvalidOrderException.class)
     public void testAdvanceOrderAsInvalidSourceCountry()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
         // Passing the opponent player's country as a source country.
         // It will raise an InvalidInputException as we cannot move armies from another player's country.
         AdvanceOrder l_advanceOrder = new AdvanceOrder(d_player2.getAssignedCountries().get(0).getCountryName(), d_player2.getAssignedCountries().get(1).getCountryName(), "10", d_player1);
@@ -141,7 +141,7 @@ public class AdvanceOrderTest {
      */
     @Test(expected = Test.None.class)
     public void testArmiesWhenMovedToOwnCountry()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException{
         Country l_country1 = d_player1.getAssignedCountries().get(0);
         Country l_country2 = d_player1.getAssignedCountries().get(1);
 
@@ -165,7 +165,7 @@ public class AdvanceOrderTest {
      */
     @Test(expected = Test.None.class)
     public void testSuccessfulBattle()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException{
         Country l_country1 = d_player1.getAssignedCountries().get(4);
         Country l_country2 = d_player2.getAssignedCountries().get(0);
 
@@ -193,7 +193,7 @@ public class AdvanceOrderTest {
      */
     @Test(expected = Test.None.class)
     public void testUnsuccessfulBattle()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException{
         Country l_country1 = d_player1.getAssignedCountries().get(4);
         Country l_country2 = d_player2.getAssignedCountries().get(0);
 
@@ -233,6 +233,6 @@ public class AdvanceOrderTest {
         AdvanceOrder l_advanceOrder = new AdvanceOrder(l_country1.getCountryName(), l_country2.getCountryName(), "6", d_player1);
         l_advanceOrder.execute();
         assertEquals(10, l_country1.getNumberOfArmies());
-        assertEquals(5,l_country2.getNumberOfArmies());
+        assertEquals(5, l_country2.getNumberOfArmies());
     }
 }

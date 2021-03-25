@@ -34,6 +34,9 @@ public class Application {
      */
     private VirtualMachine d_VirtualMachine;
 
+    /**
+     * Default constructor.
+     */
     public Application() {
         // Creates interface for user interaction.
         // Just a local variable as the instance is not being used/shared with any other class.
@@ -47,6 +50,12 @@ public class Application {
         d_VirtualMachine.attachUIMiddleware(d_CommandLineInterface);
     }
 
+    /**
+     * Main method to handle entire game operation.
+     *
+     * @param args Arguments.
+     * @throws InterruptedException Throws if the interrupt is occurred in normal execution.
+     */
     public static void main(String[] args) throws InterruptedException {
         Application l_application = new Application();
 

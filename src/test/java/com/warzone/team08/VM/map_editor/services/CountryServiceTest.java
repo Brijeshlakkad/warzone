@@ -61,7 +61,7 @@ public class CountryServiceTest {
      * @throws EntityNotFoundException Throws if name of the continent which doesn't exists is provided.
      */
     @Test(expected = EntityNotFoundException.class)
-    public void testInvalidContinentName() throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+    public void testInvalidContinentName() throws EntityNotFoundException{
         d_CountryService.add("India", "ABC");
     }
 
@@ -72,7 +72,7 @@ public class CountryServiceTest {
      */
     @Test(expected = Test.None.class)
     public void testAddRemoveCountry()
-            throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException{
 
         String l_continentName = d_continentList.get(0).getContinentName();
         String l_responseStringAddOp = d_CountryService.add("India", l_continentName);

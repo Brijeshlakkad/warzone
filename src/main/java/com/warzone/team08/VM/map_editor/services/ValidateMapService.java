@@ -28,6 +28,9 @@ public class ValidateMapService implements SingleCommand {
 
     private final LogEntryBuffer d_logEntryBuffer;
 
+    /**
+     * Default constructor to retrieve the singleton instance of <code>MapEditorEngine</code> and <code>LogEntryBuffer</code>.
+     */
     public ValidateMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_logEntryBuffer = LogEntryBuffer.getLogger();

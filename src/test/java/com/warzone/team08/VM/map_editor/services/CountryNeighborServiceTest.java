@@ -56,7 +56,7 @@ public class CountryNeighborServiceTest {
      * @throws EntityNotFoundException Throws if data tag is absent in map file.
      */
     @Test(expected = EntityNotFoundException.class)
-    public void testWrongCountryValues() throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+    public void testWrongCountryValues() throws EntityNotFoundException{
         //If both country name and neighbor country name are invalid(Do not exists in map file).
         d_CountryNeighbourService.add("ABC", "DEF");
 
@@ -74,7 +74,7 @@ public class CountryNeighborServiceTest {
      * @throws EntityNotFoundException Throws if data tag is absent in map file.
      */
     @Test(expected = Test.None.class)
-    public void testAdd() throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+    public void testAdd() throws EntityNotFoundException{
 
         String l_addResponse = d_CountryNeighbourService.add("Mercury-South", "Mercury-West");
         assertNotNull(l_addResponse);

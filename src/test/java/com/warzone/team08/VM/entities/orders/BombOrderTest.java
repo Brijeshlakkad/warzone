@@ -89,7 +89,7 @@ public class BombOrderTest {
      */
     @Test(expected = Test.None.class)
     public void testBombOperationWithBombCard()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException{
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
@@ -112,7 +112,7 @@ public class BombOrderTest {
      */
     @Test(expected = CardNotFoundException.class)
     public void testBombOperationWithOutBombCard()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException{
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
@@ -135,7 +135,7 @@ public class BombOrderTest {
      */
     @Test(expected = InvalidOrderException.class)
     public void testBombOperationOnPlayerOwnedCountry()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException{
         Player l_player1 = d_playerList.get(0);
         List<Country> l_assignCountries = l_player1.getAssignedCountries();
         BombOrder l_bombOrder = new BombOrder(l_assignCountries.get(0).getCountryName(), l_player1);
@@ -151,7 +151,7 @@ public class BombOrderTest {
      */
     @Test(expected = CardNotFoundException.class)
     public void testCardSuccessfullyRemoved()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException, ResourceNotFoundException, InvalidInputException {
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException{
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
