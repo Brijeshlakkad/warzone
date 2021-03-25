@@ -26,6 +26,9 @@ import java.util.List;
 public class BlockadeOrder extends Order {
     private final Country d_targetCountry;
     private final Player d_owner;
+    /**
+     * Constant to multiply the armies count.
+     */
     public static final int CONSTANT = 3;
 
     /**

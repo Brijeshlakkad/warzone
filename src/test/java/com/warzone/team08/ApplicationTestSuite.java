@@ -10,6 +10,12 @@ import com.warzone.team08.VM.VMTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * Test suite for <code>CLI</code> and <code>VM</code> test cases.
+ *
+ * @author CHARIT
+ * @version 1.0
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         CLITestSuite.class,

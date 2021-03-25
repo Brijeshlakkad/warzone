@@ -22,6 +22,9 @@ public abstract class Order {
      */
     private int d_expiryIndex = -1;
 
+    /**
+     * Default constructor.
+     */
     public Order() {
         if (this.getType() == OrderType.negotiate) {
             d_executionIndex = GamePlayEngine.getCurrentExecutionIndex() + 1;

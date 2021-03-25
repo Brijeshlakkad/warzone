@@ -11,10 +11,25 @@ import java.util.List;
  * @see com.warzone.team08.VM.constants.interfaces.Card
  */
 public enum CardType {
+    /**
+     * If card type is empty.
+     */
     EMPTY("empty"),
+    /**
+     * If card type is airlift.
+     */
     AIRLIFT("airlift"),
+    /**
+     * If card type is blockade.
+     */
     BLOCKADE("blockade"),
+    /**
+     * If card type is bomb.
+     */
     BOMB("bomb"),
+    /**
+     * If card type is diplomacy.
+     */
     DIPLOMACY("diplomacy");
 
     /**
@@ -32,15 +47,6 @@ public enum CardType {
     }
 
     /**
-     * Gets the string value of the enum
-     *
-     * @return Value of the enum
-     */
-    public String getJsonValue() {
-        return d_jsonValue;
-    }
-
-    /**
      * Gets usable card list.
      *
      * @return Value of card list.
@@ -52,5 +58,14 @@ public enum CardType {
         l_cardTypeList.add(CardType.BOMB);
         l_cardTypeList.add(CardType.DIPLOMACY);
         return l_cardTypeList;
+    }
+
+    /**
+     * Gets the string value of the enum
+     *
+     * @return Value of the enum
+     */
+    public String getJsonValue() {
+        return d_jsonValue;
     }
 }
