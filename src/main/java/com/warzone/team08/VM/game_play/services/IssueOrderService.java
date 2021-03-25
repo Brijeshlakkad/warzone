@@ -7,6 +7,7 @@ import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.concurrent.ExecutionException;
  * @version 1.0
  */
 public class IssueOrderService {
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
+
     /**
      * Requests all players in round-robin fashion for the issuing order until all the players have placed all their
      * reinforcement armies on the map.
@@ -51,6 +54,7 @@ public class IssueOrderService {
                 } catch (EntityNotFoundException | InvalidCommandException | InvalidArgumentException p_exception) {
                     l_invalidPreviousOrder = true;
                     // Show VMException error to the user.
+                    d_logEntryBuffer.dataChanged("Issue order", p_exception.getMessage());
                     VirtualMachine.getInstance().stderr(p_exception.getMessage());
                 } catch (InterruptedException | ExecutionException p_e) {
                     // If interruption occurred while issuing the order.

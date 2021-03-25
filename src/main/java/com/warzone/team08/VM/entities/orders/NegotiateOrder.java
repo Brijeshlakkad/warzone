@@ -36,13 +36,8 @@ public class NegotiateOrder extends Order {
      * @throws EntityNotFoundException Throws if the country with the given name doesn't exist.
      */
     public NegotiateOrder(Player p_thisPlayer, String p_otherPlayer) throws EntityNotFoundException {
-        StringBuilder l_logResponse = new StringBuilder();
-        l_logResponse.append("\n" + p_thisPlayer.getName() + " turn to Issue Order:" + "\n");
-        l_logResponse.append("---NEGOTIATE ORDER---:" + "\n");
         d_player1 = p_thisPlayer;
         d_player2 = d_playerRepository.findByPlayerName(p_otherPlayer);
-        l_logResponse.append("Negotiate card to perform negotiation between " + p_thisPlayer.getName() + " and " + p_otherPlayer + "\n");
-        d_logEntryBuffer.dataChanged("advance", l_logResponse.toString());
     }
 
     /**

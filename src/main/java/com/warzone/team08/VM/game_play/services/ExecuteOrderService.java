@@ -8,6 +8,7 @@ import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
 import com.warzone.team08.VM.exceptions.OrderOutOfBoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.List;
  * @version 1.0
  */
 public class ExecuteOrderService {
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
+
     /**
      * Gets the order of the player using <code>Player#nextOrder</code> method and executes it using the type of order.
      */
@@ -68,6 +71,7 @@ public class ExecuteOrderService {
                 }
             } catch (CardNotFoundException |
                     InvalidOrderException p_e) {
+                d_logEntryBuffer.dataChanged("Execute order", p_e.getMessage());
                 VirtualMachine.getInstance().stderr(p_e.getMessage());
             } catch (OrderOutOfBoundException p_e) {
                 finishedExecutingOrders.add(l_currentPlayer);

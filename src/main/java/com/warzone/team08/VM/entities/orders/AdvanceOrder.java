@@ -56,15 +56,10 @@ public class AdvanceOrder extends Order {
      */
     public AdvanceOrder(String p_countryFrom, String p_countryTo, String p_numOfArmies, Player p_owner)
             throws EntityNotFoundException, InvalidArgumentException {
-        StringBuilder l_logResponse = new StringBuilder();
-        l_logResponse.append("\n" + p_owner.getName() + " turn to Issue Order:" + "\n");
-        l_logResponse.append("---ADVANCE ORDER---:" + "\n");
         d_countryFrom = d_countryRepository.findFirstByCountryName(p_countryFrom);
         d_countryTo = d_countryRepository.findFirstByCountryName(p_countryTo);
         try {
             d_numOfArmies = Integer.parseInt(p_numOfArmies);
-            l_logResponse.append("Advance " + p_numOfArmies + " armies from " + p_countryFrom + " to " + p_countryTo + "\n");
-            d_logEntryBuffer.dataChanged("advance", l_logResponse.toString());
             // Checks if the number of moved armies is less than zero.
             if (d_numOfArmies < 0) {
                 throw new InvalidArgumentException("Number of armies can not be negative.");
