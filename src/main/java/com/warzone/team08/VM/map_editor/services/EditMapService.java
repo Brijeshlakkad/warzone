@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -293,18 +294,14 @@ public class EditMapService implements SingleCommand {
      */
     @Override
     public String execute(List<String> p_commandValues)
-            throws InvalidMapException,
-            ResourceNotFoundException,
-            InvalidInputException,
-            AbsentTagException,
-            EntityNotFoundException {
+            throws VMException, IOException {
         String l_response = "";
         if (!p_commandValues.isEmpty()) {
             // Resolve file path using absolute path of user data directory.
-            String resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));
-            int l_index = resolvedPathToFile.lastIndexOf('\\');
-            l_response = this.handleLoadMap(resolvedPathToFile);
-            d_logEntryBuffer.dataChanged("editmap", resolvedPathToFile.substring(l_index + 1) + " " + l_response);
+            String l_resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));
+            int l_index = l_resolvedPathToFile.lastIndexOf('\\');
+            l_response = this.handleLoadMap(l_resolvedPathToFile);
+            d_logEntryBuffer.dataChanged("editmap", l_resolvedPathToFile.substring(l_index + 1) + " " + l_response);
             d_mapEditorEngine.setLoadingMap(false);
             return l_response;
         } else {

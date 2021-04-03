@@ -20,7 +20,7 @@ public class MapEditorEngine implements Engine {
      */
     private static MapEditorEngine d_Instance;
     private List<Continent> d_continentList;
-
+    private static HashMap<String,String> d_MapDetails;
     private boolean d_isLoadingMap = false;
 
     /**
@@ -168,5 +168,22 @@ public class MapEditorEngine implements Engine {
      */
     public void shutdown() {
         // No threads created by MapEditorEngine.
+    }
+
+    /**
+     * Stores the information about the map file.
+     *
+     * @return Hashmap storing map info.
+     */
+    public static HashMap<String, String> get_MapDetails() {
+        return d_MapDetails;
+    }
+
+    /**
+     * Returns the hashmap storing map info.
+     * @param p_MapDetails mMp info.
+     */
+    public static void set_MapDetails(HashMap<String, String> p_MapDetails) {
+        d_MapDetails = p_MapDetails;
     }
 }
