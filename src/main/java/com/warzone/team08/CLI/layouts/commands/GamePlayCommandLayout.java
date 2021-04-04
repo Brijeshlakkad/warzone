@@ -112,6 +112,24 @@ public class GamePlayCommandLayout implements CommandLayout {
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
         l_userCommand.setNumOfValues(1);
         d_userCommands.add(l_userCommand);
+
+        // Example of the command:
+        // > savegame filename
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("savegame");
+        l_userCommand.setOrderCommand(true);
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfValues(1);
+        d_userCommands.add(l_userCommand);
+
+        // Example of the command:
+        // > loadgame filename
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("loadgame");
+        l_userCommand.setOrderCommand(true);
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfValues(1);
+        d_userCommands.add(l_userCommand);
     }
 
     /**
