@@ -2,6 +2,7 @@ package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.constants.enums.MapModelType;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
+import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
@@ -50,7 +51,7 @@ public class EditConquestMapService implements SingleCommand {
         d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
-    public String loadConquestMap(String p_filePath, boolean shouldCreateNew) throws ResourceNotFoundException, InvalidInputException, InvalidMapException, IOException, AbsentTagException {
+    public String loadConquestMap(String p_filePath, boolean shouldCreateNew) throws ResourceNotFoundException, InvalidInputException, InvalidMapException, IOException, AbsentTagException, EntityNotFoundException {
         d_mapEditorEngine.initialise();
         d_mapEditorEngine.setLoadingMap(true);
         if (new File(p_filePath).exists()) {
@@ -75,6 +76,7 @@ public class EditConquestMapService implements SingleCommand {
                         else if(this.doLineHasModelData(l_currentLine,MapModelType.TERRITORY))
                         {
                             System.out.println("territories Tag Present");
+                            readTerritories(l_reader);
                         }
                     }
                 }
@@ -140,7 +142,26 @@ public class EditConquestMapService implements SingleCommand {
 
 
 
+    public void readTerritories(BufferedReader p_reader) throws InvalidMapException, EntityNotFoundException {
+        String territories;
+        try {
+            while ((territories = p_reader.readLine()) != null && !territories.startsWith("[")) {
+                if (!territories.isEmpty() && territories != null && !territories.equals("")) {
+                    String l_countryName, l_continentName;
+                    List<Country> l_neighbourNodes = new ArrayList<>();
+                    String[] terr_properties = territories.split(",");
+                    l_countryName = terr_properties[0];
+                    l_continentName = terr_properties[3];
+                    d_countryService.add(l_countryName,l_continentName);
 
+                }
+            }
+        }
+        catch(IOException e)
+        {
+            throw new InvalidMapException("Error while processing!");
+        }
+    }
 
 
     public List<String> getModelComponents(String p_line) {
