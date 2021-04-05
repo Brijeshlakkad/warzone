@@ -26,18 +26,18 @@ import java.util.stream.Collectors;
  */
 public class EditConquestMapService implements SingleCommand {
 
+    private static HashMap<String, String> d_MapDetails;
     /**
      * Engine to store and retrieve map data.
      */
     private final MapEditorEngine d_mapEditorEngine;
-
     private final ContinentRepository d_continentRepository;
     private final CountryRepository d_countryRepository;
     private final ContinentService d_continentService;
     private final CountryService d_countryService;
     private final CountryNeighborService d_countryNeighborService;
     private final LogEntryBuffer d_logEntryBuffer;
-    private static HashMap<String,String> d_MapDetails;
+
     /**
      * Initializes variables required to load map into different objects.
      */
@@ -51,7 +51,25 @@ public class EditConquestMapService implements SingleCommand {
         d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
-    public String loadConquestMap(String p_filePath, boolean shouldCreateNew) throws ResourceNotFoundException, InvalidInputException, InvalidMapException, IOException, AbsentTagException, EntityNotFoundException {
+    /**
+     * This method reads user provided map file. It reads data from file and stores into different java objects.
+     *
+     * @param p_filePath      Path of the file to be read.
+     * @param shouldCreateNew True if this method should create a new file if it doesn't exists.
+     * @return Value of the response.
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException     Throws if type cast was not successful.
+     * @throws InvalidMapException       Throws if file does not have valid map data.
+     * @throws AbsentTagException        Throws if there is missing tag.
+     * @throws EntityNotFoundException   Throws if the referred entity is not found.
+     */
+    public String loadConquestMap(String p_filePath, boolean shouldCreateNew)
+            throws ResourceNotFoundException,
+            InvalidInputException,
+            InvalidMapException,
+            AbsentTagException,
+            EntityNotFoundException {
+        // (Re) initialise engine.
         d_mapEditorEngine.initialise();
         d_mapEditorEngine.setLoadingMap(true);
         if (new File(p_filePath).exists()) {
@@ -65,23 +83,23 @@ public class EditConquestMapService implements SingleCommand {
                 String l_currentLine;
                 while ((l_currentLine = l_reader.readLine()) != null) {
                     if (l_currentLine.startsWith("[")) {
-                        // Parsing the [continents] portion of the map file
-                        if (this.doLineHasModelData(l_currentLine, MapModelType.MAP))
-                        {
+                        // Parsing the [Map] portion of the map file
+                        if (this.doLineHasModelData(l_currentLine, MapModelType.MAP)) {
                             readMapDetails(l_reader);
                         }
+                        // Parsing the [continents] portion of the map file
                         else if (this.doLineHasModelData(l_currentLine, MapModelType.CONTINENT)) {
                             readContinents(l_reader);
                         }
-                        else if(this.doLineHasModelData(l_currentLine,MapModelType.TERRITORY))
-                        {
+                        // Parsing the [Territories] portion of the map file
+                        else if (this.doLineHasModelData(l_currentLine, MapModelType.TERRITORY)) {
                             System.out.println("territories Tag Present");
                             readTerritories(l_reader);
                         }
                     }
                 }
-                    return "File(Conquest map) successfully loaded";
-            }catch (IOException e) {
+                return "File(Conquest map) successfully loaded";
+            } catch (IOException e) {
                 throw new ResourceNotFoundException("File not found!");
             }
         } else if (shouldCreateNew) {
@@ -95,6 +113,14 @@ public class EditConquestMapService implements SingleCommand {
         }
     }
 
+    /**
+     * This method is used to read the map details stored in [Map] tag.
+     * It stores this details in the HashMap.
+     *
+     * @param p_reader Object of BufferedReader
+     * @throws InvalidMapException Throws if error while reading file.
+     * @throws IOException         Throws if error occurs during IO Operation.
+     */
     private void readMapDetails(BufferedReader p_reader) throws InvalidMapException, IOException {
         String l_currentLine;
         try {
@@ -107,17 +133,21 @@ public class EditConquestMapService implements SingleCommand {
             }
             p_reader.reset();
             d_mapEditorEngine.set_MapDetails(d_MapDetails);
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             throw new InvalidMapException("Invalid map file");
         }
     }
 
-
-
-
-
+    /**
+     * This method is used to read continent data from map file. It reads the continent name, control value, and color
+     * and stores those values in Continent class object using Continent class methods. This object is later stored in
+     * the list.
+     *
+     * @param p_reader Object of BufferedReader
+     * @throws InvalidInputException Throws if the continent control value is not integer.
+     * @throws InvalidMapException   Throws if error while reading file.
+     * @throws AbsentTagException    Throws if the required element in line is not available.
+     */
     private void readContinents(BufferedReader p_reader) throws InvalidInputException, InvalidMapException, AbsentTagException {
         String l_currentLine;
         try {
@@ -140,30 +170,46 @@ public class EditConquestMapService implements SingleCommand {
         }
     }
 
-
-
+    /**
+     * This method is used to read country data from map file. It reads the country name,
+     * corresponding continent name and stores those values in Country class object using Country class
+     * methods. This object is later stored in the list.
+     * It also reads the name of the neighboring countries and stores them in a list
+     * and assign it as a list of neighboring countries to the current country.
+     *
+     * @param p_reader Object of BufferedReader
+     * @throws InvalidMapException     Throws if error while reading file.
+     * @throws EntityNotFoundException Throws if the continent of the country not found.
+     */
     public void readTerritories(BufferedReader p_reader) throws InvalidMapException, EntityNotFoundException {
-        String territories;
+        String l_territories;
         try {
-            while ((territories = p_reader.readLine()) != null && !territories.startsWith("[")) {
-                if (!territories.isEmpty() && territories != null && !territories.equals("")) {
+            while ((l_territories = p_reader.readLine()) != null && !l_territories.startsWith("[")) {
+                if (!l_territories.isEmpty() && l_territories != null && !l_territories.equals("")) {
                     String l_countryName, l_continentName;
                     List<Country> l_neighbourNodes = new ArrayList<>();
-                    String[] terr_properties = territories.split(",");
-                    l_countryName = terr_properties[0];
-                    l_continentName = terr_properties[3];
-                    d_countryService.add(l_countryName,l_continentName);
-
+                    String[] l_terrProperties = l_territories.split(",");
+                    l_countryName = l_terrProperties[0];
+                    l_continentName = l_terrProperties[3];
+                    for (int i = 4; i <= l_terrProperties.length - 1; i++) {
+                        String l_neighbourCountryName = l_terrProperties[i];
+                        Country l_neighbour = new Country(l_neighbourCountryName);
+                        l_neighbourNodes.add(l_neighbour);
+                    }
+                    d_countryService.add(l_countryName, l_continentName);
                 }
             }
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             throw new InvalidMapException("Error while processing!");
         }
     }
 
-
+    /**
+     * Extracts the model components from the line.
+     *
+     * @param p_line Line to be interpreted.
+     * @return Value of the list of components.
+     */
     public List<String> getModelComponents(String p_line) {
         try {
             if (!p_line.isEmpty() && p_line.contains(" ")) {
@@ -182,10 +228,19 @@ public class EditConquestMapService implements SingleCommand {
         return new ArrayList<>();
     }
 
-
-
-
-    public String loadConquestMap(String p_filePath) throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, IOException {
+    /**
+     * The overloading method of {@link EditConquestMapService#loadConquestMap(String, boolean)} This overloading method calls the
+     * overloaded method with a variable indicating that create a new file if it doesn't exists.
+     *
+     * @param p_filePath Path of the file to be read.
+     * @return Value of the response.
+     * @throws AbsentTagException        Throws if there is missing tag.
+     * @throws InvalidMapException       Throws if file does not have valid map data.
+     * @throws ResourceNotFoundException Throws if file not found.
+     * @throws InvalidInputException     Throws if type cast was not successful.
+     * @throws EntityNotFoundException   Throws if the referred entity is not found.
+     */
+    public String loadConquestMap(String p_filePath) throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException {
         return this.loadConquestMap(p_filePath, true);
     }
 
@@ -211,6 +266,14 @@ public class EditConquestMapService implements SingleCommand {
                 .equalsIgnoreCase(p_mapModelType.getJsonValue());
     }
 
+    /**
+     * Takes the command and executes the function.
+     *
+     * @param p_commandValues Represents the values passed while running the command.
+     * @return Value of string acknowledging user that the file is loaded or not.
+     * @throws VMException Throws if error occurs in VM Engine operation.
+     * @throws IOException Throws if error occurs during IO Operation.
+     */
     @Override
     public String execute(List<String> p_commandValues) throws VMException, IOException {
         String l_response = "";

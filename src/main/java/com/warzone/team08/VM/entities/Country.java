@@ -44,6 +44,13 @@ public class Country {
         d_neighbourCountries = new ArrayList<>();
     }
 
+    public Country(String p_countryName)
+    {
+        this.COUNTRY_ID = ++d_SerialNumber;
+        d_neighbourCountries = new ArrayList<>();
+        d_countryName = p_countryName;
+    }
+
     /**
      * Sets the ID for the country.
      *

@@ -5,6 +5,7 @@ import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import com.warzone.team08.VM.map_editor.services.ValidateMapService;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class Preload extends MapEditor {
      * {@inheritDoc}
      */
     @Override
-    public String editMap(List<String> p_arguments) throws VMException {
+    public String editMap(List<String> p_arguments) throws VMException, IOException {
         EditMapService l_editMapService = new EditMapService();
         String l_returnValue = l_editMapService.execute(p_arguments);
         d_gameEngine.setGamePhase(new PostLoad(d_gameEngine));

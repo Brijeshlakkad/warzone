@@ -5,6 +5,7 @@ import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -93,7 +94,7 @@ public abstract class Phase {
      * @throws VMException If any exception during loading the map into engines.
      * @see com.warzone.team08.VM.map_editor.services.EditMapService
      */
-    abstract public String editMap(List<String> p_arguments) throws VMException;
+    abstract public String editMap(List<String> p_arguments) throws VMException, IOException;
 
     /**
      * Allows player to edit the continents on the map.

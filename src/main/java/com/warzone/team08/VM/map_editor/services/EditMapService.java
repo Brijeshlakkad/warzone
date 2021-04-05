@@ -136,7 +136,7 @@ public class EditMapService implements SingleCommand {
      * and stores those values in Continent class object using Continent class methods. This object is later stored in
      * the list.
      *
-     * @param p_reader object of BufferedReader
+     * @param p_reader Object of BufferedReader
      * @throws InvalidInputException Throws if the continent control value is not integer.
      * @throws InvalidMapException   Throws if error while reading file.
      * @throws AbsentTagException    Throws if the required element in line is not available.
