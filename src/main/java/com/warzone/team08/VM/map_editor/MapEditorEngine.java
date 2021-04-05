@@ -163,6 +163,7 @@ public class MapEditorEngine implements Engine {
         d_isLoadingMap = p_loadingMap;
     }
 
+
     /**
      * {@inheritDoc} Shuts the <code>MapEditorEngine</code>.
      */

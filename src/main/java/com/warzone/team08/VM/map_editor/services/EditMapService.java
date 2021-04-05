@@ -11,10 +11,7 @@ import com.warzone.team08.VM.repositories.CountryRepository;
 import com.warzone.team08.VM.utils.FileUtil;
 import com.warzone.team08.VM.utils.PathResolverUtil;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +25,7 @@ import java.util.stream.Collectors;
  * @author Brijesh Lakkad
  * @author CHARIT
  */
-public class EditMapService implements SingleCommand {
+public class    EditMapService implements SingleCommand  {
     /**
      * Engine to store and retrieve map data.
      */
@@ -250,10 +247,10 @@ public class EditMapService implements SingleCommand {
      * @param p_mapModelType Value of the model data type
      * @return True if the line represents the title of model to be read in the following lines; false otherwise.
      */
-    private boolean doLineHasModelData(String p_currentLine, MapModelType p_mapModelType) {
-        return p_currentLine.substring(p_currentLine.indexOf("[") + 1, p_currentLine.indexOf("]"))
-                .equalsIgnoreCase(p_mapModelType.getJsonValue());
-    }
+        private boolean doLineHasModelData(String p_currentLine, MapModelType p_mapModelType) {
+            return p_currentLine.substring(p_currentLine.indexOf("[") + 1, p_currentLine.indexOf("]"))
+                    .equalsIgnoreCase(p_mapModelType.getJsonValue());
+        }
 
     /**
      * Extracts the model components from the line.

@@ -16,84 +16,65 @@ import com.warzone.team08.VM.map_editor.services.CountryService;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import com.warzone.team08.VM.repositories.CountryRepository;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-public class SaveGame {
+public class SaveGame implements Serializable {
 
-    File fileToSave;
-    Map<Integer, Continent> continentMap;
-    Map<Integer, Country> countryMap;
-
-    List<Player> playerList;
-    Player currentPlayer;
-    String currentPhase;
-    List<Card> cards;
-    List<Continent> continentList ;
-    List<Country> countryList;
-    Map<Integer, Set<Integer>> neighborList;
-    List<String> playerName;
-    List<List<Card>> playerCards;
-
-
-    int getCurrentPlayerIndex;
-    int getCurrentPlayerForIssuePhase;
-    int getCurrentPlayerForExecutionPhase;
-    static int getCurrentExecutionIndex;
-
-    List<Order> playerFutureOrderList;
     GamePlayEngine d_gamePlayEngine;
     MapEditorEngine d_mapEditorEngine;
-
+    ArrayList<Continent> continentList;
     public SaveGame(){
         d_gamePlayEngine = GamePlayEngine.getInstance();
         d_mapEditorEngine = MapEditorEngine.getInstance();
         continentList = new ArrayList<>();
-        countryList = new ArrayList<>();
-        neighborList = new HashMap<>();
-        playerList = new ArrayList<>();
-
     }
 
 
     void saveGameContent() throws IOException {
-
-        try(Writer l_writer = new FileWriter("abc.txt")) {
-            l_writer.write("[ " + "Continent Object" + " ]\n");
-
-
-            //Getting Continents, Countries and Neighbours.
-            continentList.addAll(d_mapEditorEngine.getContinentList());
-            String jsonContinent = JSONValue.toJSONString(continentList);
-            l_writer.write(jsonContinent+"\n");
-
-            l_writer.write("[ " + "Country Object" + " ]\n");
-            countryList.addAll(d_mapEditorEngine.getCountryList());
-            String jsonCountry = JSONValue.toJSONString(countryList);
-            l_writer.write(jsonCountry+"\n");
-
-            l_writer.write("[ " + "Neighbor Object" + " ]\n");
-            neighborList.putAll(d_mapEditorEngine.getCountryNeighbourMap());
-            String jsonNeigbor = JSONValue.toJSONString(neighborList);
-            l_writer.write(jsonNeigbor+"\n");
-
-            l_writer.write("[ " + "PLayer List" + " ]\n");
-            playerList.addAll(d_gamePlayEngine.getPlayerList());
-            String jsonPlayers = JSONValue.toJSONString(playerList);
-            l_writer.write(jsonPlayers+"\n");
-
-            l_writer.write("[ " + "Current Player" + " ]\n");
-            currentPlayer = d_gamePlayEngine.getCurrentPlayer();
-            l_writer.write(String.valueOf(currentPlayer)+"\n");
-
+        for (Continent continent : d_mapEditorEngine.getContinentList()){
+            continentList.add(continent);
         }
 
+        try (Writer l_writer = new FileWriter("xyz.txt")){
+            l_writer.write("Continents\n");
+            l_writer.write(String.valueOf(continentList));
+        }
+        /*JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("ID", "1");
+
+        JSONArray continentList = new JSONArray();
+
+        for (Continent continent : d_mapEditorEngine.getContinentList()){
+            continentList.add(""+continent+"");
+        }
+        jsonObject.put("Continents", continentList);
+
+        JSONArray countryList = new JSONArray();
+        for (Country country : d_mapEditorEngine.getCountryList()){
+            countryList.add(""+country+"");
+        }
+        jsonObject.put("Countries", countryList);
+
+        JSONArray neighborList = new JSONArray();
+        for (Map.Entry<Integer, Set<Integer>> entry : d_mapEditorEngine.getCountryNeighbourMap().entrySet()){
+            jsonObject.put(""+entry.getKey()+"",""+entry.getValue()+"");
+        }
+
+
+        try {
+            FileWriter file = new FileWriter("abc.txt");
+            file.write(jsonObject.toJSONString()+"\n");
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("JSON file created: "+jsonObject);
 /*
         for (Player player : d_gamePlayEngine.getPlayerList()) {
             playerName.add(player.getName());
