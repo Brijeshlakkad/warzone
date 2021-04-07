@@ -1,9 +1,12 @@
 package com.warzone.team08.VM.map_editor;
 
 import com.warzone.team08.VM.constants.interfaces.Engine;
+import com.warzone.team08.VM.constants.interfaces.JSONable;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -14,7 +17,7 @@ import java.util.*;
  * @author CHARIT
  * @version 1.0
  */
-public class MapEditorEngine implements Engine {
+public class MapEditorEngine implements Engine, JSONable {
     /**
      * Singleton instance of the class.
      */
@@ -169,5 +172,27 @@ public class MapEditorEngine implements Engine {
      */
     public void shutdown() {
         // No threads created by MapEditorEngine.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_mapEditorEngineJSON = new JSONObject();
+        JSONArray l_continentJSONList = new JSONArray();
+        for (Continent l_continent : getContinentList()) {
+            l_continentJSONList.put(l_continent.toJSON());
+        }
+        l_mapEditorEngineJSON.put("continents", l_continentJSONList);
+        return l_mapEditorEngineJSON;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void fromJSON(JSONObject p_jsonObject) {
+        // TODO Rutwik Patel Assign data members using the p_jsonObject
     }
 }

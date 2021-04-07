@@ -1,5 +1,9 @@
 package com.warzone.team08.VM.entities;
 
+import com.warzone.team08.VM.constants.interfaces.JSONable;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,7 +14,7 @@ import java.util.Objects;
  * @author RUTWIK PATEL
  * @author Brijesh Lakkad
  */
-public class Country {
+public class Country implements JSONable {
     /**
      * Auto-generated ID of the country.
      */
@@ -193,5 +197,31 @@ public class Country {
     @Override
     public int hashCode() {
         return Objects.hash(COUNTRY_ID, d_continent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_countryJSON = new JSONObject();
+        l_countryJSON.put("id", COUNTRY_ID);
+        l_countryJSON.put("mame", d_countryName);
+        JSONArray d_neighborCountryJSONList = new JSONArray();
+        for (Country l_country : getNeighbourCountries()) {
+            d_neighborCountryJSONList.put(l_country.toJSON());
+        }
+        l_countryJSON.put("owner", d_ownedBy.toJSON());
+        l_countryJSON.put("numberOfArmies", d_numberOfArmies);
+        l_countryJSON.put("neighbourCountries", d_neighborCountryJSONList);
+        return l_countryJSON;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void fromJSON(JSONObject p_jsonObject) {
+        // TODO Rutwik Patel Assign data members using the p_jsonObject
     }
 }

@@ -1,5 +1,9 @@
 package com.warzone.team08.VM.entities;
 
+import com.warzone.team08.VM.constants.interfaces.JSONable;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -9,7 +13,7 @@ import java.util.Objects;
  * @author CHARIT
  * @author Brijesh Lakkad
  */
-public class Continent {
+public class Continent implements JSONable {
     /**
      * Auto-generated ID of the continent.
      */
@@ -144,5 +148,30 @@ public class Continent {
     @Override
     public int hashCode() {
         return Objects.hash(d_continentId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_continentJSON = new JSONObject();
+        l_continentJSON.put("id", d_continentId);
+        l_continentJSON.put("name", d_continentName);
+        l_continentJSON.put("controlValue", d_continentControlValue);
+        JSONArray d_countryJSONList = new JSONArray();
+        for (Country l_country : getCountryList()) {
+            d_countryJSONList.put(l_country.toJSON());
+        }
+        l_continentJSON.put("countries", d_countryJSONList);
+        return l_continentJSON;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void fromJSON(JSONObject p_jsonObject) {
+        // TODO Rutwik Patel Assign data members using the p_jsonObject
     }
 }

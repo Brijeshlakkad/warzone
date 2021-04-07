@@ -1,3 +1,0 @@
-{"1":"[2]","2":"[1]","3":"[1]","Countries":["com.warzone.team08.VM.entities.Country@400","com.warzone.team08.
-VM.entities.Country@41f","com.warzone.team08.VM.entities.Country@43f"],"ID":"1",
-"Continents":["com.warzone.team08.VM.entities.Continent@20","com.warzone.team08.VM.entities.Continent@21"]}

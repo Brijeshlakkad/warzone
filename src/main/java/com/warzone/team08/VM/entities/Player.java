@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.interfaces.Card;
+import com.warzone.team08.VM.constants.interfaces.JSONable;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.mappers.OrderMapper;
 import com.warzone.team08.VM.responses.CommandResponse;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
  * @author CHARIT
  * @author Brijesh Lakkad
  */
-public class Player {
+public class Player implements JSONable {
     /**
      * Represents the unique name of each player.
      */
@@ -392,5 +394,23 @@ public class Player {
      */
     public void removeCard(Card p_card) {
         this.d_cards.remove(p_card);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_playerJSON = new JSONObject();
+        // PUT keys and its value as done with other entities.
+        return l_playerJSON;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void fromJSON(JSONObject p_jsonObject) {
+        // TODO Rutwik Patel Assign data members using the p_jsonObject
     }
 }

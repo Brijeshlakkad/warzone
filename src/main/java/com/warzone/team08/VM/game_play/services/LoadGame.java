@@ -1,24 +1,25 @@
 package com.warzone.team08.VM.game_play.services;
 
-import com.warzone.team08.VM.constants.enums.MapModelType;
-
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-public class ResumeGame {
+/**
+ * @author Rutwik Patel
+ * @author Brijesh Lakkad
+ * @version 1.0
+ */
+public class LoadGame {
     ArrayList<Continent> continents;
 
-    public ResumeGame(){
+    public LoadGame() {
         continents = new ArrayList<>();
     }
 
@@ -69,8 +70,7 @@ public class ResumeGame {
         }
     }
 
-    public static void main(String[] args) throws IOException, ParseException {
-        ResumeGame resumeGame = new ResumeGame();
-        resumeGame.getDataFromFile();
+    public void execute(String[] args) throws IOException {
+        this.getDataFromFile();
     }
 }
