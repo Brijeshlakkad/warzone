@@ -33,7 +33,7 @@ public class MapEditorCommandLayout implements CommandLayout {
         // > editcontinent -add continentID continentvalue -remove continentID
         PredefinedUserCommand l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("editcontinent");
-        l_userCommand.setCommandSpecification(CommandSpecification.AT_LEAST_ONE);
+        l_userCommand.setCommandSpecification(CommandSpecification.NEEDS_KEYS);
         l_userCommand.pushCommandArgument(new CommandArgument(
                 "add",
                 2,
@@ -51,7 +51,7 @@ public class MapEditorCommandLayout implements CommandLayout {
         // > editcountry -add countryID continentID -remove countryID
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("editcountry");
-        l_userCommand.setCommandSpecification(CommandSpecification.AT_LEAST_ONE);
+        l_userCommand.setCommandSpecification(CommandSpecification.NEEDS_KEYS);
         l_userCommand.pushCommandArgument(new CommandArgument(
                 "add",
                 2,
@@ -69,7 +69,7 @@ public class MapEditorCommandLayout implements CommandLayout {
         // > editneighbor -add countryID neighborcountryID -remove countryID neighborcountryID
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("editneighbor");
-        l_userCommand.setCommandSpecification(CommandSpecification.AT_LEAST_ONE);
+        l_userCommand.setCommandSpecification(CommandSpecification.NEEDS_KEYS);
         l_userCommand.pushCommandArgument(new CommandArgument(
                 "add",
                 2,
@@ -105,6 +105,36 @@ public class MapEditorCommandLayout implements CommandLayout {
         l_userCommand.setHeadCommand("validatemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
         l_userCommand.setGamePhaseMethodName("validateMap");
+        d_userCommands.add(l_userCommand);
+
+        // Example of the below command:
+        // > tournament -M listofmapfiles -P listofplayerstrategies -G numberofgames -D maxnumberofturns
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("tournament");
+        l_userCommand.setCommandSpecification(CommandSpecification.NEEDS_KEYS);
+        l_userCommand.pushCommandArgument(new CommandArgument(
+                "M",
+                1,
+                ArgumentSpecification.MIN
+        ));
+        l_userCommand.pushCommandArgument(new CommandArgument(
+                "P",
+                2,
+                ArgumentSpecification.MIN
+        ));
+        l_userCommand.pushCommandArgument(new CommandArgument(
+                "G",
+                1,
+                ArgumentSpecification.EQUAL
+        ));
+        l_userCommand.pushCommandArgument(new CommandArgument(
+                "D",
+                1,
+                ArgumentSpecification.EQUAL
+        ));
+        l_userCommand.setNumOfKeysOrValues(4);
+        l_userCommand.setCommandKeySpecification(ArgumentSpecification.EQUAL);
+        l_userCommand.setGamePhaseMethodName("prepareTournament");
         d_userCommands.add(l_userCommand);
     }
 

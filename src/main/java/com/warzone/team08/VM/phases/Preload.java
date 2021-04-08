@@ -6,6 +6,7 @@ import com.warzone.team08.VM.map_editor.services.EditMapService;
 import com.warzone.team08.VM.map_editor.services.ValidateMapService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <code>Preload</code> phase of the game phase. This is the initial phase of the game.
@@ -21,6 +22,15 @@ public class Preload extends MapEditor {
      */
     public Preload(GameEngine p_gameEngine) {
         super(p_gameEngine);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String prepareTournament(List<Map<String, List<String>>> p_arguments) throws VMException{
+        System.out.print("prepareTournament");
+        return "";
     }
 
     /**

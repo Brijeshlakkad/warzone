@@ -1,5 +1,6 @@
 package com.warzone.team08.CLI.models;
 
+import com.warzone.team08.CLI.constants.specifications.ArgumentSpecification;
 import com.warzone.team08.CLI.constants.specifications.CommandSpecification;
 
 import java.util.ArrayList;
@@ -35,13 +36,19 @@ public class PredefinedUserCommand {
     private CommandSpecification d_commandSpecification;
 
     /**
-     * Specifies how many values are required for this command. Can only be used with
-     * <code>CommandSpecification#CAN_RUN_ALONE_WITH_VALUE</code>.
+     * Specifies how many values (or keys with its value(s)) are required for this command. Can be used with
+     * <code>CommandSpecification#CAN_RUN_ALONE_WITH_VALUE</code> or <code>CommandSpecification#NEED_KEYS</code>.
      * The default value the command can have is one.
      *
      * @see CommandSpecification#CAN_RUN_ALONE_WITH_VALUE
+     * @see CommandSpecification#NEEDS_KEYS
      */
-    private int d_numOfValues = 1;
+    private int d_numOfKeysOrValues = 1;
+
+    /**
+     * Used for <code>CommandSpecification#NEED_KEYS</code>, to specify how many keys the entered command should have.
+     */
+    private ArgumentSpecification d_commandKeySpecification = ArgumentSpecification.MIN;
 
     /**
      * Command represents that <code>GameEngine</code> is had requested CLI for user input.
@@ -167,17 +174,17 @@ public class PredefinedUserCommand {
      *
      * @return Value of number of values.
      */
-    public int getNumOfValues() {
-        return d_numOfValues;
+    public int getNumOfKeysOrValues() {
+        return d_numOfKeysOrValues;
     }
 
     /**
      * Sets the number of values to be used with this command.
      *
-     * @param p_numOfValues Value of number of values.
+     * @param p_numOfKeysOrValues Value of number of values.
      */
-    public void setNumOfValues(int p_numOfValues) {
-        d_numOfValues = p_numOfValues;
+    public void setNumOfKeysOrValues(int p_numOfKeysOrValues) {
+        d_numOfKeysOrValues = p_numOfKeysOrValues;
     }
 
     /**
@@ -267,5 +274,23 @@ public class PredefinedUserCommand {
         PredefinedUserCommand l_that = (PredefinedUserCommand) l_p_o;
         return Objects.equals(d_headCommand, l_that.d_headCommand) &&
                 Objects.equals(d_commandArgumentList, l_that.d_commandArgumentList);
+    }
+
+    /**
+     * Sets the specification for the number of required keys for <code>CommandSpecification#NEED_KEYS<code> command.
+     *
+     * @param d_commandKeySpecification Specification for <code>CommandSpecification#NEED_KEYS<code> command.
+     */
+    public void setCommandKeySpecification(ArgumentSpecification d_commandKeySpecification) {
+        this.d_commandKeySpecification = d_commandKeySpecification;
+    }
+
+    /**
+     * Gets the specification for the number of required keys for <code>CommandSpecification#NEED_KEYS<code> command.
+     *
+     * @return Specification for <code>CommandSpecification#NEED_KEYS<code> command.
+     */
+    public ArgumentSpecification getCommandKeySpecification() {
+        return d_commandKeySpecification;
     }
 }

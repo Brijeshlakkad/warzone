@@ -4,6 +4,7 @@ import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.VMException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ConcreteState of the State pattern. In this example, defines behavior for commands that are valid in this state, and
@@ -23,6 +24,14 @@ public abstract class MainPlay extends GamePlay {
      */
     MainPlay(GameEngine p_gameEngine) {
         super(p_gameEngine);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String prepareTournament(List<Map<String, List<String>>> p_arguments) throws VMException{
+        return this.invalidCommand();
     }
 
     /**

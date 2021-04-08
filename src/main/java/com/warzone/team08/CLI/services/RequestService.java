@@ -36,10 +36,16 @@ public class RequestService {
             Method l_getGamePhase = l_class.getMethod("getGamePhase");
             Object l_gamePhase = l_getGamePhase.invoke(null);
             if (p_userCommand.getPredefinedUserCommand().getCommandSpecification()
-                    != CommandSpecification.AT_LEAST_ONE) {
+                    != CommandSpecification.NEEDS_KEYS) {
                 // Call the default method of the instance with the arguments
                 this.handleMethodInvocation(l_gamePhase, p_userCommand.getPredefinedUserCommand().getGamePhaseMethodName(), null, p_userCommand.getCommandValues());
+            } else if (p_userCommand.getPredefinedUserCommand().getCommandSpecification()
+                    == CommandSpecification.NEEDS_KEYS &&
+                    p_userCommand.getPredefinedUserCommand().getNumOfKeysOrValues() != 1) {
+                // Call method will the list of keys and its values.
+                this.handleMethodInvocation(l_gamePhase, p_userCommand.getPredefinedUserCommand().getGamePhaseMethodName(), null, p_userCommand.getUserArguments());
             } else {
+                // If the method needs each key as a separate function call.
                 // Iterate over the user arguments
                 for (Map<String, List<String>> entryMap : p_userCommand.getUserArguments()) {
                     for (Map.Entry<String, List<String>> entry : entryMap.entrySet()) {
@@ -51,7 +57,8 @@ public class RequestService {
                     }
                 }
             }
-        } catch (NullPointerException | ClassNotFoundException | IllegalAccessException p_e) {
+        } catch (NullPointerException | ClassNotFoundException |
+                IllegalAccessException p_e) {
             throw new InvalidCommandException("Command not found!");
         } catch (NoSuchMethodException |
                 InvocationTargetException p_e) {
@@ -62,6 +69,7 @@ public class RequestService {
                 throw new InvalidArgumentException("Unrecognized argument and/or its values");
             }
         }
+
     }
 
     /**
@@ -72,7 +80,8 @@ public class RequestService {
      * @param p_object    An instance of the object which specifies the class for being called method
      * @param p_argKey    Value of the argument key passed by the user; This represents also the method name of the
      *                    object.
-     * @param p_argValues Value of the argument values; This represents the arguments to be passed to the method call.
+     * @param p_argValues Value of the argument values or Value of the list of argument key - value pair; This
+     *                    represents the arguments to be passed to the method call.
      * @throws NoSuchMethodException     Raised if the method doesn't exist at the object.
      * @throws InvocationTargetException Raised if invoked a method that throws an underlying exception itself.
      * @throws IllegalAccessException    Raised if the method is not accessible by the caller.
@@ -80,7 +89,7 @@ public class RequestService {
     private void handleMethodInvocation(Object p_object,
                                         String p_methodName,
                                         String p_argKey,
-                                        List<String> p_argValues)
+                                        List<?> p_argValues)
             throws NoSuchMethodException,
             InvocationTargetException,
             IllegalAccessException {
@@ -99,6 +108,43 @@ public class RequestService {
             Method l_methodReference = p_object.getClass().getMethod(p_methodName, l_valueTypes);
             l_responseObject = l_methodReference.invoke(p_object, p_argKey, p_argValues);
         }
+        try {
+            String l_responseValue = (String) l_responseObject;
+            if (!l_responseValue.isEmpty()) {
+                System.out.println(l_responseValue);
+            }
+        } catch (
+                Exception l_ignored) {
+            // Ignore exception if the object does not represent the String value.
+        }
+    }
+
+    /**
+     * This method handles the actual call of the specific method at runtime. Prepares two arrays of Class and Object
+     * for the argument type and the value respectively. Uses these arrays to find the method and call the method with
+     * the value(s).
+     *
+     * @param p_object        An instance of the object which specifies the class for being called method.
+     * @param p_userArguments Value of the list of argument key - value pair; This represents the arguments to be passed
+     *                        to the method call.
+     * @throws NoSuchMethodException     Raised if the method doesn't exist at the object.
+     * @throws InvocationTargetException Raised if invoked a method that throws an underlying exception itself.
+     * @throws IllegalAccessException    Raised if the method is not accessible by the caller.
+     */
+    private void handleMethodInvocation(Object p_object,
+                                        String p_methodName,
+                                        List<Map<String, List<String>>> p_userArguments)
+            throws NoSuchMethodException,
+            InvocationTargetException,
+            IllegalAccessException {
+        // Create two arrays:
+        // 1. For type of the value
+        // 2. For the values
+        Class<?>[] l_valueTypes = new Class[]{List.class};
+
+        // Get the reference and call the method with arguments
+        Method l_methodReference = p_object.getClass().getMethod(p_methodName, l_valueTypes);
+        Object l_responseObject = l_methodReference.invoke(p_object, p_userArguments);
         try {
             String l_responseValue = (String) l_responseObject;
             if (!l_responseValue.isEmpty()) {
