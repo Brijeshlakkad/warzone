@@ -79,11 +79,10 @@ public class ShowMapService implements SingleCommand {
      * Initiates all methods of ShowMapService file.
      *
      * @param p_commandValues Value of parameters entered by the user.
-     * @return Value of string of continent and neighbour country information.
      * @throws EntityNotFoundException If no player is available.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+    public void execute(List<String> p_commandValues) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         StringBuilder l_playerContent = new StringBuilder();
         String l_logResponse = "";
         int l_playerCount = 0;

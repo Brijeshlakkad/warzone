@@ -1,9 +1,12 @@
 package com.warzone.team08.VM.map_editor;
 
 import com.warzone.team08.VM.constants.interfaces.Engine;
+import com.warzone.team08.VM.constants.interfaces.JSONable;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -12,9 +15,10 @@ import java.util.*;
  *
  * @author Brijesh Lakkad
  * @author CHARIT
+ * @author Rutwik
  * @version 1.0
  */
-public class MapEditorEngine implements Engine {
+public class MapEditorEngine implements Engine, JSONable {
     /**
      * Singleton instance of the class.
      */
@@ -169,5 +173,31 @@ public class MapEditorEngine implements Engine {
      */
     public void shutdown() {
         // No threads created by MapEditorEngine.
+    }
+
+    /**
+     * Creates <code>JSONObject</code> using the runtime information stored in data members of this class.
+     *
+     * @return Created <code>JSONObject</code>.
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_mapEditorEngineJSON = new JSONObject();
+        JSONArray l_continentJSONList = new JSONArray();
+        for (Continent l_continent: getContinentList()){
+            l_continentJSONList.put(l_continent.toJSON());
+        }
+        l_mapEditorEngineJSON.put("continents", l_continentJSONList);
+        return l_mapEditorEngineJSON;
+    }
+
+    /**
+     * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     */
+    @Override
+    public void fromJSON(JSONObject p_jsonObject) {
+
     }
 }

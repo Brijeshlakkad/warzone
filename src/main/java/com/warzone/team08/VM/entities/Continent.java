@@ -1,5 +1,9 @@
 package com.warzone.team08.VM.entities;
 
+import com.warzone.team08.VM.constants.interfaces.JSONable;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -8,8 +12,9 @@ import java.util.Objects;
  *
  * @author CHARIT
  * @author Brijesh Lakkad
+ * @author Rutwik
  */
-public class Continent {
+public class Continent implements JSONable {
     /**
      * Auto-generated ID of the continent.
      */
@@ -144,5 +149,35 @@ public class Continent {
     @Override
     public int hashCode() {
         return Objects.hash(d_continentId);
+    }
+
+
+    /**
+     * Creates <code>JSONObject</code> using the runtime information stored in data members of this class.
+     *
+     * @return Created <code>JSONObject</code>.
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_continentJSON = new JSONObject();
+        l_continentJSON.put("id",d_continentId);
+        l_continentJSON.put("name",d_continentName);
+        l_continentJSON.put("controlValue",d_continentControlValue);
+        JSONArray l_countryJSONList = new JSONArray();
+        for (Country l_country : getCountryList()){
+            l_countryJSONList.put(l_country.toJSON());
+        }
+        l_continentJSON.put("countries", l_countryJSONList);
+        return l_continentJSON;
+    }
+
+    /**
+     * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     */
+    @Override
+    public void fromJSON(JSONObject p_jsonObject) {
+
     }
 }

@@ -172,12 +172,11 @@ public class ValidateMapService implements SingleCommand {
      * Initiate all the validation procedures. Checks all the validation and replies to the execute method.
      *
      * @param p_commandValues Values of command entered by user if any.
-     * @return Value of the response.
      * @throws InvalidMapException     If the map is not valid.
      * @throws EntityNotFoundException If the entity not found.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws InvalidMapException, EntityNotFoundException {
+    public void execute(List<String> p_commandValues) throws InvalidMapException, EntityNotFoundException {
         String l_logResponse = "\n---VALIDATEMAP---\n";
         //Checks map has atleast 1 continent
         if (d_mapEditorEngine.getContinentList().size() > 0) {

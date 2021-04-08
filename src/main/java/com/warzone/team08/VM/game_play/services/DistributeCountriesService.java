@@ -130,13 +130,12 @@ public class DistributeCountriesService implements SingleCommand {
      * Calls the distributeCountries() method of the class and returns the result.
      *
      * @param p_commandValues Represents the values passed while running the command.
-     * @return Success message if function runs without error, otherwise throws exception.
      * @throws InvalidInputException Throws if number of players are zero.
      * @throws IllegalStateException Throws if returns an empty list.
      * @throws VMException           If any exception from while players in <code>GameLoop</code>.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws VMException, IllegalStateException {
+    public void execute(List<String> p_commandValues) throws VMException, IllegalStateException {
         // Check if players have been added.
         // What if only one player is available?
         if (!GamePlayEngine.getInstance().getPlayerList().isEmpty()) {

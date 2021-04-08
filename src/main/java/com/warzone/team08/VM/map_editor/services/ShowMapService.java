@@ -140,11 +140,10 @@ public class ShowMapService implements SingleCommand {
      * Initiates all methods of ShowMapService file.
      *
      * @param p_commandValues Value of parameters entered by the user.
-     * @return Value of string of continent and neighbour country information.
      * @throws EntityNotFoundException Throws if file not found.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+    public void execute(List<String> p_commandValues) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
         String l_logResponse = "";
         if (!this.d_continentCountryMap.isEmpty() || !this.d_countryList.isEmpty()) {
             l_logResponse = this.showContinentCountryContent() + "\n" + this.showNeighbourCountries();

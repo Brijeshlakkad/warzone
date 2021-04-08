@@ -280,7 +280,6 @@ public class    EditMapService implements SingleCommand  {
      * Takes the command and executes the function.
      *
      * @param p_commandValues Represents the values passed while running the command.
-     * @return Value of string acknowledging user that the file is loaded or not.
      * @throws InvalidMapException       Throws if the map was not valid.
      * @throws ResourceNotFoundException Throws if file not found.
      * @throws InvalidInputException     Throws if the user command is invalid.
@@ -289,7 +288,7 @@ public class    EditMapService implements SingleCommand  {
      * @see EditMapService#handleLoadMap
      */
     @Override
-    public String execute(List<String> p_commandValues)
+    public void execute(List<String> p_commandValues)
             throws InvalidMapException,
             ResourceNotFoundException,
             InvalidInputException,
