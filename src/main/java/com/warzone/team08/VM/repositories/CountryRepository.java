@@ -37,7 +37,11 @@ public class CountryRepository {
         List<Country> l_countryList = this.findByCountryName(p_countryName);
         if (l_countryList.size() > 0)
             return l_countryList.get(0);
-        throw new EntityNotFoundException(String.format("'%s' country not found", p_countryName));
+        else
+        {
+            return null;
+        }
+        //throw new EntityNotFoundException(String.format("'%s' country not found", p_countryName));
     }
 
     /**

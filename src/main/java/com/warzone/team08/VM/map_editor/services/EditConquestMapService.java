@@ -52,6 +52,11 @@ public class EditConquestMapService implements SingleCommand {
         d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
+    public static void main(String args[]) {
+        EditConquestMapService e = new EditConquestMapService();
+        // e.loadConquestMap();
+    }
+
     /**
      * This method reads user provided map file. It reads data from file and stores into different java objects.
      *
@@ -194,8 +199,14 @@ public class EditConquestMapService implements SingleCommand {
                     l_continentName = l_terrProperties[3];
                     for (int i = 4; i <= l_terrProperties.length - 1; i++) {
                         String l_neighbourCountryName = l_terrProperties[i];
-                        Country l_neighbour = new Country(l_neighbourCountryName);
-                        l_neighbourNodes.add(l_neighbour);
+                        //Country l_neighbour;
+                        Country l_neighbour = d_countryRepository.findFirstByCountryName(l_neighbourCountryName);
+                        if (l_neighbour != null) {
+                            l_neighbourNodes.add(l_neighbour);
+                        } else {
+                            l_neighbour = new Country(l_neighbourCountryName);
+                            l_neighbourNodes.add(l_neighbour);
+                        }
                     }
                     d_countryService.add(l_countryName, l_continentName, l_neighbourNodes);
                 }
@@ -288,11 +299,5 @@ public class EditConquestMapService implements SingleCommand {
         } else {
             throw new InvalidInputException("File name is empty!");
         }
-    }
-
-    public static void main(String args[])
-    {
-        EditConquestMapService e = new EditConquestMapService();
-       // e.loadConquestMap();
     }
 }

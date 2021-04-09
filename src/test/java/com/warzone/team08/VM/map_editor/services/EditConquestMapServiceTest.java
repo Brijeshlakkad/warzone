@@ -112,7 +112,7 @@ public class EditConquestMapServiceTest {
 
             System.out.println(key);
             while (it.hasNext()) {
-                System.out.print(it.next());
+                System.out.print(it.next()+" ");
             }
             //value.iterator().forEachRemaining(System.out::println);
 
