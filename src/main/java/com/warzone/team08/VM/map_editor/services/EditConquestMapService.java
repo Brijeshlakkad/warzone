@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class EditConquestMapService implements SingleCommand {
 
-    private static HashMap<String, String> d_MapDetails;
+    private final HashMap<String, String> d_MapDetails;
     /**
      * Engine to store and retrieve map data.
      */
@@ -42,6 +42,7 @@ public class EditConquestMapService implements SingleCommand {
      * Initializes variables required to load map into different objects.
      */
     public EditConquestMapService() {
+        d_MapDetails = new HashMap<>();
         d_mapEditorEngine = MapEditorEngine.getInstance();
         d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
@@ -132,7 +133,7 @@ public class EditConquestMapService implements SingleCommand {
                 }
             }
             p_reader.reset();
-            d_mapEditorEngine.set_MapDetails(d_MapDetails);
+            d_mapEditorEngine.setMapDetails(d_MapDetails);
         } catch (IOException e) {
             throw new InvalidMapException("Invalid map file");
         }
@@ -196,7 +197,7 @@ public class EditConquestMapService implements SingleCommand {
                         Country l_neighbour = new Country(l_neighbourCountryName);
                         l_neighbourNodes.add(l_neighbour);
                     }
-                    d_countryService.add(l_countryName, l_continentName);
+                    d_countryService.add(l_countryName, l_continentName, l_neighbourNodes);
                 }
             }
         } catch (IOException e) {
@@ -212,7 +213,7 @@ public class EditConquestMapService implements SingleCommand {
      */
     public List<String> getModelComponents(String p_line) {
         try {
-            if (!p_line.isEmpty() && p_line.contains(" ")) {
+            if (!p_line.isEmpty() && p_line.contains("")) {
                 List<String> l_continentComponentList = Arrays.asList(p_line.split("="));
                 if (!l_continentComponentList.isEmpty()) {
                     l_continentComponentList = l_continentComponentList.stream().map(String::trim)
@@ -287,5 +288,11 @@ public class EditConquestMapService implements SingleCommand {
         } else {
             throw new InvalidInputException("File name is empty!");
         }
+    }
+
+    public static void main(String args[])
+    {
+        EditConquestMapService e = new EditConquestMapService();
+       // e.loadConquestMap();
     }
 }

@@ -175,7 +175,7 @@ public class MapEditorEngine implements Engine {
      *
      * @return Hashmap storing map info.
      */
-    public static HashMap<String, String> get_MapDetails() {
+    public static HashMap<String, String> getMapDetails() {
         return d_MapDetails;
     }
 
@@ -183,7 +183,7 @@ public class MapEditorEngine implements Engine {
      * Returns the hashmap storing map info.
      * @param p_MapDetails mMp info.
      */
-    public static void set_MapDetails(HashMap<String, String> p_MapDetails) {
+    public static void setMapDetails(HashMap<String, String> p_MapDetails) {
         d_MapDetails = p_MapDetails;
     }
 }

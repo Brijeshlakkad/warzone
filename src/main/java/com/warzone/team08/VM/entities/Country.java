@@ -44,6 +44,11 @@ public class Country {
         d_neighbourCountries = new ArrayList<>();
     }
 
+    /**
+     * Assigns country name to country and creates the neighbour countries list.
+     *
+     * @param p_countryName Country name.
+     */
     public Country(String p_countryName)
     {
         this.COUNTRY_ID = ++d_SerialNumber;
