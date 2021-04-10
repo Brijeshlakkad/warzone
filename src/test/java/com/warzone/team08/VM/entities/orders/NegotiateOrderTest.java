@@ -2,6 +2,7 @@ package com.warzone.team08.VM.entities.orders;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.entities.cards.DiplomacyCard;
 import com.warzone.team08.VM.exceptions.*;
@@ -17,7 +18,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests the Negotiate card operation works properly.
@@ -38,7 +40,6 @@ public class NegotiateOrderTest {
     public static void createPlayersList() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
-        d_GamePlayEngine = GamePlayEngine.getInstance();
         d_TestFilePath = BombOrderTest.class.getClassLoader().getResource("map_files/solar.map");
     }
 
@@ -56,17 +57,16 @@ public class NegotiateOrderTest {
     public void setup() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
         VirtualMachine.getInstance().initialise();
 
+        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
+
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assertNotNull(d_TestFilePath);
         String l_url = new URI(d_TestFilePath.getPath()).getPath();
         l_editMapService.handleLoadMap(l_url);
 
-        Player l_player1 = new Player();
-        Player l_player2 = new Player();
-
-        l_player1.setName("User_1");
-        l_player2.setName("User_2");
+        Player l_player1 = new Player("User_1", StrategyType.HUMAN);
+        Player l_player2 = new Player("User_2", StrategyType.HUMAN);
 
         d_GamePlayEngine.addPlayer(l_player1);
         d_GamePlayEngine.addPlayer(l_player2);
@@ -86,7 +86,7 @@ public class NegotiateOrderTest {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         l_player1.addCard(new DiplomacyCard());
-        NegotiateOrder negotiateOrder = new NegotiateOrder(l_player1,"User_2");
+        NegotiateOrder negotiateOrder = new NegotiateOrder(l_player1, "User_2");
         negotiateOrder.execute();
         assertTrue(l_player1.getFriendPlayers().contains(l_player2));
         assertTrue(l_player2.getFriendPlayers().contains(l_player1));

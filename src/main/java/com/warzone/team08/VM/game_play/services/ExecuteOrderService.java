@@ -1,6 +1,5 @@
 package com.warzone.team08.VM.game_play.services;
 
-import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Player;
@@ -31,11 +30,11 @@ public class ExecuteOrderService {
         VirtualMachine.getInstance().stdout("Execution of orders started!");
         d_logEntryBuffer.dataChanged("execution_order", "Execution of orders started!");
 
-        GamePlayEngine l_gamePlayEngine = GameEngine.GAME_PLAY_ENGINE();
+        GamePlayEngine l_gamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         l_gamePlayEngine.setCurrentPlayerTurn(l_gamePlayEngine.getCurrentPlayerForExecutionPhase());
 
         // Iterate over and execute the orders which were supposed to be executed in this phase.
-        GamePlayEngine.getInstance().getCurrentFutureOrders().forEach(l_futureOrder -> {
+        VirtualMachine.getGameEngine().getGamePlayEngine().getCurrentFutureOrders().forEach(l_futureOrder -> {
             try {
                 l_futureOrder.execute();
             } catch (InvalidOrderException | CardNotFoundException p_e) {
@@ -44,9 +43,9 @@ public class ExecuteOrderService {
         });
 
         // Expire orders which had been executed and are not valid anymore.
-        GamePlayEngine.getInstance().getExpiredFutureOrders().forEach(l_futureOrder -> {
+        VirtualMachine.getGameEngine().getGamePlayEngine().getExpiredFutureOrders().forEach(l_futureOrder -> {
             l_futureOrder.expire();
-            GamePlayEngine.getInstance().removeFutureOrder(l_futureOrder);
+            VirtualMachine.getGameEngine().getGamePlayEngine().removeFutureOrder(l_futureOrder);
         });
 
         while (finishedExecutingOrders.size() != l_gamePlayEngine.getPlayerList().size()) {

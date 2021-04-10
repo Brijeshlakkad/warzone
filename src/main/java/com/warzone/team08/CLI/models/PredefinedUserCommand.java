@@ -277,18 +277,18 @@ public class PredefinedUserCommand {
     }
 
     /**
-     * Sets the specification for the number of required keys for <code>CommandSpecification#NEED_KEYS<code> command.
+     * Sets the specification for the number of required keys for <code>CommandSpecification#NEED_KEYS</code> command.
      *
-     * @param d_commandKeySpecification Specification for <code>CommandSpecification#NEED_KEYS<code> command.
+     * @param d_commandKeySpecification Specification for <code>CommandSpecification#NEED_KEYS</code> command.
      */
     public void setCommandKeySpecification(ArgumentSpecification d_commandKeySpecification) {
         this.d_commandKeySpecification = d_commandKeySpecification;
     }
 
     /**
-     * Gets the specification for the number of required keys for <code>CommandSpecification#NEED_KEYS<code> command.
+     * Gets the specification for the number of required keys for <code>CommandSpecification#NEED_KEYS</code> command.
      *
-     * @return Specification for <code>CommandSpecification#NEED_KEYS<code> command.
+     * @return Specification for <code>CommandSpecification#NEED_KEYS</code> command.
      */
     public ArgumentSpecification getCommandKeySpecification() {
         return d_commandKeySpecification;

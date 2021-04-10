@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.map_editor.services;
 
 import com.jakewharton.fliptables.FlipTable;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
@@ -35,7 +36,7 @@ public class ShowMapService implements SingleCommand {
      * @throws EntityNotFoundException Throws if required entity is not found.
      */
     public ShowMapService() throws EntityNotFoundException {
-        d_mapEditorEngine = MapEditorEngine.getInstance();
+        d_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
         d_continentList = d_mapEditorEngine.getContinentList();
         d_countryList = d_mapEditorEngine.getCountryList();
         d_continentCountryMap = d_mapEditorEngine.getContinentCountryMap();

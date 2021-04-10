@@ -1,8 +1,8 @@
 package com.warzone.team08.VM.repositories;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.game_play.GamePlayEngine;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ public class PlayerRepository {
      * @throws EntityNotFoundException Throws if the being searched entity has been not found.
      */
     public Player findByPlayerName(String p_playerName) throws EntityNotFoundException {
-        List<Player> l_filteredPlayerList = GamePlayEngine.getInstance().getPlayerList().stream().filter(p_player ->
+        List<Player> l_filteredPlayerList = VirtualMachine.getGameEngine().getGamePlayEngine().getPlayerList().stream().filter(p_player ->
                 p_player.getName().equals(p_playerName)
         ).collect(Collectors.toList());
         if (l_filteredPlayerList.size() > 0)
@@ -37,7 +37,7 @@ public class PlayerRepository {
      * @return True if player with same name already exists in the list of joined players; Otherwise false.
      */
     public boolean existByPlayerName(String p_playerName) {
-        return GamePlayEngine.getInstance().getPlayerList().stream().filter(p_player ->
+        return VirtualMachine.getGameEngine().getGamePlayEngine().getPlayerList().stream().filter(p_player ->
                 p_player.getName().equals(p_playerName)
         ).count() == 1;
     }

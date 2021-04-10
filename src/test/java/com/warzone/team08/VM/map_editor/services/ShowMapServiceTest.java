@@ -1,8 +1,9 @@
 package com.warzone.team08.VM.map_editor.services;
 
 import com.jakewharton.fliptables.FlipTable;
+import com.warzone.team08.Application;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Brijesh Lakkad
  */
 public class ShowMapServiceTest {
+    private static Application d_application = new Application();
     private ShowMapService d_showMapService;
 
     /**
@@ -37,9 +39,11 @@ public class ShowMapServiceTest {
      */
     @BeforeClass
     public static void beforeClass() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException, IOException {
-        EditMapService l_editMapService = new EditMapService();
+        d_application.handleApplicationStartup();
         // Re-initialise map editor engine.
-        MapEditorEngine.getInstance().initialise();
+        VirtualMachine.getGameEngine().initialise();
+
+        EditMapService l_editMapService = new EditMapService();
 
         URL l_testFilePath = ShowMapServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
         assertNotNull(l_testFilePath);

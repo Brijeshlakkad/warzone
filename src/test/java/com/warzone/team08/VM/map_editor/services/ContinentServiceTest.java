@@ -1,9 +1,9 @@
 package com.warzone.team08.VM.map_editor.services;
 
+import com.warzone.team08.Application;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
-import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Brijesh Lakkad
  */
 public class ContinentServiceTest {
+    private static Application d_Application = new Application();
     private static ContinentService d_ContinentService;
 
     /**
@@ -24,14 +25,17 @@ public class ContinentServiceTest {
      */
     @BeforeClass
     public static void beforeClass() {
-        d_ContinentService = new ContinentService();
+        d_Application.handleApplicationStartup();
     }
 
     /**
      * Re-initializes the continent list before test case run.
      */
     @Before
-    public void beforeTestCase() { MapEditorEngine.getInstance().initialise();}
+    public void beforeTestCase() {
+        VirtualMachine.getInstance().initialise();
+        d_ContinentService = new ContinentService();
+    }
 
     /**
      * Tests whether the wrong continent value is being shown or not.
@@ -50,7 +54,7 @@ public class ContinentServiceTest {
      * @throws InvalidInputException   Throws if country value is not number.
      */
     @Test(expected = Test.None.class)
-    public void testAddAndRemoveContinent() throws EntityNotFoundException, InvalidInputException{
+    public void testAddAndRemoveContinent() throws EntityNotFoundException, InvalidInputException {
         String l_responseOfAddOp = d_ContinentService.add("Asia", "10");
         assertNotNull(l_responseOfAddOp);
 

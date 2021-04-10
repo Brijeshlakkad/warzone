@@ -1,11 +1,11 @@
 package com.warzone.team08.VM.entities;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.constants.interfaces.Card;
 import com.warzone.team08.VM.constants.interfaces.Order;
-import com.warzone.team08.VM.entities.strategy.HumanStrategy;
-import com.warzone.team08.VM.entities.strategy.PlayerStrategy;
+import com.warzone.team08.VM.entities.strategy.*;
 import com.warzone.team08.VM.exceptions.*;
 
 import java.util.ArrayList;
@@ -47,19 +47,13 @@ public class Player {
     private boolean d_isDone = false;
 
     /**
-     * Default constructor. This constructor should not be used to create an instance of <code>Player</code>.
-     * <p>
-     * TODO remove this constructor from everywhere. Use Player(StrategyType p_strategyType).
-     */
-    @Deprecated
-    public Player() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * Creates <code>Player</code> using the decided strategy.
+     *
+     * @param p_playerName   Name of the player.
+     * @param p_strategyType Strategy of the player.
      */
-    public Player(StrategyType p_strategyType) {
+    public Player(String p_playerName, StrategyType p_strategyType) {
+        d_name = p_playerName;
         this.setPlayerStrategyUsingType(p_strategyType);
     }
 
@@ -90,15 +84,6 @@ public class Player {
      */
     public String getName() {
         return d_name;
-    }
-
-    /**
-     * Setter method for player name.
-     *
-     * @param p_name player name.
-     */
-    public void setName(String p_name) {
-        this.d_name = p_name;
     }
 
     /**
@@ -212,7 +197,6 @@ public class Player {
     /**
      * Gets order from the user and stores the order for the player.
      *
-     * @return True if the player doesn't want to being asked to issue order.
      * @throws InvalidCommandException  If there is an error while preprocessing the user command.
      * @throws InvalidArgumentException If the mentioned value is not of expected type.
      * @throws EntityNotFoundException  If the target country not found.
@@ -379,8 +363,15 @@ public class Player {
     public void setPlayerStrategyUsingType(StrategyType p_strategyUsingType) {
         if (p_strategyUsingType == StrategyType.HUMAN) {
             d_playerStrategy = new HumanStrategy(this);
+        } else if (p_strategyUsingType == StrategyType.AGGRESSIVE) {
+            d_playerStrategy = new AggressiveStrategy(this);
+        } else if (p_strategyUsingType == StrategyType.BENEVOLENT) {
+            d_playerStrategy = new BenevolentStrategy(this);
+        } else if (p_strategyUsingType == StrategyType.CHEATER) {
+            d_playerStrategy = new CheaterStrategy(this);
+        } else if (p_strategyUsingType == StrategyType.RANDOM) {
+            d_playerStrategy = new RandomStrategy(this);
         }
-        // TODO Deep Patel instantiate other strategies.
     }
 
     /**
@@ -397,5 +388,20 @@ public class Player {
      */
     public boolean isDone() {
         return d_isDone;
+    }
+
+    /**
+     * Checks if this player has won. To decide, each country will be iterated to know if it is owned by this player or
+     * not. If all the countries is being owned by this player, then the player has won the game.
+     *
+     * @return True if the player has won.
+     */
+    public boolean isWon() {
+        List<Country> l_mapEditorEngine = VirtualMachine.getGameEngine()
+                .getMapEditorEngine().getCountryList();
+        return VirtualMachine.getGameEngine()
+                .getMapEditorEngine().getCountryList().stream().anyMatch(p_country ->
+                        p_country.getOwnedBy() != null && !p_country.getOwnedBy().equals(this)
+                );
     }
 }

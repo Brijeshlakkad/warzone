@@ -1,9 +1,10 @@
 package com.warzone.team08.VM.map_editor.services;
 
+import com.warzone.team08.Application;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Rutwik
  */
 public class SaveMapServiceTest {
+    private static Application d_application = new Application();
     private static ContinentService d_ContinentService;
     private static CountryService d_CountryService;
     private static CountryNeighborService d_CountryNeighbourService;
@@ -38,6 +40,9 @@ public class SaveMapServiceTest {
      */
     @BeforeClass
     public static void before() {
+        d_application.handleApplicationStartup();
+        VirtualMachine.getInstance().initialise();
+
         d_ContinentService = new ContinentService();
         d_CountryService = new CountryService();
         d_CountryNeighbourService = new CountryNeighborService();
@@ -49,7 +54,7 @@ public class SaveMapServiceTest {
      */
     @Before
     public void beforeTestCase() {
-        MapEditorEngine.getInstance().initialise();
+        VirtualMachine.getGameEngine().getMapEditorEngine().initialise();
     }
 
     /**
@@ -60,7 +65,7 @@ public class SaveMapServiceTest {
      *                                 List will throw this error.
      */
     @Before
-    public void addContentToTheMapFile() throws InvalidInputException, EntityNotFoundException{
+    public void addContentToTheMapFile() throws InvalidInputException, EntityNotFoundException {
         d_ContinentService.add("Asia", "10");
         d_ContinentService.add("Australia", "15");
         d_CountryService.add("Delhi", "Asia");

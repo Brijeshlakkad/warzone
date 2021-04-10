@@ -1,8 +1,8 @@
 package com.warzone.team08.VM.repositories;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class ContinentRepository {
      * @return Value of the list of matched continents.
      */
     public List<Continent> findByContinentName(String p_continentName) {
-        return MapEditorEngine.getInstance().getContinentList().stream().filter(p_continent ->
+        return VirtualMachine.getGameEngine().getMapEditorEngine().getContinentList().stream().filter(p_continent ->
                 p_continent.getContinentName().equals(p_continentName)
         ).collect(Collectors.toList());
     }
@@ -48,7 +48,7 @@ public class ContinentRepository {
      * @throws EntityNotFoundException Throws if the being searched entity has been not found.
      */
     public Continent findByContinentId(Integer p_continentId) throws EntityNotFoundException {
-        List<Continent> l_continentList = MapEditorEngine.getInstance().getContinentList().stream().filter(p_continent ->
+        List<Continent> l_continentList = VirtualMachine.getGameEngine().getMapEditorEngine().getContinentList().stream().filter(p_continent ->
                 p_continent.getContinentId().equals(p_continentId)
         ).collect(Collectors.toList());
         if (!l_continentList.isEmpty()) {
