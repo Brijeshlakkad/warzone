@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.entities.strategy;
 
+
 import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.StrategyType;
@@ -22,11 +23,11 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * This class test the execution of the Aggressive Strategy.
+ * This class test the execution of the Benevolent Strategy.
  *
  * @author Deep Patel
  */
-public class AggressiveStrategyTest {
+public class BenevolentStrategyTest {
     private static Application d_Application;
     private static URL d_TestFilePath;
     private static GamePlayEngine d_GamePlayEngine;
@@ -41,7 +42,7 @@ public class AggressiveStrategyTest {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
         d_GamePlayEngine = GamePlayEngine.getInstance();
-        d_TestFilePath = AggressiveStrategyTest.class.getClassLoader().getResource("test_map_files/test_strategy.map");
+        d_TestFilePath = com.warzone.team08.VM.entities.strategy.AggressiveStrategyTest.class.getClassLoader().getResource("test_map_files/test_strategy.map");
     }
 
     /**
@@ -93,17 +94,19 @@ public class AggressiveStrategyTest {
             traverse.setNumberOfArmies(i);
             i++;
         }
-        Player l_player2 = d_playerList.get(1);
-        for (Country traverse : l_player2.getAssignedCountries()) {
-            traverse.setNumberOfArmies(5);
-        }
 
-        l_player.setReinforcementCount(6);
-        AggressiveStrategy l_check = new AggressiveStrategy(l_player);
+        l_player.setReinforcementCount(3);
+        BenevolentStrategy l_check = new BenevolentStrategy(l_player);
         l_check.execute();
+
+        System.out.println(l_player.getOrders());
         for (Order l_travers : l_player.getOrders()) {
             l_travers.execute();
         }
-        assertEquals(6, l_check.getOppositionCountry().getNumberOfArmies());
+
+        assertEquals(4,l_player.getAssignedCountries().get(0).getNumberOfArmies());
+        assertEquals(4,l_player.getAssignedCountries().get(1).getNumberOfArmies());
+        assertEquals(4,l_player.getAssignedCountries().get(2).getNumberOfArmies());
+        assertEquals(5,l_player.getAssignedCountries().get(3).getNumberOfArmies());
     }
 }
