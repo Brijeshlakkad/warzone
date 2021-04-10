@@ -193,9 +193,13 @@ public class EditConquestMapService implements SingleCommand {
             while ((l_territories = p_reader.readLine()) != null && !l_territories.startsWith("[")) {
                 if (!l_territories.isEmpty() && l_territories != null && !l_territories.equals("")) {
                     String l_countryName, l_continentName;
+                    String l_xCoordinate;
+                    String l_yCoordinate;
                     List<Country> l_neighbourNodes = new ArrayList<>();
                     String[] l_terrProperties = l_territories.split(",");
                     l_countryName = l_terrProperties[0];
+                    l_xCoordinate = l_terrProperties[1];
+                    l_yCoordinate = l_terrProperties[2];
                     l_continentName = l_terrProperties[3];
                     for (int i = 4; i <= l_terrProperties.length - 1; i++) {
                         String l_neighbourCountryName = l_terrProperties[i];
@@ -208,7 +212,7 @@ public class EditConquestMapService implements SingleCommand {
                             l_neighbourNodes.add(l_neighbour);
                         }
                     }
-                    d_countryService.add(l_countryName, l_continentName, l_neighbourNodes);
+                    d_countryService.add(l_countryName, l_continentName, l_neighbourNodes, l_xCoordinate, l_yCoordinate);
                 }
             }
         } catch (IOException e) {

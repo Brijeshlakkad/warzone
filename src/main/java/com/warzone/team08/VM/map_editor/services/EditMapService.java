@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * This file loads map file in the user console.
+ * This file acts as a Target class in adapter pattern.
  * <p>
  * This service handles `editmap` user command.
  *

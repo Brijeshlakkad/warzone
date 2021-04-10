@@ -12,6 +12,10 @@ import java.util.Objects;
  */
 public class Country {
     /**
+     * Used to keep the track of unique IDs for the continent.
+     */
+    public static int d_SerialNumber = 0;
+    /**
      * Auto-generated ID of the country.
      */
     private final Integer COUNTRY_ID;
@@ -20,11 +24,8 @@ public class Country {
     private List<Country> d_neighbourCountries;
     private Player d_ownedBy;
     private int d_numberOfArmies;
-
-    /**
-     * Used to keep the track of unique IDs for the continent.
-     */
-    public static int d_SerialNumber = 0;
+    private String d_xCoordinate;
+    private String d_yCoordinate;
 
     /**
      * Assigns country id to the country and creates the neighbour countries list.
@@ -49,11 +50,17 @@ public class Country {
      *
      * @param p_countryName Country name.
      */
-    public Country(String p_countryName)
-    {
+    public Country(String p_countryName) {
         this.COUNTRY_ID = ++d_SerialNumber;
         d_neighbourCountries = new ArrayList<>();
         d_countryName = p_countryName;
+    }
+
+    /**
+     * Resets the serial number to zero. Used when the map engine is being reset.
+     */
+    public static void resetSerialNumber() {
+        d_SerialNumber = 0;
     }
 
     /**
@@ -63,16 +70,6 @@ public class Country {
      */
     public Integer getCountryId() {
         return COUNTRY_ID;
-    }
-
-
-    /**
-     * Sets the country name.
-     *
-     * @param p_countryName Value of the country name.
-     */
-    public void setCountryName(String p_countryName) {
-        d_countryName = p_countryName;
     }
 
     /**
@@ -85,14 +82,13 @@ public class Country {
     }
 
     /**
-     * Sets the continent for this country.
+     * Sets the country name.
      *
-     * @param p_continent Represents the value of continent.
+     * @param p_countryName Value of the country name.
      */
-    public void setContinent(Continent p_continent) {
-        d_continent = p_continent;
+    public void setCountryName(String p_countryName) {
+        d_countryName = p_countryName;
     }
-
 
     /**
      * Gets the continent of this country.
@@ -104,12 +100,12 @@ public class Country {
     }
 
     /**
-     * Sets the list of the neighboring countries.
+     * Sets the continent for this country.
      *
-     * @param p_neighbourCountries List of neighboring countries.
+     * @param p_continent Represents the value of continent.
      */
-    public void setNeighbourCountries(List<Country> p_neighbourCountries) {
-        d_neighbourCountries = p_neighbourCountries;
+    public void setContinent(Continent p_continent) {
+        d_continent = p_continent;
     }
 
     /**
@@ -119,6 +115,15 @@ public class Country {
      */
     public List<Country> getNeighbourCountries() {
         return d_neighbourCountries;
+    }
+
+    /**
+     * Sets the list of the neighboring countries.
+     *
+     * @param p_neighbourCountries List of neighboring countries.
+     */
+    public void setNeighbourCountries(List<Country> p_neighbourCountries) {
+        d_neighbourCountries = p_neighbourCountries;
     }
 
     /**
@@ -137,13 +142,6 @@ public class Country {
      */
     public void removeNeighbourCountry(Country p_neighbourCountry) {
         d_neighbourCountries.remove(p_neighbourCountry);
-    }
-
-    /**
-     * Resets the serial number to zero. Used when the map engine is being reset.
-     */
-    public static void resetSerialNumber() {
-        d_SerialNumber = 0;
     }
 
     /**
@@ -180,6 +178,42 @@ public class Country {
      */
     public void setNumberOfArmies(int p_numberOfArmies) {
         d_numberOfArmies = p_numberOfArmies;
+    }
+
+    /**
+     * Returns the X coordinate of the Country.
+     *
+     * @return X coordinate.
+     */
+    public String getXCoordinate() {
+        return d_xCoordinate;
+    }
+
+    /**
+     * Sets the X coordinate of the Country.
+     *
+     * @param p_xCoordinate X coordinate.
+     */
+    public void setXCoordinate(String p_xCoordinate) {
+        this.d_xCoordinate = p_xCoordinate;
+    }
+
+    /**
+     * Returns the Y coordinate of the Country.
+     *
+     * @return Y coordinate.
+     */
+    public String getYCoordinate() {
+        return d_yCoordinate;
+    }
+
+    /**
+     * Sets the Y coordinate of the Country.
+     *
+     * @param p_yCoordinate Y coordinate.
+     */
+    public void setYCoordinate(String p_yCoordinate) {
+        this.d_yCoordinate = p_yCoordinate;
     }
 
     /**

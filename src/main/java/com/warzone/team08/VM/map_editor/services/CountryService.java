@@ -78,7 +78,7 @@ public class CountryService {
      * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public String add(String p_countryName, String p_continentName, List<Country> p_neighbourCountries) throws EntityNotFoundException {
+    public String add(String p_countryName, String p_continentName, List<Country> p_neighbourCountries, String p_xCoordinate, String p_yCoordinate) throws EntityNotFoundException {
         boolean l_isExist = false;
         Country l_countryObject = null;
         List<Country> l_countryList = d_mapEditorEngine.getCountryList();
@@ -95,6 +95,8 @@ public class CountryService {
             l_countryObject.setContinent(l_continent);
             // Save the list of neighboring countries.
             l_countryObject.setNeighbourCountries(p_neighbourCountries);
+            l_countryObject.setXCoordinate(p_xCoordinate);
+            l_countryObject.setYCoordinate(p_yCoordinate);
             // Save country to continent
             l_continent.addCountry(l_countryObject);
             if (!d_mapEditorEngine.getLoadingMap()) {
@@ -104,6 +106,8 @@ public class CountryService {
             Country l_country = new Country(d_mapEditorEngine.getCountryList().size() + 1);
             l_country.setCountryName(p_countryName);
             l_country.setNeighbourCountries(p_neighbourCountries);
+            l_country.setXCoordinate(p_xCoordinate);
+            l_country.setYCoordinate(p_yCoordinate);
             Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);
             // Two way mappings (one to many mappings)
             l_country.setContinent(l_continent);
