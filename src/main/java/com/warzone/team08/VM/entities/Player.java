@@ -1,22 +1,18 @@
 package com.warzone.team08.VM.entities;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.CardType;
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.constants.interfaces.Card;
 import com.warzone.team08.VM.constants.interfaces.Order;
+import com.warzone.team08.VM.entities.strategy.HumanStrategy;
+import com.warzone.team08.VM.entities.strategy.PlayerStrategy;
 import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.logger.LogEntryBuffer;
-import com.warzone.team08.VM.mappers.OrderMapper;
-import com.warzone.team08.VM.responses.CommandResponse;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -33,41 +29,38 @@ public class Player {
     /**
      * List of orders issued by the player.
      */
-    private final List<Order> d_orders;
+    private final List<Order> d_orders = new ArrayList<>();
     /**
      * List of orders executed by the <code>GameEngine</code>.
      */
-    private final List<Order> d_executedOrders;
+    private final List<Order> d_executedOrders = new ArrayList<>();
     /**
      * List of cards owned by the player.
      */
-    private List<Card> d_cards;
-    private List<Country> d_assignedCountries;
-    private int d_reinforcementsCount;
-    private int d_remainingReinforcementCount;
-    private int d_assignedCountryCount;
-    private final List<Player> d_negotiatePlayer;
+    private final List<Card> d_cards = new ArrayList<>();
+    private List<Country> d_assignedCountries = new ArrayList<>();
+    private int d_reinforcementsCount = 0;
+    private int d_remainingReinforcementCount = 0;
+    private int d_assignedCountryCount = 0;
+    private final List<Player> d_negotiatePlayer = new ArrayList<>();
+    private PlayerStrategy d_playerStrategy;
+    private boolean d_isDone = false;
 
     /**
-     * To map from <code>UserCommand</code> to <code>Order</code>.
+     * Default constructor. This constructor should not be used to create an instance of <code>Player</code>.
+     * <p>
+     * TODO remove this constructor from everywhere. Use Player(StrategyType p_strategyType).
      */
-    private final OrderMapper d_orderMapper;
-
-    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
-
-    /**
-     * Initializes variables required to handle player state.
-     */
+    @Deprecated
     public Player() {
-        d_orders = new ArrayList<>();
-        d_executedOrders = new ArrayList<>();
-        d_assignedCountries = new ArrayList<>();
-        d_reinforcementsCount = 0;
-        d_remainingReinforcementCount = 0;
-        d_assignedCountryCount = 0;
-        d_orderMapper = new OrderMapper();
-        d_cards = new ArrayList<>();
-        d_negotiatePlayer = new ArrayList<>();
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Creates <code>Player</code> using the decided strategy.
+     */
+    public Player(StrategyType p_strategyType) {
+        this.setPlayerStrategyUsingType(p_strategyType);
     }
 
     /**
@@ -226,37 +219,17 @@ public class Player {
      * @throws ExecutionException       If any error while processing concurrent thread.
      * @throws InterruptedException     If scheduled thread was interrupted.
      */
-    public boolean issueOrder() throws
+    public void issueOrder() throws
             InvalidCommandException,
             EntityNotFoundException,
             ExecutionException,
             InterruptedException,
             InvalidArgumentException {
-        // Requests user interface for input from user.
-        String l_responseVal = "";
-        do {
-            VirtualMachine.getInstance().stdout(String.format("\nPlayer: %s--------\nUSAGE: You can check map details\n> showmap <return>", this.d_name, this.d_remainingReinforcementCount));
-            Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Issue Order:"));
-            l_responseVal = l_responseOfFuture.get();
-            d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_name));
-        } while (l_responseVal.isEmpty());
-        try {
-            ObjectMapper l_objectMapper = new ObjectMapper();
-            // Map user response to Order object.
-            CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
-            if (l_commandResponse.isDone()) {
-                d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's finished issuing the orders", this.d_name));
-                return true;
-            }
-            Order l_newOrder = d_orderMapper.toOrder(l_commandResponse, this);
-            d_logEntryBuffer.dataChanged("issue_order", l_newOrder.toString());
-            this.addOrder(l_newOrder);
-        } catch (IOException p_ioException) {
-            throw new InvalidCommandException("Unrecognised input!");
+        d_isDone = false;
+        d_playerStrategy.execute();
+        if (this.d_playerStrategy.getType() != StrategyType.HUMAN) {
+            this.doneWithOrder();
         }
-
-        // Default player will be asked to issue order until they enter "done"
-        return false;
     }
 
     /**
@@ -392,5 +365,37 @@ public class Player {
      */
     public void removeCard(Card p_card) {
         this.d_cards.remove(p_card);
+    }
+
+    /**
+     * Gets the strategy type being used by this player.
+     *
+     * @return Type of strategy of the player.
+     */
+    public StrategyType getPlayerStrategyType() {
+        return d_playerStrategy.getType();
+    }
+
+    public void setPlayerStrategyUsingType(StrategyType p_strategyUsingType) {
+        if (p_strategyUsingType == StrategyType.HUMAN) {
+            d_playerStrategy = new HumanStrategy(this);
+        }
+        // TODO Deep Patel instantiate other strategies.
+    }
+
+    /**
+     * Human strategy will call this method if the player is done with issuing orders.
+     */
+    public void doneWithOrder() {
+        d_isDone = true;
+    }
+
+    /**
+     * Checks if the player is done with issuing the orders.
+     *
+     * @return True if the player doesn't want to issue order.
+     */
+    public boolean isDone() {
+        return d_isDone;
     }
 }

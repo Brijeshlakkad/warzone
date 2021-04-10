@@ -4,6 +4,7 @@ import com.warzone.team08.Application;
 import com.warzone.team08.CLI.CommandLineInterface;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.entities.strategy.HumanStrategy;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;

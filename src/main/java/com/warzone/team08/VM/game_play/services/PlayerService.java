@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
@@ -44,10 +45,16 @@ public class PlayerService {
      * @return Value of response of the request.
      * @throws InvalidInputException Throws if processing the player creation.
      */
-    public String add(String p_playerName) throws InvalidInputException {
+    public String add(String p_playerName, String p_strategyType) throws InvalidInputException {
         if (!d_playerRepository.existByPlayerName(p_playerName)) {
             try {
-                Player l_player = new Player();
+                StrategyType l_strategyType;
+                try {
+                    l_strategyType = StrategyType.valueOf(p_strategyType);
+                } catch (IllegalArgumentException p_e) {
+                    throw new InvalidInputException("Invalid strategy type!");
+                }
+                Player l_player = new Player(l_strategyType);
                 l_player.setName(p_playerName);
                 d_gamePlayEngine.addPlayer(l_player);
 

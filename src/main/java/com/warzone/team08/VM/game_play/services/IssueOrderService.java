@@ -46,7 +46,8 @@ public class IssueOrderService {
             do {
                 try {
                     // Request player to issue the order.
-                    if (l_currentPlayer.issueOrder()) {
+                    l_currentPlayer.issueOrder();
+                    if (l_currentPlayer.isDone()) {
                         // Player won't be asked again for issuing orders for this phase.
                         finishedIssuingOrders.add(l_currentPlayer);
                     }

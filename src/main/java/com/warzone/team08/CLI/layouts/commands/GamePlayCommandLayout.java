@@ -38,7 +38,7 @@ public class GamePlayCommandLayout implements CommandLayout {
         l_userCommand.setCommandSpecification(CommandSpecification.AT_LEAST_ONE);
         l_userCommand.pushCommandArgument(new CommandArgument(
                 "add",
-                1,
+                2,
                 ArgumentSpecification.EQUAL
         ));
         l_userCommand.pushCommandArgument(new CommandArgument(
