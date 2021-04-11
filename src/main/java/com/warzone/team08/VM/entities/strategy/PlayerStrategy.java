@@ -5,6 +5,7 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
+import com.warzone.team08.VM.exceptions.InvalidOrderException;
 
 import java.util.concurrent.ExecutionException;
 
@@ -34,7 +35,7 @@ public abstract class PlayerStrategy {
             EntityNotFoundException,
             ExecutionException,
             InterruptedException,
-            InvalidArgumentException;
+            InvalidArgumentException, InvalidOrderException;
 
     /**
      * Gets the type of strategy.

@@ -6,6 +6,7 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
+import com.warzone.team08.VM.exceptions.InvalidOrderException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 
@@ -29,7 +30,7 @@ public class IssueOrderService {
      * If the player issues an order with reinforcements more than enough they possess, it will request the same player
      * again for a valid order.
      */
-    public void execute() {
+    public void execute() throws InvalidOrderException {
         List<Player> finishedIssuingOrders = new ArrayList<>();
         GamePlayEngine l_gamePlayEngine = GameEngine.GAME_PLAY_ENGINE();
         l_gamePlayEngine.setCurrentPlayerTurn(l_gamePlayEngine.getCurrentPlayerForIssuePhase());

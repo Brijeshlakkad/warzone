@@ -224,7 +224,7 @@ public class Player {
             EntityNotFoundException,
             ExecutionException,
             InterruptedException,
-            InvalidArgumentException {
+            InvalidArgumentException, InvalidOrderException {
         d_isDone = false;
         d_playerStrategy.execute();
         if (this.d_playerStrategy.getType() != StrategyType.HUMAN) {
