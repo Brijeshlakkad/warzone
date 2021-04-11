@@ -65,8 +65,8 @@ public class ShowMapServiceTest {
 
         DistributeCountriesService l_distributeCountriesService = new DistributeCountriesService();
         PlayerService l_playerService = new PlayerService();
-        l_playerService.add("User_1");
-        l_playerService.add("User_2");
+        l_playerService.add("User_1","HUMAN");
+        l_playerService.add("User_2","HUMAN");
 
         l_distributeCountriesService.distributeCountries();
         d_playerList = GamePlayEngine.getInstance().getPlayerList();
