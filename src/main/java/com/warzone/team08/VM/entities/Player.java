@@ -10,6 +10,7 @@ import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.mappers.OrderMapper;
 import com.warzone.team08.VM.responses.CommandResponse;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  *
  * @author CHARIT
  * @author Brijesh Lakkad
+ * @author Rutwik
  */
 public class Player implements JSONable {
     /**
@@ -397,20 +399,53 @@ public class Player implements JSONable {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates <code>JSONObject</code> using the runtime information stored in data members of this class.
+     *
+     * @return Created <code>JSONObject</code>.
      */
     @Override
     public JSONObject toJSON() {
-        JSONObject l_playerJSON = new JSONObject();
-        // PUT keys and its value as done with other entities.
-        return l_playerJSON;
+        JSONObject l_PlayerJSON = new JSONObject();
+        l_PlayerJSON.put("name", this.getName());
+
+        JSONArray l_assignedCountriesList = new JSONArray();
+        for (Country l_country : getAssignedCountries()){
+            l_assignedCountriesList.put(l_country.getCountryName());
+        }
+        l_PlayerJSON.put("assignCountries", l_assignedCountriesList);
+        l_PlayerJSON.put("assignCountriesCount", getAssignedCountryCount());
+        l_PlayerJSON.put("reinforceArmy", getReinforcementCount());
+
+        JSONArray l_cardList = new JSONArray();
+        for (Card l_card : getCards()){
+            l_cardList.put(l_card.getType().getJsonValue());
+        }
+        l_PlayerJSON.put("playerCards",l_cardList);
+
+
+        l_PlayerJSON.put("hasOrder", hasOrders());
+        l_PlayerJSON.put("remainingReinforceCount", getRemainingReinforcementCount());
+
+        JSONArray l_orderList = new JSONArray();
+        for (Order l_order : getOrders()){
+            l_orderList.put(l_order.getType().getJsonValue());
+        }
+        l_PlayerJSON.put("orderList", l_orderList);
+        JSONArray l_negotiatePlayerList = new JSONArray();
+        for (Player l_player : getFriendPlayers()){
+            l_negotiatePlayerList.put(l_player.toJSON());
+        }
+        l_PlayerJSON.put("negotiatePlayerList", l_negotiatePlayerList);
+        return l_PlayerJSON;
     }
 
     /**
-     * {@inheritDoc}
+     * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
      */
     @Override
     public void fromJSON(JSONObject p_jsonObject) {
-        // TODO Rutwik Patel Assign data members using the p_jsonObject
+
     }
 }

@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.entities;
 
 import com.warzone.team08.VM.constants.interfaces.JSONable;
+import com.warzone.team08.VM.repositories.CountryRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -200,28 +201,33 @@ public class Country implements JSONable {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates <code>JSONObject</code> using the runtime information stored in data members of this class.
+     *
+     * @return Created <code>JSONObject</code>.
      */
     @Override
     public JSONObject toJSON() {
         JSONObject l_countryJSON = new JSONObject();
-        l_countryJSON.put("id", COUNTRY_ID);
-        l_countryJSON.put("mame", d_countryName);
+        l_countryJSON.put("name", d_countryName);
         JSONArray d_neighborCountryJSONList = new JSONArray();
-        for (Country l_country : getNeighbourCountries()) {
-            d_neighborCountryJSONList.put(l_country.toJSON());
+        for (Country l_country : getNeighbourCountries()){
+            d_neighborCountryJSONList.put(l_country.getCountryName());
         }
-        l_countryJSON.put("owner", d_ownedBy.toJSON());
+        l_countryJSON.put("owner", d_ownedBy.getName());
         l_countryJSON.put("numberOfArmies", d_numberOfArmies);
-        l_countryJSON.put("neighbourCountries", d_neighborCountryJSONList);
+        l_countryJSON.put("neighborCountries", d_neighborCountryJSONList);
         return l_countryJSON;
     }
 
     /**
-     * {@inheritDoc}
+     * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
      */
     @Override
     public void fromJSON(JSONObject p_jsonObject) {
-        // TODO Rutwik Patel Assign data members using the p_jsonObject
+        CountryRepository l_countryRepository = new CountryRepository();
+        //
+
     }
 }

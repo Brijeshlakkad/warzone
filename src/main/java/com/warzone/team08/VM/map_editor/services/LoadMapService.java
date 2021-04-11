@@ -29,6 +29,7 @@ public class LoadMapService implements SingleCommand {
      * @throws AbsentTagException        Throws if any tag is missing in map file.
      * @throws EntityNotFoundException   Throws if entity is missing.
      * @see EditMapService#handleLoadMap
+     * @return
      */
     @Override
     public String execute(List<String> p_commandValues)

@@ -3,6 +3,7 @@ package com.warzone.team08.VM.game_play;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.Engine;
+import com.warzone.team08.VM.constants.interfaces.JSONable;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.GameLoopIllegalStateException;
@@ -11,6 +12,8 @@ import com.warzone.team08.VM.phases.Execute;
 import com.warzone.team08.VM.phases.IssueOrder;
 import com.warzone.team08.VM.phases.PlaySetup;
 import com.warzone.team08.VM.phases.Reinforcement;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +26,7 @@ import java.util.stream.Collectors;
  * @author MILESH
  * @version 1.0
  */
-public class GamePlayEngine implements Engine {
+public class GamePlayEngine implements Engine, JSONable {
     /**
      * Singleton instance of the class.
      */
@@ -294,5 +297,31 @@ public class GamePlayEngine implements Engine {
         // Interrupt thread if it is alive.
         if (d_LoopThread != null && d_LoopThread.isAlive())
             d_LoopThread.interrupt();
+    }
+
+    /**
+     * Creates <code>JSONObject</code> using the runtime information stored in data members of this class.
+     *
+     * @return Created <code>JSONObject</code>.
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_gamePlayEngineJSON = new JSONObject();
+        JSONArray l_playerList = new JSONArray();
+        for (Player l_player : getPlayerList()){
+            l_playerList.put(l_player.toJSON());
+        }
+        l_gamePlayEngineJSON.put("player",l_playerList);
+        return l_gamePlayEngineJSON;
+    }
+
+    /**
+     * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     */
+    @Override
+    public void fromJSON(JSONObject p_jsonObject) {
+
     }
 }

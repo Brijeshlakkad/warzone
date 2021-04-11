@@ -31,7 +31,9 @@ import static java.lang.Math.round;
  *
  * @author CHARIT
  */
-public class AdvanceOrder extends Order {
+public class
+
+AdvanceOrder extends Order {
     private final Country d_countryFrom;
     private final Country d_countryTo;
     private int d_numOfArmies;

@@ -22,6 +22,7 @@ public class MapEditorEngine implements Engine, JSONable {
      * Singleton instance of the class.
      */
     private static MapEditorEngine d_Instance;
+
     private List<Continent> d_continentList;
 
     private boolean d_isLoadingMap = false;
