@@ -37,7 +37,7 @@ public class GameResult {
     public GameResult() {
         d_declaredDraw = false;
         d_winnerPlayer = null;
-        error = false;
+        error = true;
     }
 
     /**
