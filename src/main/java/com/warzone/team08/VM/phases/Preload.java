@@ -40,6 +40,7 @@ public class Preload extends MapEditor {
         for (Map<String, List<String>> l_argument : p_arguments) {
             if (l_argument.containsKey("M")) {
                 List<String> l_listOfMapFiles = l_argument.get("M");
+                l_tournamentEngine.setMapsList(l_listOfMapFiles);
                 for (String l_mapFilePath : l_listOfMapFiles) {
                     LoadMapService l_loadMapService = new LoadMapService();
 
