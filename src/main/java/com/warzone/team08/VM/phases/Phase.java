@@ -3,8 +3,8 @@ package com.warzone.team08.VM.phases;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.exceptions.VMException;
-import com.warzone.team08.VM.game_play.services.LoadGameService;
-import com.warzone.team08.VM.game_play.services.SaveGameService;
+import com.warzone.team08.VM.common.services.LoadGameService;
+import com.warzone.team08.VM.common.services.SaveGameService;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.lang.reflect.InvocationTargetException;

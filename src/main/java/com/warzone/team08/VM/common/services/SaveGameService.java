@@ -1,4 +1,4 @@
-package com.warzone.team08.VM.game_play.services;
+package com.warzone.team08.VM.common.services;
 
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
@@ -23,7 +23,7 @@ import java.util.List;
  * @version 1.0
  */
 public class SaveGameService implements SingleCommand {
-    private final JSONObject d_currentGameEngine;
+    private JSONObject d_currentGameEngine;
 
     /**
      * Initialize JSON object.
@@ -36,8 +36,7 @@ public class SaveGameService implements SingleCommand {
      * Puts the values of each engine state into JSON Object.
      */
     public void toJSON() {
-        d_currentGameEngine.put("map_editor", VirtualMachine.getGameEngine().getMapEditorEngine().toJSON());
-        d_currentGameEngine.put("game_pay", VirtualMachine.getGameEngine().getGamePlayEngine().toJSON());
+        d_currentGameEngine = VirtualMachine.getGameEngine().toJSON();
     }
 
     /**
@@ -71,7 +70,7 @@ public class SaveGameService implements SingleCommand {
 
         try (Writer l_writer = new FileWriter(l_targetFile)) {
             l_writer.write(this.getGameEngineJSONData().toString(4));
-            return "Game State Saved Successfully.";
+            return "Game saved successfully!";
         } catch (IOException p_ioException) {
             throw new VMException("Error in file saving!");
         }

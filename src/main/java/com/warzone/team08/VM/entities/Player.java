@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.entities;
 
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.common.services.CardService;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.constants.interfaces.Card;
@@ -8,7 +9,10 @@ import com.warzone.team08.VM.constants.interfaces.JSONable;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.strategy.*;
 import com.warzone.team08.VM.exceptions.*;
+import com.warzone.team08.VM.mappers.OrderMapper;
+import com.warzone.team08.VM.repositories.CountryRepository;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -49,6 +53,8 @@ public class Player implements JSONable {
     private final List<Player> d_negotiatePlayer = new ArrayList<>();
     private PlayerStrategy d_playerStrategy;
     private boolean d_isDone = false;
+    private final static OrderMapper d_ORDER_MAPPER = new OrderMapper();
+    private final static CountryRepository d_COUNTRY_REPOSITORY = new CountryRepository();
 
     /**
      * Creates <code>Player</code> using the decided strategy.
@@ -59,6 +65,8 @@ public class Player implements JSONable {
     public Player(String p_playerName, StrategyType p_strategyType) {
         d_name = p_playerName;
         this.setPlayerStrategyUsingType(p_strategyType);
+        this.addCard(CardService.createCard(CardType.DIPLOMACY));
+        this.addCard(CardService.randomCard());
     }
 
     /**
@@ -364,45 +372,75 @@ public class Player implements JSONable {
     public JSONObject toJSON() {
         JSONObject l_PlayerJSON = new JSONObject();
         l_PlayerJSON.put("name", this.getName());
+        l_PlayerJSON.put("strategy", this.getPlayerStrategyType().name());
 
         JSONArray l_assignedCountriesList = new JSONArray();
         for (Country l_country : getAssignedCountries()) {
             l_assignedCountriesList.put(l_country.getCountryName());
         }
         l_PlayerJSON.put("assignCountries", l_assignedCountriesList);
-        l_PlayerJSON.put("assignCountriesCount", getAssignedCountryCount());
-        l_PlayerJSON.put("reinforceArmy", getReinforcementCount());
+
+        l_PlayerJSON.put("reinforceCount", getReinforcementCount());
+        l_PlayerJSON.put("remainingReinforceCount", getRemainingReinforcementCount());
 
         JSONArray l_cardList = new JSONArray();
         for (Card l_card : getCards()) {
-            l_cardList.put(l_card.getType().getJsonValue());
+            l_cardList.put(l_card.getType().name());
         }
-        l_PlayerJSON.put("playerCards", l_cardList);
-
-
-        l_PlayerJSON.put("hasOrder", hasOrders());
-        l_PlayerJSON.put("remainingReinforceCount", getRemainingReinforcementCount());
+        l_PlayerJSON.put("cards", l_cardList);
 
         JSONArray l_orderList = new JSONArray();
         for (Order l_order : getOrders()) {
-            l_orderList.put(l_order.getType().getJsonValue());
+            l_orderList.put(l_order.toJSON());
         }
-        l_PlayerJSON.put("orderList", l_orderList);
-        JSONArray l_negotiatePlayerList = new JSONArray();
-        for (Player l_player : getFriendPlayers()) {
-            l_negotiatePlayerList.put(l_player.toJSON());
-        }
-        l_PlayerJSON.put("negotiatePlayerList", l_negotiatePlayerList);
+        l_PlayerJSON.put("orders", l_orderList);
+
         return l_PlayerJSON;
     }
 
     /**
-     * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
      */
-    @Override
-    public void fromJSON(JSONObject p_jsonObject) {
+    public static Player fromJSON(JSONObject p_jsonObject) throws InvalidGameException {
+        StrategyType l_strategy;
+        try {
+            l_strategy = p_jsonObject.getEnum(StrategyType.class, "strategy");
+        } catch (JSONException p_jsonException) {
+            throw new InvalidGameException("Strategy type invalid");
+        }
+        // Create a player using name and its strategy.
+        Player l_player = new Player(p_jsonObject.getString("name"), l_strategy);
+
+        // Assign countries to the player.
+        JSONArray l_assignedCountriesList = p_jsonObject.getJSONArray("assignCountries");
+        try {
+            for (int l_assignedCountryIndex = 0; l_assignedCountryIndex < l_assignedCountriesList.length(); l_assignedCountryIndex++) {
+                Country l_country = d_COUNTRY_REPOSITORY.findFirstByCountryName(l_assignedCountriesList.getString(l_assignedCountryIndex));
+                l_country.setOwnedBy(l_player);
+                l_player.addAssignedCountries(l_country);
+            }
+        } catch (EntityNotFoundException p_entityNotFoundException) {
+            throw new InvalidGameException();
+        }
+
+        l_player.setReinforcementCount(p_jsonObject.getInt("reinforceCount"));
+        l_player.setRemainingReinforcementCount(p_jsonObject.getInt("remainingReinforceCount"));
+
+        // Create player's cards.
+        JSONArray l_cardJSONList = p_jsonObject.getJSONArray("cards");
+        for (int l_cardIndex = 0; l_cardIndex < l_cardJSONList.length(); l_cardIndex++) {
+            l_player.addCard(CardService.createCard(l_cardJSONList.getEnum(CardType.class, l_cardIndex)));
+        }
+
+        // Create player's orders.
+        JSONArray l_orderJSONList = p_jsonObject.getJSONArray("orders");
+        for (int l_orderIndex = 0; l_orderIndex < l_orderJSONList.length(); l_orderIndex++) {
+            l_player.addOrder(d_ORDER_MAPPER.toOrder(l_orderJSONList.getJSONObject(l_orderIndex), l_player));
+        }
+        return l_player;
     }
 
     /**
@@ -451,9 +489,6 @@ public class Player implements JSONable {
      * @return True if the player has won.
      */
     public boolean isWon() {
-        return VirtualMachine.getGameEngine()
-                .getMapEditorEngine().getCountryList().stream().anyMatch(p_country ->
-                        p_country.getOwnedBy() != null && !p_country.getOwnedBy().equals(this)
-                );
+        return this.d_assignedCountries.size() == VirtualMachine.getGameEngine().getMapEditorEngine().getCountryList().size();
     }
 }

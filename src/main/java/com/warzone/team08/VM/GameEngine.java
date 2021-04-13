@@ -1,12 +1,15 @@
 package com.warzone.team08.VM;
 
+import com.warzone.team08.VM.constants.interfaces.JSONable;
+import com.warzone.team08.VM.exceptions.InvalidGameException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.logger.LogWriter;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
-import com.warzone.team08.VM.phases.Phase;
-import com.warzone.team08.VM.phases.Preload;
+import com.warzone.team08.VM.phases.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Creates an environment for the player to store the information.
@@ -14,7 +17,7 @@ import com.warzone.team08.VM.phases.Preload;
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public class GameEngine {
+public class GameEngine implements JSONable {
     /**
      * State object of the GameEngine
      */
@@ -31,6 +34,8 @@ public class GameEngine {
      * VM runtime game-play engine to store runtime after game starts.
      */
     private GamePlayEngine d_gamePlayEngine;
+
+    private boolean isCountriesAssigned = false;
 
     private boolean d_isTournamentModeOn = false;
 
@@ -92,6 +97,7 @@ public class GameEngine {
      */
     public void setGamePhase(Phase p_gamePhase) {
         d_gameState = p_gamePhase;
+        System.out.println("Phase changed: " + p_gamePhase.getClass().getSimpleName());
     }
 
     /**
@@ -113,6 +119,15 @@ public class GameEngine {
     }
 
     /**
+     * Sets map-editor engine having the runtime information.
+     *
+     * @param p_mapEditorEngine Value of the map editor engine.
+     */
+    public void setMapEditorEngine(MapEditorEngine p_mapEditorEngine) {
+        d_mapEditorEngine = p_mapEditorEngine;
+    }
+
+    /**
      * Gets VM runtime game-play engine to store runtime after game starts.
      *
      * @return Value of the game-play engine.
@@ -122,11 +137,68 @@ public class GameEngine {
     }
 
     /**
+     * Sets game-play engine having the runtime information.
+     *
+     * @param p_gamePlayEngine Value of the game-play engine.
+     */
+    public void setGamePlayEngine(GamePlayEngine p_gamePlayEngine) {
+        d_gamePlayEngine = p_gamePlayEngine;
+    }
+
+    /**
      * Check if the tournament mode is on.
      *
      * @return True if the game mode is tournament; false otherwise.
      */
     public boolean isTournamentModeOn() {
         return d_isTournamentModeOn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_gameEngineJSON = new JSONObject();
+        l_gameEngineJSON.put("map_editor", this.getMapEditorEngine().toJSON());
+        l_gameEngineJSON.put("game_pay", this.getGamePlayEngine().toJSON());
+        l_gameEngineJSON.put("phase", this.getGamePhase().getClass().getSimpleName());
+        return l_gameEngineJSON;
+    }
+
+    /**
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
+     *                              the values.
+     */
+    public static GameEngine fromJSON(JSONObject p_jsonObject) throws InvalidGameException {
+        try {
+            // Create and load GameEngine.
+            GameEngine l_gameEngine = new GameEngine();
+            VirtualMachine.setGameEngine(l_gameEngine);
+
+            MapEditorEngine.fromJSON(p_jsonObject.getJSONObject("map_editor"), l_gameEngine);
+            GamePlayEngine l_gamePlayEngine = GamePlayEngine.fromJSON(p_jsonObject.getJSONObject("game_pay"), l_gameEngine);
+
+            // Set the game phase.
+            // The phase can be only from the following.
+            String l_phaseString = p_jsonObject.getString("phase");
+            if (l_phaseString.equals(Preload.class.getSimpleName())) {
+                l_gameEngine.setGamePhase(new Preload(l_gameEngine));
+            } else if (l_phaseString.equals(PostLoad.class.getSimpleName())) {
+                l_gameEngine.setGamePhase(new PostLoad(l_gameEngine));
+            } else if (l_phaseString.equals(PlaySetup.class.getSimpleName())) {
+                l_gameEngine.setGamePhase(new PlaySetup(l_gameEngine));
+            } else if (l_phaseString.equals(IssueOrder.class.getSimpleName())) {
+                l_gameEngine.setGamePhase(new IssueOrder(l_gameEngine));
+                l_gamePlayEngine.startGameLoop();
+            }
+            return l_gameEngine;
+        } catch (JSONException p_jsonException) {
+            throw new InvalidGameException("Missing values or the corrupted game file!");
+        }
     }
 }

@@ -7,8 +7,10 @@ import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidGameException;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.PlayerRepository;
+import org.json.JSONObject;
 
 
 /**
@@ -18,8 +20,7 @@ import com.warzone.team08.VM.repositories.PlayerRepository;
  * @version 2.0
  */
 public class NegotiateOrder extends Order {
-    private final Player d_player1;
-    private final Player d_player2;
+    private final Player d_otherPlayer;
 
     /**
      * To find the player using its data members.
@@ -36,8 +37,8 @@ public class NegotiateOrder extends Order {
      * @throws EntityNotFoundException Throws if the country with the given name doesn't exist.
      */
     public NegotiateOrder(Player p_thisPlayer, String p_otherPlayer) throws EntityNotFoundException {
-        d_player1 = p_thisPlayer;
-        d_player2 = d_playerRepository.findByPlayerName(p_otherPlayer);
+        super(p_thisPlayer);
+        d_otherPlayer = d_playerRepository.findByPlayerName(p_otherPlayer);
     }
 
     /**
@@ -48,15 +49,15 @@ public class NegotiateOrder extends Order {
     @Override
     public void execute() throws CardNotFoundException {
         StringBuilder l_logResponse = new StringBuilder();
-        l_logResponse.append("\n" + "Executing " + d_player1.getName() + " Order:" + "\n");
+        l_logResponse.append("\n" + "Executing " + this.getOwner().getName() + " Order:" + "\n");
         // Get diplomacy card.
-        Card l_requiredCard = d_player1.getCard(CardType.DIPLOMACY);
-        d_player1.addNegotiatePlayer(d_player2);
-        d_player2.addNegotiatePlayer(d_player1);
-        d_player1.removeCard(l_requiredCard);
+        Card l_requiredCard = this.getOwner().getCard(CardType.DIPLOMACY);
+        this.getOwner().addNegotiatePlayer(d_otherPlayer);
+        d_otherPlayer.addNegotiatePlayer(this.getOwner());
+        this.getOwner().removeCard(l_requiredCard);
 
         // Logging
-        l_logResponse.append("\n Order Effect\n" + "Negotiating between " + d_player1.getName() + " and " + d_player2.getName() + "\n");
+        l_logResponse.append("\n Order Effect\n" + "Negotiating between " + this.getOwner().getName() + " and " + d_otherPlayer.getName() + "\n");
         d_logEntryBuffer.dataChanged("negotiate", l_logResponse.toString());
     }
 
@@ -74,8 +75,8 @@ public class NegotiateOrder extends Order {
      */
     @Override
     public void expire() {
-        d_player1.removeNegotiatePlayer(d_player2);
-        d_player2.removeNegotiatePlayer(d_player1);
+        this.getOwner().removeNegotiatePlayer(d_otherPlayer);
+        d_otherPlayer.removeNegotiatePlayer(this.getOwner());
     }
 
     /**
@@ -85,6 +86,31 @@ public class NegotiateOrder extends Order {
      */
     @Override
     public String toString() {
-        return String.format("%s %s", getType().getJsonValue(), d_player2.getName());
+        return String.format("%s %s", getType().getJsonValue(), d_otherPlayer.getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_order = new JSONObject();
+        l_order.put("other_player", d_otherPlayer.getName());
+        l_order.put("type", getType().name());
+        return l_order;
+    }
+
+    /**
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     */
+    public static NegotiateOrder fromJSON(JSONObject p_jsonObject, Player p_player) throws InvalidGameException {
+        try {
+            return new NegotiateOrder(p_player, p_jsonObject.getString("other_player"));
+        } catch (EntityNotFoundException p_vmException) {
+            throw new InvalidGameException();
+        }
     }
 }

@@ -1,8 +1,6 @@
 package com.warzone.team08.VM.entities;
 
 import com.warzone.team08.VM.constants.interfaces.JSONable;
-import com.warzone.team08.VM.repositories.CountryRepository;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -209,26 +207,20 @@ public class Country implements JSONable {
     public JSONObject toJSON() {
         JSONObject l_countryJSON = new JSONObject();
         l_countryJSON.put("name", d_countryName);
-        JSONArray d_neighborCountryJSONList = new JSONArray();
-        for (Country l_country : getNeighbourCountries()) {
-            d_neighborCountryJSONList.put(l_country.getCountryName());
-        }
-        if (d_ownedBy != null)
-            l_countryJSON.put("owner", d_ownedBy.getName());
         l_countryJSON.put("numberOfArmies", d_numberOfArmies);
-        l_countryJSON.put("neighborCountries", d_neighborCountryJSONList);
         return l_countryJSON;
     }
 
     /**
-     * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
      */
-    @Override
-    public void fromJSON(JSONObject p_jsonObject) {
-        CountryRepository l_countryRepository = new CountryRepository();
-        //
-
+    public static Country fromJSON(JSONObject p_jsonObject) {
+        Country l_country = new Country();
+        l_country.setCountryName(p_jsonObject.getString("name"));
+        l_country.setNumberOfArmies(p_jsonObject.getInt("numberOfArmies"));
+        return l_country;
     }
 }

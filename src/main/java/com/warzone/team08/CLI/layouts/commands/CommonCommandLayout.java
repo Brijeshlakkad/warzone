@@ -51,6 +51,15 @@ public class CommonCommandLayout implements CommandLayout {
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
         l_userCommand.setOrderCommand(true);
         d_userCommands.add(l_userCommand);
+
+        // Example of the below command:
+        // > exit
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("exit");
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
+        l_userCommand.setGamePhaseMethodName("endGame");
+        l_userCommand.setGameEngineCommand(true);
+        d_userCommands.add(l_userCommand);
     }
 
     /**

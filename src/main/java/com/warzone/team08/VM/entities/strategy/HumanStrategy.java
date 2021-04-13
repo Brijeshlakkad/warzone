@@ -64,6 +64,7 @@ public class HumanStrategy extends PlayerStrategy {
             if (l_commandResponse.isDone()) {
                 d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's finished issuing the orders", this.d_player.getName()));
                 this.d_player.doneWithOrder();
+                return;
             }
             Order l_newOrder = d_orderMapper.toOrder(l_commandResponse, this.d_player);
             d_logEntryBuffer.dataChanged("issue_order", l_newOrder.toString());
@@ -78,6 +79,6 @@ public class HumanStrategy extends PlayerStrategy {
      */
     @Override
     public StrategyType getType() {
-        return StrategyType.CHEATER;
+        return StrategyType.HUMAN;
     }
 }

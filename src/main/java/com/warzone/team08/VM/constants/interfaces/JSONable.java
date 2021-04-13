@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.constants.interfaces;
 
+import com.warzone.team08.VM.exceptions.InvalidGameException;
 import org.json.JSONObject;
 
 /**
@@ -18,9 +19,14 @@ public interface JSONable {
     JSONObject toJSON();
 
     /**
-     * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
+     *                              the values.
      */
-    void fromJSON(JSONObject p_jsonObject);
+    static void fromJSON(JSONObject p_jsonObject) throws InvalidGameException {
+        throw new InvalidGameException("Concrete class didn't implement fromJSON method!");
+    }
 }

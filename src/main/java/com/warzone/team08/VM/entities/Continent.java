@@ -1,11 +1,15 @@
 package com.warzone.team08.VM.entities;
 
 import com.warzone.team08.VM.constants.interfaces.JSONable;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidGameException;
+import com.warzone.team08.VM.repositories.CountryRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.
@@ -21,7 +25,6 @@ public class Continent implements JSONable {
     private Integer d_continentId;
     private String d_continentName;
     private Integer d_continentControlValue;
-    private String d_continentColor;
     private ArrayList<Country> d_countryList;
 
     /**
@@ -163,7 +166,7 @@ public class Continent implements JSONable {
         l_continentJSON.put("name", d_continentName);
         l_continentJSON.put("controlValue", d_continentControlValue);
         JSONArray l_countryJSONList = new JSONArray();
-        for (Country l_country : getCountryList()){
+        for (Country l_country : getCountryList()) {
             l_countryJSONList.put(l_country.toJSON());
         }
         l_continentJSON.put("countries", l_countryJSONList);
@@ -171,18 +174,25 @@ public class Continent implements JSONable {
     }
 
     /**
-     * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
      */
-    @Override
-    public void fromJSON(JSONObject p_jsonObject) {
-        d_continentName = p_jsonObject.getString("name");
+    public static Continent fromJSON(JSONObject p_jsonObject) throws InvalidGameException {
+        Continent l_continent = new Continent();
+        l_continent.setContinentName(p_jsonObject.getString("name"));
+        l_continent.setContinentControlValue(p_jsonObject.getInt("controlValue"));
+
+        // Create countries.
         JSONArray l_countries = p_jsonObject.getJSONArray("countries");
-        JSONObject l_country = l_countries.getJSONObject(0);
-        /// COUNTRY EXISTS
-        Country l_countryObject = new Country();
-        l_countryObject.fromJSON(l_country);
-        this.addCountry(l_countryObject);
+        for (int l_countryIndex = 0; l_countryIndex < l_countries.length(); l_countryIndex++) {
+            JSONObject l_countryJSON = l_countries.getJSONObject(l_countryIndex);
+            // Create new country instance.
+            Country l_countryObject = Country.fromJSON(l_countryJSON);
+            l_continent.addCountry(l_countryObject);
+        }
+
+        return l_continent;
     }
 }

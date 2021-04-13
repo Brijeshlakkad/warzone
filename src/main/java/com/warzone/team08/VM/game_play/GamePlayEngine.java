@@ -8,17 +8,21 @@ import com.warzone.team08.VM.constants.interfaces.JSONable;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.GameResult;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.GameLoopIllegalStateException;
+import com.warzone.team08.VM.exceptions.InvalidGameException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.phases.Execute;
 import com.warzone.team08.VM.phases.IssueOrder;
 import com.warzone.team08.VM.phases.PlaySetup;
 import com.warzone.team08.VM.phases.Reinforcement;
+import com.warzone.team08.VM.repositories.PlayerRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -71,11 +75,23 @@ public class GamePlayEngine implements Engine, JSONable {
      */
     private GameResult d_gameResult;
 
+    private final static PlayerRepository d_PLAYER_REPOSITORY = new PlayerRepository();
+
     /**
-     * Instance can not be created outside the class. (private)
+     * Instance can not be created outside the class.
      */
     public GamePlayEngine() {
         this.initialise();
+    }
+
+    /**
+     * Parameterised constructor to set the execution-index using offset.
+     *
+     * @param p_offset Offset to be set for the execution-index.
+     */
+    public GamePlayEngine(int p_offset) {
+        this.initialise();
+        d_currentExecutionIndex = p_offset;
     }
 
     /**
@@ -254,6 +270,7 @@ public class GamePlayEngine implements Engine, JSONable {
      * <code>stderr</code> method.
      */
     public void startGameLoop() {
+        VirtualMachine.getInstance().stdout("GAME_ENGINE_STARTED");
         if (d_LoopThread != null && d_LoopThread.isAlive()) {
             d_LoopThread.interrupt();
         }
@@ -264,6 +281,8 @@ public class GamePlayEngine implements Engine, JSONable {
                     l_gameEngine.setGamePhase(new Reinforcement(l_gameEngine));
                 } else if (l_gameEngine.getGamePhase().getClass().equals(PlaySetup.class)) {
                     l_gameEngine.getGamePhase().nextState();
+                } else if (l_gameEngine.getGamePhase().getClass().equals(IssueOrder.class)) {
+                    // When the game is loaded and it was in IssueOrder when saved.
                 } else {
                     throw new GameLoopIllegalStateException("Illegal state transition!");
                 }
@@ -351,18 +370,26 @@ public class GamePlayEngine implements Engine, JSONable {
     }
 
     /**
-     * Creates <code>JSONObject</code> using the runtime information stored in data members of this class.
-     *
-     * @return Created <code>JSONObject</code>.
+     * {@inheritDoc}
      */
     @Override
     public JSONObject toJSON() {
         JSONObject l_gamePlayEngineJSON = new JSONObject();
-        JSONArray l_playerList = new JSONArray();
-        for (Player l_player : getPlayerList()){
-            l_playerList.put(l_player.toJSON());
+        JSONArray l_playerJSONList = new JSONArray();
+        JSONObject l_friendPlayerJSON = new JSONObject();
+        for (Player l_player : getPlayerList()) {
+            l_playerJSONList.put(l_player.toJSON());
+            JSONArray l_friendPlayers = new JSONArray();
+            for (Player l_friendPlayer : l_player.getFriendPlayers()) {
+                l_friendPlayers.put(l_friendPlayer.getName());
+            }
+            l_friendPlayerJSON.put(l_player.getName(), l_friendPlayers);
         }
-        l_gamePlayEngineJSON.put("player",l_playerList);
+        l_gamePlayEngineJSON.put("players", l_playerJSONList);
+        l_gamePlayEngineJSON.put("friendPlayerMappings", l_friendPlayerJSON);
+        l_gamePlayEngineJSON.put("currentPlayerForIssuePhase", getCurrentPlayerForIssuePhase());
+        l_gamePlayEngineJSON.put("currentPlayerForExecutionPhase", getCurrentPlayerForExecutionPhase());
+        l_gamePlayEngineJSON.put("currentExecutionIndex", getCurrentExecutionIndex());
         return l_gamePlayEngineJSON;
     }
 
@@ -370,9 +397,38 @@ public class GamePlayEngine implements Engine, JSONable {
      * Assigns the data members of the concrete class using the values inside <code>JSONObject</code>.
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     * @param p_gameEngine Instance of target <code>GameEngine</code>.
+     * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
+     *                              the values.
      */
-    @Override
-    public void fromJSON(JSONObject p_jsonObject) {
+    public static GamePlayEngine fromJSON(JSONObject p_jsonObject, GameEngine p_gameEngine) throws InvalidGameException {
+        GamePlayEngine l_gamePlayEngine = new GamePlayEngine(p_jsonObject.getInt("currentExecutionIndex"));
+        p_gameEngine.setGamePlayEngine(l_gamePlayEngine);
 
+        JSONArray l_playerJSONList = p_jsonObject.getJSONArray("players");
+        for (int l_playerIndex = 0; l_playerIndex < l_playerJSONList.length(); l_playerIndex++) {
+            Player l_player = Player.fromJSON(l_playerJSONList.getJSONObject(l_playerIndex));
+            l_gamePlayEngine.addPlayer(l_player);
+        }
+
+        JSONObject l_friendPlayerJSON = p_jsonObject.getJSONObject("friendPlayerMappings");
+        Set<String> l_friendPlayerNameSet = l_friendPlayerJSON.keySet();
+        try {
+            for (String l_playerName : l_friendPlayerNameSet) {
+                Player l_player = d_PLAYER_REPOSITORY.findByPlayerName(l_playerName);
+                JSONArray l_friendPlayerNames = l_friendPlayerJSON.getJSONArray(l_playerName);
+                for (int l_friendPlayerIndex = 0; l_friendPlayerIndex < l_friendPlayerNames.length(); l_friendPlayerIndex++) {
+                    String l_friendPlayerName = l_friendPlayerNames.getString(l_friendPlayerIndex);
+                    Player l_friendPlayer = d_PLAYER_REPOSITORY.findByPlayerName(l_friendPlayerName);
+                    l_player.addNegotiatePlayer(l_friendPlayer);
+                }
+            }
+        } catch (EntityNotFoundException p_entityNotFoundException) {
+            throw new InvalidGameException();
+        }
+
+        l_gamePlayEngine.setCurrentPlayerForIssuePhase(p_jsonObject.getInt("currentPlayerForIssuePhase"));
+        l_gamePlayEngine.setCurrentPlayerForExecutionPhase(p_jsonObject.getInt("currentPlayerForExecutionPhase"));
+        return l_gamePlayEngine;
     }
 }

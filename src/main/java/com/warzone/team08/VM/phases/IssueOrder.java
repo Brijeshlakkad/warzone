@@ -18,7 +18,7 @@ public class IssueOrder extends MainPlay {
      *
      * @param p_gameEngine Instance of the game engine.
      */
-    IssueOrder(GameEngine p_gameEngine) {
+    public IssueOrder(GameEngine p_gameEngine) {
         super(p_gameEngine);
     }
 

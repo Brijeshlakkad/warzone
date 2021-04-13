@@ -1,16 +1,18 @@
 package com.warzone.team08.VM.entities.orders;
 
 import com.jakewharton.fliptables.FlipTable;
-import com.warzone.team08.VM.common.services.AssignRandomCardService;
+import com.warzone.team08.VM.common.services.CardService;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.exceptions.InvalidGameException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.CountryRepository;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -22,22 +24,19 @@ import static java.lang.Math.round;
  * <p><b>If the source and destination country is:</b></p>
  * <ul>
  *  <li>
- *     owned by the same player then it simply moves armies and performs operations on the destination country.
+ *     Owned by the same player then it simply moves armies and performs operations on the destination country.
  *  </li>
  *  <li>
- *      not owned by the same player then the Battle will occur.
+ *      Not owned by the same player then the Battle will occur.
  *  </li>
  * </ul>
  *
  * @author CHARIT
  */
-public class
-
-AdvanceOrder extends Order {
+public class AdvanceOrder extends Order {
     private final Country d_countryFrom;
     private final Country d_countryTo;
     private int d_numOfArmies;
-    private final Player d_owner;
 
     /**
      * To find the country using its data members.
@@ -58,6 +57,7 @@ AdvanceOrder extends Order {
      */
     public AdvanceOrder(String p_countryFrom, String p_countryTo, String p_numOfArmies, Player p_owner)
             throws EntityNotFoundException, InvalidArgumentException {
+        super(p_owner);
         d_countryFrom = d_countryRepository.findFirstByCountryName(p_countryFrom);
         d_countryTo = d_countryRepository.findFirstByCountryName(p_countryTo);
         try {
@@ -69,7 +69,6 @@ AdvanceOrder extends Order {
         } catch (NumberFormatException p_e) {
             throw new InvalidArgumentException("Number of reinforcements is not a number.");
         }
-        d_owner = p_owner;
     }
 
     /**
@@ -81,9 +80,9 @@ AdvanceOrder extends Order {
     @Override
     public void execute() throws InvalidOrderException {
         StringBuilder l_logResponse = new StringBuilder();
-        l_logResponse.append("\n" + "Executing " + d_owner.getName() + " Order:" + "\n");
+        l_logResponse.append("\n" + "Executing " + this.getOwner().getName() + " Order:" + "\n");
         // Handles invalid country name (Country doesn't exists)
-        List<Country> l_assignCountryList = d_owner.getAssignedCountries();
+        List<Country> l_assignCountryList = this.getOwner().getAssignedCountries();
         List<Country> l_neighborCountryList = d_countryFrom.getNeighbourCountries();
 
         // Checks the source country is owned by a current player or not. If not then throws an exception.
@@ -95,7 +94,7 @@ AdvanceOrder extends Order {
         if (!l_neighborCountryList.contains(d_countryTo)) {
             throw new InvalidOrderException("Please select any of the neighbor country of the source country as a destination country as we can perform Advance order on neighbor countries only.");
         }
-        if (d_owner.isNotNegotiation(d_countryTo.getOwnedBy())) {
+        if (this.getOwner().isNotNegotiation(d_countryTo.getOwnedBy())) {
             // If destination country is owned by the current player then it simply moves armies to the destination country.
             if (l_assignCountryList.contains(d_countryTo)) {
                 //move armies and add
@@ -105,7 +104,7 @@ AdvanceOrder extends Order {
                     d_numOfArmies = d_countryFrom.getNumberOfArmies();
                     l_remainingArmies = 0;
                 }
-                l_logResponse.append(d_owner.getName() + " moved " + d_numOfArmies + " armies from " + d_countryFrom.getCountryName() + " to " + d_countryTo.getCountryName());
+                l_logResponse.append(this.getOwner().getName() + " moved " + d_numOfArmies + " armies from " + d_countryFrom.getCountryName() + " to " + d_countryTo.getCountryName());
                 d_countryFrom.setNumberOfArmies(l_remainingArmies);
                 d_countryTo.setNumberOfArmies(d_countryTo.getNumberOfArmies() + d_numOfArmies);
 
@@ -142,17 +141,17 @@ AdvanceOrder extends Order {
                     l_countryToOwner.removeCountry(d_countryTo);
 
                     // Owner changed.
-                    d_countryTo.setOwnedBy(d_owner);
-                    List<Country> l_assign = d_owner.getAssignedCountries();
+                    d_countryTo.setOwnedBy(this.getOwner());
+                    List<Country> l_assign = this.getOwner().getAssignedCountries();
                     l_assign.add(d_countryTo);
-                    d_owner.setAssignedCountries(l_assign);
+                    this.getOwner().setAssignedCountries(l_assign);
                     d_countryTo.setNumberOfArmies(l_attackingArmies - l_attackersKilled);
 
-                    d_owner.addCard(AssignRandomCardService.randomCard());
+                    this.getOwner().addCard(CardService.randomCard());
                     l_logResponse.append(l_countryToOwner.getName() + " won the attack!!!!\n" + l_countryToOwner.getName() + " moved " + l_attackingArmies + " armies from " + d_countryFrom.getCountryName() + " to attack on " + d_countryTo.getCountryName());
                     String[] l_header = {"COUNTRY", "ARMY COUNT", "PREVIOUS OWNER", "NEW OWNER"};
                     String[][] l_changeContent = {
-                            {d_countryTo.getCountryName(), String.valueOf(d_countryTo.getNumberOfArmies()), l_countryToOwner.getName(), d_owner.getName()}
+                            {d_countryTo.getCountryName(), String.valueOf(d_countryTo.getNumberOfArmies()), l_countryToOwner.getName(), this.getOwner().getName()}
                     };
                     l_logResponse.append("\n Order Effect\n" + FlipTable.of(l_header, l_changeContent));
                 } else {
@@ -160,7 +159,7 @@ AdvanceOrder extends Order {
                     d_countryTo.setNumberOfArmies(l_defendingArmies - l_defendersKilled);
 
                     // Logging
-                    l_logResponse.append(d_owner.getName() + " did not won the attack!!!!\n" + d_owner.getName() + " moved " + l_attackingArmies + " armies from " + d_countryFrom.getCountryName() + " to attack on " + d_countryTo.getCountryName());
+                    l_logResponse.append(this.getOwner().getName() + " did not won the attack!!!!\n" + this.getOwner().getName() + " moved " + l_attackingArmies + " armies from " + d_countryFrom.getCountryName() + " to attack on " + d_countryTo.getCountryName());
                     String[] l_header = {"COUNTRY", "ARMY COUNT"};
                     String[][] l_changeContent = {
                             {d_countryTo.getCountryName(), String.valueOf(d_countryTo.getNumberOfArmies())},
@@ -200,5 +199,35 @@ AdvanceOrder extends Order {
     @Override
     public String toString() {
         return String.format("%s %s %s %s", getType().getJsonValue(), d_countryFrom.getCountryName(), d_countryTo.getCountryName(), d_numOfArmies);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_order = new JSONObject();
+        l_order.put("source", d_countryFrom.getCountryName());
+        l_order.put("target", d_countryTo.getCountryName());
+        l_order.put("numOfArmies", d_numOfArmies);
+        l_order.put("type", getType().name());
+        return l_order;
+    }
+
+    /**
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     */
+    public static AdvanceOrder fromJSON(JSONObject p_jsonObject, Player p_player) throws InvalidGameException {
+        try {
+            return new AdvanceOrder(p_jsonObject.getString("source"),
+                    p_jsonObject.getString("target"),
+                    String.valueOf(p_jsonObject.getInt("numOfArmies")),
+                    p_player);
+        } catch (EntityNotFoundException | InvalidArgumentException p_entityNotFoundException) {
+            throw new InvalidGameException();
+        }
     }
 }

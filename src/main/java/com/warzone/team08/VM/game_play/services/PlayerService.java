@@ -63,7 +63,7 @@ public class PlayerService {
 
                 return String.format("%s player added!", p_playerName);
             } catch (Exception e) {
-                throw new InvalidInputException("Player name is not valid");
+                throw new InvalidInputException("Invalid player arguments!");
             }
         } else {
             throw new InvalidInputException("Player name already exists....Please provide different name.");

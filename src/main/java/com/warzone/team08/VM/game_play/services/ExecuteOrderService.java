@@ -37,6 +37,8 @@ public class ExecuteOrderService {
         VirtualMachine.getGameEngine().getGamePlayEngine().getCurrentFutureOrders().forEach(l_futureOrder -> {
             try {
                 l_futureOrder.execute();
+                VirtualMachine.getInstance().stdout(String.format("Executing %s's order", l_futureOrder.getOwner().getName()));
+                VirtualMachine.getInstance().stdout(String.format("Executed %s", l_futureOrder.toString()));
             } catch (InvalidOrderException | CardNotFoundException p_e) {
                 VirtualMachine.getInstance().stderr(p_e.getMessage());
             }
@@ -55,16 +57,15 @@ public class ExecuteOrderService {
                 l_currentPlayer = l_gamePlayEngine.getCurrentPlayer();
             } while (finishedExecutingOrders.contains(l_currentPlayer));
 
-            VirtualMachine.getInstance().stdout(String.format("\nExecuting %s's order", l_currentPlayer.getName()));
+            VirtualMachine.getInstance().stdout(String.format("Executing %s's order", l_currentPlayer.getName()));
             try {
                 // Get the next order
                 Order l_currentOrder = l_currentPlayer.nextOrder();
                 // If order supposed to be executed in the next phase.
                 if (l_currentOrder.getExecutionIndex() == GamePlayEngine.getCurrentExecutionIndex()) {
                     l_currentOrder.execute();
+                    VirtualMachine.getInstance().stdout(String.format("\nExecuted %s", l_currentOrder.toString()));
                 }
-
-                VirtualMachine.getInstance().stdout(String.format("\nExecuted %s", l_currentOrder.toString()));
 
                 // If the current player does not have any orders left.
                 if (!l_currentPlayer.hasOrders()) {
