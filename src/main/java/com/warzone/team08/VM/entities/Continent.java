@@ -160,8 +160,8 @@ public class Continent implements JSONable {
     @Override
     public JSONObject toJSON() {
         JSONObject l_continentJSON = new JSONObject();
-        l_continentJSON.put("name",d_continentName);
-        l_continentJSON.put("controlValue",d_continentControlValue);
+        l_continentJSON.put("name", d_continentName);
+        l_continentJSON.put("controlValue", d_continentControlValue);
         JSONArray l_countryJSONList = new JSONArray();
         for (Country l_country : getCountryList()){
             l_countryJSONList.put(l_country.toJSON());

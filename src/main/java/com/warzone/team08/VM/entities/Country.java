@@ -210,10 +210,11 @@ public class Country implements JSONable {
         JSONObject l_countryJSON = new JSONObject();
         l_countryJSON.put("name", d_countryName);
         JSONArray d_neighborCountryJSONList = new JSONArray();
-        for (Country l_country : getNeighbourCountries()){
+        for (Country l_country : getNeighbourCountries()) {
             d_neighborCountryJSONList.put(l_country.getCountryName());
         }
-        l_countryJSON.put("owner", d_ownedBy.getName());
+        if (d_ownedBy != null)
+            l_countryJSON.put("owner", d_ownedBy.getName());
         l_countryJSON.put("numberOfArmies", d_numberOfArmies);
         l_countryJSON.put("neighborCountries", d_neighborCountryJSONList);
         return l_countryJSON;

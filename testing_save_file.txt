@@ -1,1 +1,150 @@
-{"map_editor":{"continents":[{"name":"Mercury","controlValue":6,"countries":[{"owner":"User_1","neighborCountries":["Mercury-East","Mercury-West"],"numberOfArmies":0,"name":"Mercury-South"},{"owner":"User_1","neighborCountries":["Mercury-South","Mercury-West","Mercury-North"],"numberOfArmies":0,"name":"Mercury-East"},{"owner":"User_1","neighborCountries":["Mercury-South","Mercury-East","Mercury-North"],"numberOfArmies":0,"name":"Mercury-West"},{"owner":"User_1","neighborCountries":["Mercury-East","Mercury-West","Venus-South"],"numberOfArmies":0,"name":"Mercury-North"}]},{"name":"Venus","controlValue":8,"countries":[{"owner":"User_1","neighborCountries":["Mercury-North","Venus-East","Venus-Southwest"],"numberOfArmies":0,"name":"Venus-South"},{"owner":"User_2","neighborCountries":["Venus-South","Venus-Southwest"],"numberOfArmies":0,"name":"Venus-East"},{"owner":"User_2","neighborCountries":["Venus-South","Venus-East"],"numberOfArmies":0,"name":"Venus-Southwest"}]},{"name":"Earth","controlValue":10,"countries":[{"owner":"User_2","neighborCountries":["Mercury-West","Earth-SouthAmerica"],"numberOfArmies":0,"name":"Earth-SouthPole"},{"owner":"User_2","neighborCountries":["Venus-Southwest","Earth-SouthPole","Earth-Atlantic"],"numberOfArmies":0,"name":"Earth-SouthAmerica"},{"owner":"User_2","neighborCountries":["Earth-SouthAmerica"],"numberOfArmies":0,"name":"Earth-Atlantic"}]}]},"game_engine":{"player":[{"playerCards":[],"assignCountries":["Mercury-South","Mercury-East","Mercury-West","Mercury-North","Venus-South"],"remainingReinforceCount":9,"negotiatePlayerList":[],"assignCountriesCount":5,"reinforceArmy":9,"hasOrder":false,"name":"User_1","orderList":[]},{"playerCards":[],"assignCountries":["Venus-East","Venus-Southwest","Earth-SouthPole","Earth-SouthAmerica","Earth-Atlantic"],"remainingReinforceCount":13,"negotiatePlayerList":[],"assignCountriesCount":5,"reinforceArmy":13,"hasOrder":false,"name":"User_2","orderList":[]}]}}
+{
+    "map_editor": {"continents": [
+        {
+            "name": "Mercury",
+            "controlValue": 6,
+            "countries": [
+                {
+                    "owner": "User_1",
+                    "neighborCountries": [
+                        "Mercury-East",
+                        "Mercury-West"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Mercury-South"
+                },
+                {
+                    "owner": "User_1",
+                    "neighborCountries": [
+                        "Mercury-South",
+                        "Mercury-West",
+                        "Mercury-North"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Mercury-East"
+                },
+                {
+                    "owner": "User_1",
+                    "neighborCountries": [
+                        "Mercury-South",
+                        "Mercury-East",
+                        "Mercury-North"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Mercury-West"
+                },
+                {
+                    "owner": "User_1",
+                    "neighborCountries": [
+                        "Mercury-East",
+                        "Mercury-West",
+                        "Venus-South"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Mercury-North"
+                }
+            ]
+        },
+        {
+            "name": "Venus",
+            "controlValue": 8,
+            "countries": [
+                {
+                    "owner": "User_1",
+                    "neighborCountries": [
+                        "Mercury-North",
+                        "Venus-East",
+                        "Venus-Southwest"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Venus-South"
+                },
+                {
+                    "owner": "User_2",
+                    "neighborCountries": [
+                        "Venus-South",
+                        "Venus-Southwest"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Venus-East"
+                },
+                {
+                    "owner": "User_2",
+                    "neighborCountries": [
+                        "Venus-South",
+                        "Venus-East"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Venus-Southwest"
+                }
+            ]
+        },
+        {
+            "name": "Earth",
+            "controlValue": 10,
+            "countries": [
+                {
+                    "owner": "User_2",
+                    "neighborCountries": [
+                        "Mercury-West",
+                        "Earth-SouthAmerica"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Earth-SouthPole"
+                },
+                {
+                    "owner": "User_2",
+                    "neighborCountries": [
+                        "Venus-Southwest",
+                        "Earth-SouthPole",
+                        "Earth-Atlantic"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Earth-SouthAmerica"
+                },
+                {
+                    "owner": "User_2",
+                    "neighborCountries": ["Earth-SouthAmerica"],
+                    "numberOfArmies": 0,
+                    "name": "Earth-Atlantic"
+                }
+            ]
+        }
+    ]},
+    "game_pay": {"player": [
+        {
+            "playerCards": [],
+            "assignCountries": [
+                "Mercury-South",
+                "Mercury-East",
+                "Mercury-West",
+                "Mercury-North",
+                "Venus-South"
+            ],
+            "remainingReinforceCount": 9,
+            "negotiatePlayerList": [],
+            "assignCountriesCount": 5,
+            "reinforceArmy": 9,
+            "hasOrder": false,
+            "name": "User_1",
+            "orderList": []
+        },
+        {
+            "playerCards": [],
+            "assignCountries": [
+                "Venus-East",
+                "Venus-Southwest",
+                "Earth-SouthPole",
+                "Earth-SouthAmerica",
+                "Earth-Atlantic"
+            ],
+            "remainingReinforceCount": 13,
+            "negotiatePlayerList": [],
+            "assignCountriesCount": 5,
+            "reinforceArmy": 13,
+            "hasOrder": false,
+            "name": "User_2",
+            "orderList": []
+        }
+    ]}
+}

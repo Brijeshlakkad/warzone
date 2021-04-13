@@ -99,7 +99,6 @@ public class SaveMapService implements SingleCommand {
      * @throws InvalidInputException     Throws if the file write operation was not successful.
      * @throws InvalidMapException       Throws if the map was not valid.
      * @throws ResourceNotFoundException Throws if the file resource not found or can not be created.
-     * @return
      */
     @Override
     public String execute(List<String> p_commandValues) throws InvalidInputException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException {
@@ -108,6 +107,6 @@ public class SaveMapService implements SingleCommand {
         l_validateObj.execute(null, "savemap");
 
         // Validates the file, gets the file object, and writes the data into it.
-        return saveToFile(FileUtil.retrieveFile(PathResolverUtil.resolveFilePath(p_commandValues.get(0))));
+        return saveToFile(FileUtil.retrieveMapFile(PathResolverUtil.resolveFilePath(p_commandValues.get(0))));
     }
 }

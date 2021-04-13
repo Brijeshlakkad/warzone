@@ -29,7 +29,8 @@ public class ValidateMapService implements SingleCommand {
     private final LogEntryBuffer d_logEntryBuffer;
 
     /**
-     * Default constructor to retrieve the singleton instance of <code>MapEditorEngine</code> and <code>LogEntryBuffer</code>.
+     * Default constructor to retrieve the singleton instance of <code>MapEditorEngine</code> and
+     * <code>LogEntryBuffer</code>.
      */
     public ValidateMapService() {
         d_mapEditorEngine = MapEditorEngine.getInstance();
@@ -175,7 +176,6 @@ public class ValidateMapService implements SingleCommand {
      * @return Value of the response.
      * @throws InvalidMapException     If the map is not valid.
      * @throws EntityNotFoundException If the entity not found.
-     * @return
      */
     @Override
     public String execute(List<String> p_commandValues) throws InvalidMapException, EntityNotFoundException {

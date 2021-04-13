@@ -3,6 +3,8 @@ package com.warzone.team08.VM.phases;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.exceptions.VMException;
+import com.warzone.team08.VM.game_play.services.LoadGameService;
+import com.warzone.team08.VM.game_play.services.SaveGameService;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.lang.reflect.InvocationTargetException;
@@ -203,6 +205,30 @@ public abstract class Phase {
      * @see com.warzone.team08.VM.game_play.services.ExecuteOrderService
      */
     abstract public void fortify() throws VMException;
+
+    /**
+     * Saves the game to the provided file path.
+     *
+     * @param p_arguments Argument containing the path to the target file.
+     * @return Response value of the operation.
+     * @throws VMException If any error while saving the file.
+     */
+    public String saveGame(List<String> p_arguments) throws VMException {
+        SaveGameService l_saveGameService = new SaveGameService();
+        return l_saveGameService.execute(p_arguments);
+    }
+
+    /**
+     * Loads the game from the provided file path.
+     *
+     * @param p_arguments Argument containing the path to the target file.
+     * @return Response value of the operation.
+     * @throws VMException If any error while loading the file.
+     */
+    public String loadGame(List<String> p_arguments) throws VMException {
+        LoadGameService l_loadGameService = new LoadGameService();
+        return l_loadGameService.execute(p_arguments);
+    }
 
     /**
      * Ends the <code>MainPlay</code> game loop.

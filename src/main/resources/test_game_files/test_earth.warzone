@@ -1,0 +1,113 @@
+{
+    "map_editor": {"continents": [
+        {
+            "name": "Asia",
+            "controlValue": 5,
+            "countries": [
+                {
+                    "owner": "player_1",
+                    "neighborCountries": ["China"],
+                    "numberOfArmies": 0,
+                    "name": "India"
+                },
+                {
+                    "owner": "player_1",
+                    "neighborCountries": [
+                        "Nepal",
+                        "India"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "China"
+                },
+                {
+                    "owner": "player_1",
+                    "neighborCountries": [
+                        "China",
+                        "SriLanka"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Pakistan"
+                },
+                {
+                    "owner": "player_1",
+                    "neighborCountries": [
+                        "China",
+                        "Germany"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "SriLanka"
+                },
+                {
+                    "owner": "player_2",
+                    "neighborCountries": [
+                        "Pakistan",
+                        "SriLanka"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Nepal"
+                }
+            ]
+        },
+        {
+            "name": "Europe",
+            "controlValue": 3,
+            "countries": [
+                {
+                    "owner": "player_2",
+                    "neighborCountries": ["UK"],
+                    "numberOfArmies": 0,
+                    "name": "Germany"
+                },
+                {
+                    "owner": "player_2",
+                    "neighborCountries": ["Spain"],
+                    "numberOfArmies": 0,
+                    "name": "UK"
+                },
+                {
+                    "owner": "player_2",
+                    "neighborCountries": [
+                        "Germany",
+                        "Nepal"
+                    ],
+                    "numberOfArmies": 0,
+                    "name": "Spain"
+                }
+            ]
+        }
+    ]},
+    "game_pay": {"player": [
+        {
+            "playerCards": [],
+            "assignCountries": [
+                "India",
+                "China",
+                "Pakistan",
+                "SriLanka"
+            ],
+            "remainingReinforceCount": 3,
+            "negotiatePlayerList": [],
+            "assignCountriesCount": 4,
+            "reinforceArmy": 3,
+            "hasOrder": false,
+            "name": "player_1",
+            "orderList": []
+        },
+        {
+            "playerCards": [],
+            "assignCountries": [
+                "Nepal",
+                "Germany",
+                "UK",
+                "Spain"
+            ],
+            "remainingReinforceCount": 6,
+            "negotiatePlayerList": [],
+            "assignCountriesCount": 4,
+            "reinforceArmy": 6,
+            "hasOrder": false,
+            "name": "player_2",
+            "orderList": []
+        }
+    ]}
+}

@@ -1,48 +1,43 @@
 package com.warzone.team08.VM.game_play.services;
 
 import com.warzone.team08.Application;
-import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
-import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
-import com.warzone.team08.VM.phases.PlaySetup;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
-
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
- * This file will tests whether the file is created and the items in it are stored or not.
+ * This file will tests whether <code>SaveGameService</code> can store the runtime information inside the file properly
+ * or not.
+ *
+ * @author Brijesh Lakkad
  * @author Rutwik
+ * @version 1.0
  */
-public class SaveGameTest {
+public class SaveGameServiceTest {
     private static Application d_application;
     private static URL d_testFilePath;
-    private static MapEditorEngine d_mapEditorEngine;
+    private static URL d_testSavedFilePath;
     private static GamePlayEngine d_gamePlayEngine;
     private DistributeCountriesService d_distributeCountriesService;
     private AssignReinforcementService d_assignReinforcementService;
-    private SaveGame d_saveGame;
-    private List<Player> d_playerList;
-    private Player d_player1;
-    private Player d_player2;
-    private String testFile = "testing_save_file.txt";
 
     /**
      * Create temporary folder for test case.
@@ -58,20 +53,20 @@ public class SaveGameTest {
     public static void beforeClass() {
         d_application = new Application();
         d_application.handleApplicationStartup();
-        d_mapEditorEngine = MapEditorEngine.getInstance();
         d_gamePlayEngine = GamePlayEngine.getInstance();
-        d_testFilePath = SaveGameTest.class.getClassLoader().getResource("test_map_files/test_map.map");
+        d_testFilePath = SaveGameServiceTest.class.getClassLoader().getResource("test_map_files/test_earth.map");
+        d_testSavedFilePath = SaveGameServiceTest.class.getClassLoader().getResource("test_game_files/test_earth.warzone");
     }
 
     /**
      * Setting up the required objects before performing test.
      *
-     * @throws AbsentTagException         Throws if any tag is missing in the json file.
-     * @throws InvalidMapException        Throws if map file is invalid.
-     * @throws ResourceNotFoundException  Throws if the file not found.
-     * @throws InvalidInputException      Throws if user input is invalid.
-     * @throws EntityNotFoundException    Throws if entity not found.
-     * @throws URISyntaxException         Throws if URI syntax problem.
+     * @throws AbsentTagException        Throws if any tag is missing in the json file.
+     * @throws InvalidMapException       Throws if map file is invalid.
+     * @throws ResourceNotFoundException Throws if the file not found.
+     * @throws InvalidInputException     Throws if user input is invalid.
+     * @throws EntityNotFoundException   Throws if entity not found.
+     * @throws URISyntaxException        Throws if URI syntax problem.
      */
     @Before
     public void before() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
@@ -86,36 +81,43 @@ public class SaveGameTest {
         Player l_player1 = new Player();
         Player l_player2 = new Player();
 
-        l_player1.setName("User_1");
-        l_player2.setName("User_2");
+        l_player1.setName("player_1");
+        l_player2.setName("player_2");
 
         d_gamePlayEngine.addPlayer(l_player1);
         d_gamePlayEngine.addPlayer(l_player2);
 
-        d_playerList = d_gamePlayEngine.getPlayerList();
-
         d_distributeCountriesService = new DistributeCountriesService();
-        //Distributes countries between players.
+        // Distributes countries between players.
         d_distributeCountriesService.distributeCountries();
 
         d_assignReinforcementService = new AssignReinforcementService();
         d_assignReinforcementService.execute();
-
-        d_saveGame = new SaveGame();
-
     }
 
     /**
-     * test that the content is saved into file or not.
-     * @throws IOException Error while opening the file.
+     * Test that the content is being saved into the provided file or not.
+     *
+     * @throws IOException If any error occurred while saving the engines to file.
      */
     @Test(expected = Test.None.class)
     public void testSaveFile() throws IOException {
-        //final File testFileObject = tempFolder.newFile(testFile);
-        File file = new File(testFile);
-        String response = d_saveGame.saveGameState(file);
+        SaveGameService l_saveGameService = new SaveGameService();
+        l_saveGameService.toJSON();
+        // This is the actual JSONObject.
+        JSONObject l_actualJSONObject = l_saveGameService.getGameEngineJSONData();
+        StringBuilder l_fileContentBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(d_testSavedFilePath.getPath()))) {
 
-        assert file.exists();
-        assertNotNull(response);
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                l_fileContentBuilder.append(sCurrentLine).append("\n");
+            }
+        }
+        // Load the string content in JSONObject. This is expected JSONObject.
+        JSONObject l_savedJSONObject = new JSONObject(l_fileContentBuilder.toString());
+        // Check if the both JSONObject are having the same content.
+        boolean isEqual = l_actualJSONObject.similar(l_savedJSONObject);
+        assertTrue(isEqual);
     }
 }
