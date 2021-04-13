@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.map_editor.services;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.FileType;
 import com.warzone.team08.VM.constants.enums.MapModelType;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
@@ -46,7 +47,7 @@ public class EditMapService implements SingleCommand {
      * Initializes variables required to load map into different objects.
      */
     public EditMapService() {
-        d_mapEditorEngine = MapEditorEngine.getInstance();
+        d_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
         d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
         d_continentService = new ContinentService();

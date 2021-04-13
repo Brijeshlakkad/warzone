@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
@@ -8,7 +9,6 @@ import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.ArrayList;
@@ -36,8 +36,8 @@ public class DistributeCountriesService implements SingleCommand {
      * Constructor for instantiating required objects.
      */
     public DistributeCountriesService() {
-        d_countryList = MapEditorEngine.getInstance().getCountryList();
-        d_gamePlayEngine = GamePlayEngine.getInstance();
+        d_countryList = VirtualMachine.getGameEngine().getMapEditorEngine().getCountryList();
+        d_gamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
@@ -139,7 +139,7 @@ public class DistributeCountriesService implements SingleCommand {
     public String execute(List<String> p_commandValues) throws VMException, IllegalStateException {
         // Check if players have been added.
         // What if only one player is available?
-        if (!GamePlayEngine.getInstance().getPlayerList().isEmpty()) {
+        if (!d_gamePlayEngine.getPlayerList().isEmpty()) {
             String l_response = distributeCountries();
             // Logging
             d_logEntryBuffer.dataChanged("assigncountries", l_response + "\n" + this.getPlayerCountries());

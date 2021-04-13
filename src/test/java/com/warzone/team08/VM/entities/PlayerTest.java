@@ -4,8 +4,8 @@ import com.warzone.team08.Application;
 import com.warzone.team08.CLI.CommandLineInterface;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import com.warzone.team08.VM.phases.PlaySetup;
@@ -33,6 +33,7 @@ public class PlayerTest {
     private static Application d_Application;
     private CommandLineInterface d_commandLineInterface;
     private EditMapService d_editMapService;
+    private MapEditorEngine d_mapEditorEngine;
     private static URL d_TestFilePath;
 
     /**
@@ -70,22 +71,23 @@ public class PlayerTest {
         String l_url = new URI(d_TestFilePath.getPath()).getPath();
         d_editMapService.handleLoadMap(l_url);
 
-        // Set the game state to GAME_PLAY
-        GameEngine.getInstance().setGamePhase(new PlaySetup(GameEngine.getInstance()));
+        GameEngine l_gameEngine = VirtualMachine.getGameEngine();
 
-        List<Country> l_assignedCountries = MapEditorEngine.getInstance().getCountryList().subList(0, Math.min(4, MapEditorEngine.getInstance().getCountryList().size()));
-        Player l_player1 = new Player();
-        l_player1.setName("User_1");
+        // Set the game state to GAME_PLAY
+        l_gameEngine.setGamePhase(new PlaySetup(l_gameEngine));
+        d_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
+
+        List<Country> l_assignedCountries = d_mapEditorEngine.getCountryList().subList(0, Math.min(4, d_mapEditorEngine.getCountryList().size()));
+        Player l_player1 = new Player("User_1", StrategyType.HUMAN);
         l_player1.setAssignedCountries(l_assignedCountries);
         l_player1.setReinforcementCount(10);
 
-        Player l_player2 = new Player();
-        l_player2.setName("User_2");
+        Player l_player2 = new Player("User_2", StrategyType.HUMAN);
         l_player2.setAssignedCountries(l_assignedCountries);
         l_player2.setReinforcementCount(10);
 
-        GamePlayEngine.getInstance().addPlayer(l_player1);
-        GamePlayEngine.getInstance().addPlayer(l_player2);
+        VirtualMachine.getGameEngine().getGamePlayEngine().addPlayer(l_player1);
+        VirtualMachine.getGameEngine().getGamePlayEngine().addPlayer(l_player2);
     }
 
     /**
@@ -102,7 +104,7 @@ public class PlayerTest {
         String l_orderInput = "deploy Mercury-South 5";
 
         d_commandLineInterface.setIn(new ByteArrayInputStream(l_orderInput.getBytes()));
-        GamePlayEngine.getInstance().getPlayerList().get(0).issueOrder();
+        VirtualMachine.getGameEngine().getGamePlayEngine().getPlayerList().get(0).issueOrder();
     }
 }
 

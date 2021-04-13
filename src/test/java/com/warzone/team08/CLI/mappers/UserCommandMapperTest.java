@@ -3,7 +3,7 @@ package com.warzone.team08.CLI.mappers;
 import com.warzone.team08.Application;
 import com.warzone.team08.CLI.layouts.UserCommandLayout;
 import com.warzone.team08.CLI.models.UserCommand;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.VirtualMachine;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class UserCommandMapperTest {
      */
     @Before
     public void before() {
-        MapEditorEngine.getInstance().initialise();
+        VirtualMachine.getGameEngine().initialise();
         d_commandWithArgument = "editcontinent -add Canada 10 -remove Continent";
         d_correctCommandWithArgument = new UserCommand(UserCommandLayout.matchAndGetUserCommand("editcontinent"));
         d_correctCommandWithArgument.pushUserArgument("add",

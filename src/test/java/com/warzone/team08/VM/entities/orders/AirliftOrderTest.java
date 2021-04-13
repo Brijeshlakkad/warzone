@@ -2,6 +2,7 @@ package com.warzone.team08.VM.entities.orders;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.entities.cards.AirliftCard;
@@ -41,7 +42,6 @@ public class AirliftOrderTest {
     public static void createPlayersList() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
-        d_GamePlayEngine = GamePlayEngine.getInstance();
         d_TestFilePath = BombOrderTest.class.getClassLoader().getResource("map_files/solar.map");
     }
 
@@ -57,7 +57,10 @@ public class AirliftOrderTest {
      */
     @Before
     public void setup() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
+        // (Re)initialise the VM.
         VirtualMachine.getInstance().initialise();
+
+        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
 
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
@@ -65,11 +68,8 @@ public class AirliftOrderTest {
         String l_url = new URI(d_TestFilePath.getPath()).getPath();
         l_editMapService.handleLoadMap(l_url);
 
-        Player l_player1 = new Player();
-        Player l_player2 = new Player();
-
-        l_player1.setName("User_1");
-        l_player2.setName("User_2");
+        Player l_player1 = new Player("User_1", StrategyType.HUMAN);
+        Player l_player2 = new Player("User_2", StrategyType.HUMAN);
 
         d_GamePlayEngine.addPlayer(l_player1);
         d_GamePlayEngine.addPlayer(l_player2);
@@ -88,7 +88,7 @@ public class AirliftOrderTest {
      */
     @Test
     public void testExecute()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -112,7 +112,7 @@ public class AirliftOrderTest {
     //not have airlift card
     @Test(expected = CardNotFoundException.class)
     public void testPlayerHasCard()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -135,7 +135,7 @@ public class AirliftOrderTest {
     //try to transfer into other's country
     @Test(expected = InvalidOrderException.class)
     public void testPlayerNotAirliftInOthersCountry()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
@@ -156,7 +156,7 @@ public class AirliftOrderTest {
      */
     @Test(expected = InvalidOrderException.class)
     public void testPlayerHasEnteredArmies()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);

@@ -18,31 +18,14 @@ import java.util.*;
  * @version 1.0
  */
 public class MapEditorEngine implements Engine, JSONable {
-    /**
-     * Singleton instance of the class.
-     */
-    private static MapEditorEngine d_Instance;
-
     private List<Continent> d_continentList;
 
     private boolean d_isLoadingMap = false;
 
     /**
-     * Gets the single instance of the class.
-     *
-     * @return Value of the instance.
-     */
-    public static MapEditorEngine getInstance() {
-        if (d_Instance == null) {
-            d_Instance = new MapEditorEngine();
-        }
-        return d_Instance;
-    }
-
-    /**
      * Instance can not be created outside the class. (private)
      */
-    private MapEditorEngine() {
+    public MapEditorEngine() {
         this.initialise();
     }
 

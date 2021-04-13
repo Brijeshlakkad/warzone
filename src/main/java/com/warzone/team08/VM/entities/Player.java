@@ -1,25 +1,21 @@
 package com.warzone.team08.VM.entities;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.CardType;
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.constants.interfaces.Card;
 import com.warzone.team08.VM.constants.interfaces.JSONable;
 import com.warzone.team08.VM.constants.interfaces.Order;
+import com.warzone.team08.VM.entities.strategy.*;
 import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.logger.LogEntryBuffer;
-import com.warzone.team08.VM.mappers.OrderMapper;
-import com.warzone.team08.VM.responses.CommandResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -37,41 +33,32 @@ public class Player implements JSONable {
     /**
      * List of orders issued by the player.
      */
-    private final List<Order> d_orders;
+    private final List<Order> d_orders = new ArrayList<>();
     /**
      * List of orders executed by the <code>GameEngine</code>.
      */
-    private final List<Order> d_executedOrders;
+    private final List<Order> d_executedOrders = new ArrayList<>();
     /**
      * List of cards owned by the player.
      */
-    private List<Card> d_cards;
-    private List<Country> d_assignedCountries;
-    private int d_reinforcementsCount;
-    private int d_remainingReinforcementCount;
-    private int d_assignedCountryCount;
-    private final List<Player> d_negotiatePlayer;
+    private final List<Card> d_cards = new ArrayList<>();
+    private List<Country> d_assignedCountries = new ArrayList<>();
+    private int d_reinforcementsCount = 0;
+    private int d_remainingReinforcementCount = 0;
+    private int d_assignedCountryCount = 0;
+    private final List<Player> d_negotiatePlayer = new ArrayList<>();
+    private PlayerStrategy d_playerStrategy;
+    private boolean d_isDone = false;
 
     /**
-     * To map from <code>UserCommand</code> to <code>Order</code>.
+     * Creates <code>Player</code> using the decided strategy.
+     *
+     * @param p_playerName   Name of the player.
+     * @param p_strategyType Strategy of the player.
      */
-    private final OrderMapper d_orderMapper;
-
-    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
-
-    /**
-     * Initializes variables required to handle player state.
-     */
-    public Player() {
-        d_orders = new ArrayList<>();
-        d_executedOrders = new ArrayList<>();
-        d_assignedCountries = new ArrayList<>();
-        d_reinforcementsCount = 0;
-        d_remainingReinforcementCount = 0;
-        d_assignedCountryCount = 0;
-        d_orderMapper = new OrderMapper();
-        d_cards = new ArrayList<>();
-        d_negotiatePlayer = new ArrayList<>();
+    public Player(String p_playerName, StrategyType p_strategyType) {
+        d_name = p_playerName;
+        this.setPlayerStrategyUsingType(p_strategyType);
     }
 
     /**
@@ -101,15 +88,6 @@ public class Player implements JSONable {
      */
     public String getName() {
         return d_name;
-    }
-
-    /**
-     * Setter method for player name.
-     *
-     * @param p_name player name.
-     */
-    public void setName(String p_name) {
-        this.d_name = p_name;
     }
 
     /**
@@ -223,44 +201,23 @@ public class Player implements JSONable {
     /**
      * Gets order from the user and stores the order for the player.
      *
-     * @return True if the player doesn't want to being asked to issue order.
      * @throws InvalidCommandException  If there is an error while preprocessing the user command.
      * @throws InvalidArgumentException If the mentioned value is not of expected type.
      * @throws EntityNotFoundException  If the target country not found.
      * @throws ExecutionException       If any error while processing concurrent thread.
      * @throws InterruptedException     If scheduled thread was interrupted.
      */
-    public boolean issueOrder() throws
+    public void issueOrder() throws
             InvalidCommandException,
             EntityNotFoundException,
             ExecutionException,
             InterruptedException,
             InvalidArgumentException {
-        // Requests user interface for input from user.
-        String l_responseVal = "";
-        do {
-            VirtualMachine.getInstance().stdout(String.format("\nPlayer: %s--------\nUSAGE: You can check map details\n> showmap <return>", this.d_name, this.d_remainingReinforcementCount));
-            Future<String> l_responseOfFuture = VirtualMachine.getInstance().askForUserInput(String.format("Issue Order:"));
-            l_responseVal = l_responseOfFuture.get();
-            d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_name));
-        } while (l_responseVal.isEmpty());
-        try {
-            ObjectMapper l_objectMapper = new ObjectMapper();
-            // Map user response to Order object.
-            CommandResponse l_commandResponse = l_objectMapper.readValue(l_responseVal, CommandResponse.class);
-            if (l_commandResponse.isDone()) {
-                d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's finished issuing the orders", this.d_name));
-                return true;
-            }
-            Order l_newOrder = d_orderMapper.toOrder(l_commandResponse, this);
-            d_logEntryBuffer.dataChanged("issue_order", l_newOrder.toString());
-            this.addOrder(l_newOrder);
-        } catch (IOException p_ioException) {
-            throw new InvalidCommandException("Unrecognised input!");
+        d_isDone = false;
+        d_playerStrategy.execute();
+        if (this.d_playerStrategy.getType() != StrategyType.HUMAN) {
+            this.doneWithOrder();
         }
-
-        // Default player will be asked to issue order until they enter "done"
-        return false;
     }
 
     /**
@@ -409,7 +366,7 @@ public class Player implements JSONable {
         l_PlayerJSON.put("name", this.getName());
 
         JSONArray l_assignedCountriesList = new JSONArray();
-        for (Country l_country : getAssignedCountries()){
+        for (Country l_country : getAssignedCountries()) {
             l_assignedCountriesList.put(l_country.getCountryName());
         }
         l_PlayerJSON.put("assignCountries", l_assignedCountriesList);
@@ -417,22 +374,22 @@ public class Player implements JSONable {
         l_PlayerJSON.put("reinforceArmy", getReinforcementCount());
 
         JSONArray l_cardList = new JSONArray();
-        for (Card l_card : getCards()){
+        for (Card l_card : getCards()) {
             l_cardList.put(l_card.getType().getJsonValue());
         }
-        l_PlayerJSON.put("playerCards",l_cardList);
+        l_PlayerJSON.put("playerCards", l_cardList);
 
 
         l_PlayerJSON.put("hasOrder", hasOrders());
         l_PlayerJSON.put("remainingReinforceCount", getRemainingReinforcementCount());
 
         JSONArray l_orderList = new JSONArray();
-        for (Order l_order : getOrders()){
+        for (Order l_order : getOrders()) {
             l_orderList.put(l_order.getType().getJsonValue());
         }
         l_PlayerJSON.put("orderList", l_orderList);
         JSONArray l_negotiatePlayerList = new JSONArray();
-        for (Player l_player : getFriendPlayers()){
+        for (Player l_player : getFriendPlayers()) {
             l_negotiatePlayerList.put(l_player.toJSON());
         }
         l_PlayerJSON.put("negotiatePlayerList", l_negotiatePlayerList);
@@ -446,6 +403,57 @@ public class Player implements JSONable {
      */
     @Override
     public void fromJSON(JSONObject p_jsonObject) {
+    }
 
+    /**
+     * Gets the strategy type being used by this player.
+     *
+     * @return Type of strategy of the player.
+     */
+    public StrategyType getPlayerStrategyType() {
+        return d_playerStrategy.getType();
+    }
+
+    public void setPlayerStrategyUsingType(StrategyType p_strategyUsingType) {
+        if (p_strategyUsingType == StrategyType.HUMAN) {
+            d_playerStrategy = new HumanStrategy(this);
+        } else if (p_strategyUsingType == StrategyType.AGGRESSIVE) {
+            d_playerStrategy = new AggressiveStrategy(this);
+        } else if (p_strategyUsingType == StrategyType.BENEVOLENT) {
+            d_playerStrategy = new BenevolentStrategy(this);
+        } else if (p_strategyUsingType == StrategyType.CHEATER) {
+            d_playerStrategy = new CheaterStrategy(this);
+        } else if (p_strategyUsingType == StrategyType.RANDOM) {
+            d_playerStrategy = new RandomStrategy(this);
+        }
+    }
+
+    /**
+     * Human strategy will call this method if the player is done with issuing orders.
+     */
+    public void doneWithOrder() {
+        d_isDone = true;
+    }
+
+    /**
+     * Checks if the player is done with issuing the orders.
+     *
+     * @return True if the player doesn't want to issue order.
+     */
+    public boolean isDone() {
+        return d_isDone;
+    }
+
+    /**
+     * Checks if this player has won. To decide, each country will be iterated to know if it is owned by this player or
+     * not. If all the countries is being owned by this player, then the player has won the game.
+     *
+     * @return True if the player has won.
+     */
+    public boolean isWon() {
+        return VirtualMachine.getGameEngine()
+                .getMapEditorEngine().getCountryList().stream().anyMatch(p_country ->
+                        p_country.getOwnedBy() != null && !p_country.getOwnedBy().equals(this)
+                );
     }
 }

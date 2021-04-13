@@ -1,10 +1,9 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.exceptions.VMException;
-import com.warzone.team08.VM.game_play.GamePlayEngine;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.utils.FileUtil;
 import com.warzone.team08.VM.utils.PathResolverUtil;
 import org.json.JSONObject;
@@ -37,8 +36,8 @@ public class SaveGameService implements SingleCommand {
      * Puts the values of each engine state into JSON Object.
      */
     public void toJSON() {
-        d_currentGameEngine.put("map_editor", MapEditorEngine.getInstance().toJSON());
-        d_currentGameEngine.put("game_pay", GamePlayEngine.getInstance().toJSON());
+        d_currentGameEngine.put("map_editor", VirtualMachine.getGameEngine().getMapEditorEngine().toJSON());
+        d_currentGameEngine.put("game_pay", VirtualMachine.getGameEngine().getGamePlayEngine().toJSON());
     }
 
     /**

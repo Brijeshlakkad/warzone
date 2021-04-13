@@ -1,6 +1,5 @@
 package com.warzone.team08.VM.game_play.services;
 
-import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
@@ -31,7 +30,7 @@ public class IssueOrderService {
      */
     public void execute() {
         List<Player> finishedIssuingOrders = new ArrayList<>();
-        GamePlayEngine l_gamePlayEngine = GameEngine.GAME_PLAY_ENGINE();
+        GamePlayEngine l_gamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         l_gamePlayEngine.setCurrentPlayerTurn(l_gamePlayEngine.getCurrentPlayerForIssuePhase());
 
         while (finishedIssuingOrders.size() != l_gamePlayEngine.getPlayerList().size()) {
@@ -46,7 +45,8 @@ public class IssueOrderService {
             do {
                 try {
                     // Request player to issue the order.
-                    if (l_currentPlayer.issueOrder()) {
+                    l_currentPlayer.issueOrder();
+                    if (l_currentPlayer.isDone()) {
                         // Player won't be asked again for issuing orders for this phase.
                         finishedIssuingOrders.add(l_currentPlayer);
                     }

@@ -5,6 +5,7 @@ import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.map_editor.services.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Concrete state of the <code>Phase</code>. Extends the <code>Edit</code>.
@@ -20,6 +21,15 @@ public class PostLoad extends MapEditor {
      */
     public PostLoad(GameEngine p_gameEngine) {
         super(p_gameEngine);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String prepareTournament(List<Map<String, List<String>>> p_arguments) throws VMException{
+        return this.invalidCommand();
     }
 
     /**

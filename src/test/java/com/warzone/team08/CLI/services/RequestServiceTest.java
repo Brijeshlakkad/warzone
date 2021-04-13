@@ -4,8 +4,8 @@ import com.warzone.team08.Application;
 import com.warzone.team08.CLI.layouts.UserCommandLayout;
 import com.warzone.team08.CLI.models.UserCommand;
 import com.warzone.team08.VM.GameEngine;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.phases.PostLoad;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,8 +44,10 @@ public class RequestServiceTest {
         Application l_application = new Application();
         l_application.handleApplicationStartup();
 
-        MapEditorEngine.getInstance().initialise();
-        GameEngine.getInstance().setGamePhase(new PostLoad(GameEngine.getInstance()));
+        GameEngine l_gameEngine = VirtualMachine.getGameEngine();
+
+        l_gameEngine.initialise();
+        l_gameEngine.setGamePhase(new PostLoad(l_gameEngine));
     }
 
     /**

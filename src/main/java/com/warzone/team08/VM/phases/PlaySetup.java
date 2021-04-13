@@ -45,7 +45,7 @@ public class PlaySetup extends GamePlay {
         DistributeCountriesService l_distributeCountriesService = new DistributeCountriesService();
         String l_responseValue = l_distributeCountriesService.execute(p_arguments);
         // Start game loop.
-        this.d_gameEngine.GAME_PLAY_ENGINE().startGameLoop();
+        this.d_gameEngine.getGamePlayEngine().startGameLoop();
         return l_responseValue;
     }
 

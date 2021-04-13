@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.map_editor.services;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
@@ -38,7 +39,7 @@ public class CountryService {
      * Initializes different object.
      */
     public CountryService() {
-        d_mapEditorEngine = MapEditorEngine.getInstance();
+        d_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
         d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
         d_logEntryBuffer = LogEntryBuffer.getLogger();

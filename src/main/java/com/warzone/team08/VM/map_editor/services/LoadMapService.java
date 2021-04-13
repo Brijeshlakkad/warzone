@@ -1,9 +1,9 @@
 package com.warzone.team08.VM.map_editor.services;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.utils.PathResolverUtil;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public class LoadMapService implements SingleCommand {
                 ValidateMapService l_validateObj = new ValidateMapService();
                 l_validateObj.execute(null, "loadmap");
             } catch (InvalidMapException | EntityNotFoundException l_e) {
-                MapEditorEngine.getInstance().initialise();
+                VirtualMachine.getGameEngine().initialise();
                 throw l_e;
             }
             // Logging

@@ -1,5 +1,7 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
@@ -32,7 +34,7 @@ public class PlayerService {
      * Initialization of different objects.
      */
     public PlayerService() {
-        d_gamePlayEngine = GamePlayEngine.getInstance();
+        d_gamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         d_playerRepository = new PlayerRepository();
         d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
@@ -40,17 +42,22 @@ public class PlayerService {
     /**
      * Adds the player to the list stored at Game Play engine.
      *
-     * @param p_playerName Value of the player name.
+     * @param p_playerName   Value of the player name.
+     * @param p_strategyType Strategy of the player.
      * @return Value of response of the request.
      * @throws InvalidInputException Throws if processing the player creation.
      */
-    public String add(String p_playerName) throws InvalidInputException {
+    public String add(String p_playerName, String p_strategyType) throws InvalidInputException {
         if (!d_playerRepository.existByPlayerName(p_playerName)) {
             try {
-                Player l_player = new Player();
-                l_player.setName(p_playerName);
+                StrategyType l_strategyType;
+                try {
+                    l_strategyType = StrategyType.valueOf(p_strategyType.toUpperCase());
+                } catch (IllegalArgumentException p_e) {
+                    throw new InvalidInputException("Invalid strategy type!");
+                }
+                Player l_player = new Player(p_playerName, l_strategyType);
                 d_gamePlayEngine.addPlayer(l_player);
-
                 // Logging
                 d_logEntryBuffer.dataChanged("gameplayer", p_playerName + " player added!");
 

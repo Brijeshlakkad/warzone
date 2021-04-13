@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.map_editor.services;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
@@ -33,7 +34,7 @@ public class ValidateMapService implements SingleCommand {
      * <code>LogEntryBuffer</code>.
      */
     public ValidateMapService() {
-        d_mapEditorEngine = MapEditorEngine.getInstance();
+        d_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
         d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 

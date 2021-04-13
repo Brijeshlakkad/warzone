@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
@@ -38,8 +39,8 @@ public class AssignReinforcementService {
      * bonus.
      */
     public AssignReinforcementService() {
-        d_mapEditorEngine = MapEditorEngine.getInstance();
-        d_gamePlayEngine = GamePlayEngine.getInstance();
+        d_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
+        d_gamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
     }
 
     /**

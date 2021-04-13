@@ -2,6 +2,7 @@ package com.warzone.team08.VM.game_play.services;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
@@ -53,7 +54,6 @@ public class SaveGameServiceTest {
     public static void beforeClass() {
         d_application = new Application();
         d_application.handleApplicationStartup();
-        d_gamePlayEngine = GamePlayEngine.getInstance();
         d_testFilePath = SaveGameServiceTest.class.getClassLoader().getResource("test_map_files/test_earth.map");
         d_testSavedFilePath = SaveGameServiceTest.class.getClassLoader().getResource("test_game_files/test_earth.warzone");
     }
@@ -72,17 +72,16 @@ public class SaveGameServiceTest {
     public void before() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
         VirtualMachine.getInstance().initialise();
 
+        d_gamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
+
         EditMapService l_editMapService = new EditMapService();
         assertNotNull(d_testFilePath);
         System.out.println(d_testFilePath.getPath());
         String l_url = new URI(d_testFilePath.getPath()).getPath();
         l_editMapService.handleLoadMap(l_url);
 
-        Player l_player1 = new Player();
-        Player l_player2 = new Player();
-
-        l_player1.setName("player_1");
-        l_player2.setName("player_2");
+        Player l_player1 = new Player("player_1", StrategyType.HUMAN);
+        Player l_player2 = new Player("player_2", StrategyType.HUMAN);
 
         d_gamePlayEngine.addPlayer(l_player1);
         d_gamePlayEngine.addPlayer(l_player2);

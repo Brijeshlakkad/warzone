@@ -1,8 +1,9 @@
 package com.warzone.team08.VM.map_editor.services;
 
+import com.warzone.team08.Application;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
  * @version 1.0.0
  */
 public class CountryServiceTest {
-
+    private static Application d_Application = new Application();
     private static CountryService d_CountryService;
     private List<Continent> d_continentList;
     private EditMapService d_editMapService;
@@ -32,6 +33,8 @@ public class CountryServiceTest {
      */
     @BeforeClass
     public static void beforeTestClass() {
+        d_Application.handleApplicationStartup();
+        VirtualMachine.getInstance().initialise();
         d_CountryService = new CountryService();
     }
 
@@ -52,7 +55,7 @@ public class CountryServiceTest {
         assertNotNull(d_testFilePath);
         String l_url = new URI(d_testFilePath.getPath()).getPath();
         d_editMapService.handleLoadMap(l_url);
-        d_continentList = MapEditorEngine.getInstance().getContinentList();
+        d_continentList = VirtualMachine.getGameEngine().getMapEditorEngine().getContinentList();
     }
 
     /**
@@ -61,7 +64,7 @@ public class CountryServiceTest {
      * @throws EntityNotFoundException Throws if name of the continent which doesn't exists is provided.
      */
     @Test(expected = EntityNotFoundException.class)
-    public void testInvalidContinentName() throws EntityNotFoundException{
+    public void testInvalidContinentName() throws EntityNotFoundException {
         d_CountryService.add("India", "ABC");
     }
 
@@ -72,7 +75,7 @@ public class CountryServiceTest {
      */
     @Test(expected = Test.None.class)
     public void testAddRemoveCountry()
-            throws EntityNotFoundException{
+            throws EntityNotFoundException {
 
         String l_continentName = d_continentList.get(0).getContinentName();
         String l_responseStringAddOp = d_CountryService.add("India", l_continentName);

@@ -1,7 +1,7 @@
 package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.Application;
-import com.warzone.team08.VM.GameEngine;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.exceptions.AbsentTagException;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -22,23 +22,24 @@ public class LoadMapServiceTest {
     private static URL d_testCorrectFilePath;
 
     /**
-     * This method runs before the test case runs. This method initializes different objects required to perform test.
-     */
-    @Before
-    public void before() {
-        d_editMapService = new EditMapService();
-        GameEngine.getInstance().initialise();
-    }
-
-    /**
      * Sets the path to the files.
      */
     @BeforeClass
     public static void beforeClass() {
         Application l_application = new Application();
         l_application.handleApplicationStartup();
+        VirtualMachine.getGameEngine().initialise();
         d_testCorruptedFilePath = LoadMapServiceTest.class.getClassLoader().getResource("test_map_files/test_blank_data_fields.map");
         d_testCorrectFilePath = LoadMapServiceTest.class.getClassLoader().getResource("map_files/solar.map");
+    }
+
+    /**
+     * This method runs before the test case runs. This method initializes different objects required to perform test.
+     */
+    @Before
+    public void before() {
+        d_editMapService = new EditMapService();
+        VirtualMachine.getGameEngine().getMapEditorEngine().initialise();
     }
 
     /**
