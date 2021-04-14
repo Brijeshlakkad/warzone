@@ -1,9 +1,12 @@
 package com.warzone.team08.VM.phases;
 
 import com.warzone.team08.VM.GameEngine;
+import com.warzone.team08.VM.exceptions.InvalidCommandException;
+import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.map_editor.services.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -67,9 +70,29 @@ public class PostLoad extends MapEditor {
      * {@inheritDoc}
      */
     @Override
-    public String saveMap(List<String> p_arguments) throws VMException {
-        SaveMapService l_saveMapService = new SaveMapService();
-        return l_saveMapService.execute(p_arguments);
+    public String saveMap(List<String> p_arguments) throws VMException, IOException {
+
+        if(!p_arguments.isEmpty())
+        {
+            if(p_arguments.get(2).equalsIgnoreCase("warzone"))
+            {
+                SaveMapService l_saveMapService = new SaveMapService();
+                return l_saveMapService.execute(p_arguments);
+            }
+            else if(p_arguments.get(2).equalsIgnoreCase("conquest"))
+            {
+                SaveConquestMapService l_saveConquestMapService = new SaveConquestMapService();
+                return l_saveConquestMapService.execute(p_arguments);
+            }
+            else
+            {
+                throw new InvalidCommandException("Map type is not valid");
+            }
+        }
+        else
+        {
+            throw new InvalidInputException("Empty arguments found. Please provide required arguments.");
+        }
     }
 
     /**

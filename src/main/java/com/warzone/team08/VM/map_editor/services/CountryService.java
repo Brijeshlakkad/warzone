@@ -75,6 +75,8 @@ public class CountryService {
      * @param p_countryName        Name of the country.
      * @param p_continentName      Name of the continent.
      * @param p_neighbourCountries List representing the neighboring countries.
+     * @param p_xCoordinate        X Coordinate of the country.
+     * @param p_yCoordinate        Y Coordinate of the country.
      * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */

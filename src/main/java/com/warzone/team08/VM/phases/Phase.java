@@ -91,7 +91,8 @@ public abstract class Phase {
      *
      * @param p_arguments Contains the filename.
      * @return Response value of the operation.
-     * @throws VMException If any exception during loading the map into engines.
+     * @throws VMException Throws if any exception during loading the map into engines.
+     * @throws IOException Throws if IO Exception occurs during execution.
      * @see com.warzone.team08.VM.map_editor.services.EditMapService
      */
     abstract public String editMap(List<String> p_arguments) throws VMException, IOException;
@@ -150,9 +151,10 @@ public abstract class Phase {
      * @param p_arguments Contains the filename.
      * @return Response value of the operation.
      * @throws VMException Base class of any exception during the operation.
+     * @throws IOException Throws if IO Exception occurs during execution.
      * @see com.warzone.team08.VM.map_editor.services.SaveMapService
      */
-    abstract public String saveMap(List<String> p_arguments) throws VMException;
+    abstract public String saveMap(List<String> p_arguments) throws VMException, IOException;
 
     /**
      * Adds the player for this game.

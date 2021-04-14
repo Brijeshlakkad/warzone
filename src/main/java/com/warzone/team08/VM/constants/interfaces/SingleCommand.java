@@ -21,6 +21,7 @@ public interface SingleCommand {
      * @param p_commandValues Represents the values passed while running the command.
      * @return Value of the string to be shown to the user.
      * @throws VMException Throws the base class if there is invalid input or IOException
+     * @throws IOException Throws if the IO Exception is generated during execution.
      */
     String execute(List<String> p_commandValues) throws VMException, IOException;
 }
