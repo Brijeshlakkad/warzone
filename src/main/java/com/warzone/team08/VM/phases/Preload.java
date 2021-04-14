@@ -1,7 +1,6 @@
 package com.warzone.team08.VM.phases;
 
 import com.warzone.team08.VM.GameEngine;
-import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidMapException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.map_editor.services.Adapter;
@@ -35,8 +34,8 @@ public class Preload extends MapEditor {
     }
 
     /**
-     * This method loads the map file which can be either Warzone file or Conquest map file.
-     * It loads the file depending upon the file content.
+     * This method loads the map file which can be either Warzone file or Conquest map file. It loads the file depending
+     * upon the file content.
      *
      * @param p_arguments Contains the filename.
      * @return Value of string acknowledging user that the file is loaded or not.
@@ -45,41 +44,42 @@ public class Preload extends MapEditor {
      */
     @Override
     public String editMap(List<String> p_arguments) throws VMException, IOException {
-        String l_returnValue = "";
+        String l_returnValue;
 
-        if (!p_arguments.isEmpty()) {
-            // Resolve file path using absolute path of user data directory.
-            String l_resolvedPathToFile = PathResolverUtil.resolveFilePath(p_arguments.get(0));
+        // Resolve file path using absolute path of user data directory.
+        String l_resolvedPathToFile = PathResolverUtil.resolveFilePath(p_arguments.get(0));
 
-            if (new File(l_resolvedPathToFile).exists()) {
-                // Try to retrieve the file
-                FileUtil.retrieveFile(l_resolvedPathToFile);
-                // Will throw exception if the file path is not valid
-                BufferedReader l_reader = new BufferedReader(new FileReader(l_resolvedPathToFile));
-                String l_currentLine = l_reader.readLine();
-
-                if (l_currentLine.startsWith("[")) {
-                    if (l_currentLine.substring(l_currentLine.indexOf("[") + 1, l_currentLine.indexOf("]")).equalsIgnoreCase("continents")) {
-                        EditMapService l_editMapService = new EditMapService();
-                        l_returnValue = l_editMapService.execute(p_arguments);
-                        d_gameEngine.setGamePhase(new PostLoad(d_gameEngine));
-                    } else if (l_currentLine.substring(l_currentLine.indexOf("[") + 1, l_currentLine.indexOf("]")).equalsIgnoreCase("Map")) {
-                        EditMapService l_edit = new Adapter(new EditConquestMapService());
-                        //EditConquestMapService l_editConquestMapService = new EditConquestMapService();
-                        l_returnValue = l_edit.execute(p_arguments);
-                        d_gameEngine.setGamePhase(new PostLoad(d_gameEngine));
-                    }
+        EditMapService l_editMapService;
+        if (new File(l_resolvedPathToFile).exists()) {
+            // Try to retrieve the file
+            FileUtil.retrieveFile(l_resolvedPathToFile);
+            // Will throw exception if the file path is not valid
+            BufferedReader l_reader = new BufferedReader(new FileReader(l_resolvedPathToFile));
+            String l_currentLine;
+            // If the line is empty, go to next.
+            while ((l_currentLine = l_reader.readLine()) != null) {
+                if (!l_currentLine.trim().isEmpty()) {
+                    break;
+                }
+            }
+            if (l_currentLine != null && l_currentLine.startsWith("[")) {
+                final String l_substring = l_currentLine.substring(l_currentLine.indexOf("[") + 1, l_currentLine.indexOf("]"));
+                if (l_substring.equalsIgnoreCase("continents")) {
+                    l_editMapService = new EditMapService();
+                } else if (l_substring.equalsIgnoreCase("Map")) {
+                    l_editMapService = new Adapter(new EditConquestMapService());
                 } else {
-                    throw new InvalidMapException("Map file is invalid.");
+                    throw new InvalidMapException("Unrecognised map file!");
                 }
             } else {
-                EditMapService l_editMapService = new EditMapService();
-                l_returnValue = l_editMapService.execute(p_arguments);
-                d_gameEngine.setGamePhase(new PostLoad(d_gameEngine));
+                throw new InvalidMapException("Invalid map file!");
             }
         } else {
-            throw new InvalidArgumentException("Please provide argument values");
+            // Will create a new file if it doesn't exists.
+            l_editMapService = new EditMapService();
         }
+        l_returnValue = l_editMapService.execute(p_arguments);
+        d_gameEngine.setGamePhase(new PostLoad(d_gameEngine));
         return l_returnValue;
     }
 
