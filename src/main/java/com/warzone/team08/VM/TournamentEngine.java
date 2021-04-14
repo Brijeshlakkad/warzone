@@ -1,8 +1,8 @@
 package com.warzone.team08.VM;
 
-import com.warzone.team08.VM.entities.GameResult;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.VMException;
+import com.warzone.team08.VM.game_play.GameLoop;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
@@ -47,6 +47,11 @@ public class TournamentEngine {
      * Maximum number of turns. After maximum turn passed, draw the game.
      */
     private int d_maxNumberOfTurns;
+
+    /**
+     * Main game loop.
+     */
+    private GameLoop d_gameLoop;
 
     /**
      * Gets the single instance of the <code>TournamentEngine</code> class which was created before.
@@ -188,13 +193,8 @@ public class TournamentEngine {
                 } else {
                     d_playedGameEngineMappings.put(d_currentGameIndex, Collections.singletonList(l_gameEngine));
                 }
-                try {
-                    l_gamePlayEngine.startGameLoop();
-                    l_gamePlayEngine.getLoopThread().join();
-                } catch (InterruptedException p_e) {
-                    // Game result representing that game was interrupted.
-                    l_gamePlayEngine.setGameResult(new GameResult());
-                }
+                d_gameLoop = new GameLoop(l_gamePlayEngine);
+                d_gameLoop.run();
             }
         }
         this.onComplete();

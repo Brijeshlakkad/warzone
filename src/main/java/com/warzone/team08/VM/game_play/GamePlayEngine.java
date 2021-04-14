@@ -9,13 +9,7 @@ import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.GameResult;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.exceptions.GameLoopIllegalStateException;
 import com.warzone.team08.VM.exceptions.InvalidGameException;
-import com.warzone.team08.VM.exceptions.VMException;
-import com.warzone.team08.VM.phases.Execute;
-import com.warzone.team08.VM.phases.IssueOrder;
-import com.warzone.team08.VM.phases.PlaySetup;
-import com.warzone.team08.VM.phases.Reinforcement;
 import com.warzone.team08.VM.repositories.PlayerRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,6 +53,11 @@ public class GamePlayEngine implements Engine, JSONable {
      * Thread created by <code>GamePlayEngine</code>. This thread should be responsive to interruption.
      */
     private Thread d_LoopThread;
+
+    /**
+     * Main game loop.
+     */
+    private GameLoop d_gameLoop = new GameLoop(this);
 
     /**
      * Keeps track of the execution-index; it helps to decide order execution and expiration phase.
@@ -270,42 +269,14 @@ public class GamePlayEngine implements Engine, JSONable {
      */
     public void startGameLoop() {
         VirtualMachine.getInstance().stdout("GAME_ENGINE_STARTED");
+        if (d_gameLoop.isAlive()) {
+            d_gameLoop.stop();
+        }
         if (d_LoopThread != null && d_LoopThread.isAlive()) {
             d_LoopThread.interrupt();
         }
         d_LoopThread = new Thread(() -> {
-            GameEngine l_gameEngine = VirtualMachine.getGameEngine();
-            try {
-                if (l_gameEngine.getGamePhase().getClass().equals(PlaySetup.class)) {
-                    l_gameEngine.getGamePhase().nextState();
-                } else if (l_gameEngine.getGamePhase().getClass().equals(IssueOrder.class)) {
-                    // When the game is loaded and it was in IssueOrder when saved.
-                } else {
-                    throw new GameLoopIllegalStateException("Illegal state transition!");
-                }
-                // Responsive to thread interruption.
-                while (!Thread.currentThread().isInterrupted()) {
-                    if (l_gameEngine.getGamePhase().getClass().equals(Reinforcement.class)) {
-                        l_gameEngine.getGamePhase().reinforce();
-                    }
-                    if (l_gameEngine.getGamePhase().getClass().equals(IssueOrder.class)) {
-                        l_gameEngine.getGamePhase().issueOrder();
-                    }
-                    if (l_gameEngine.getGamePhase().getClass().equals(Execute.class)) {
-                        l_gameEngine.getGamePhase().fortify();
-                        if (this.checkIfGameIsOver()) {
-                            // If the game is over, break the main-game-loop.
-                            break;
-                        }
-                    }
-                    l_gameEngine.getGamePhase().nextState();
-                }
-            } catch (VMException p_vmException) {
-                VirtualMachine.getInstance().stderr(p_vmException.getMessage());
-            } finally {
-                // This will set CLI#UserInteractionState to WAIT
-                VirtualMachine.getInstance().stdout("GAME_ENGINE_STOPPED");
-            }
+            d_gameLoop.run();
         });
         d_LoopThread.start();
     }
@@ -361,6 +332,9 @@ public class GamePlayEngine implements Engine, JSONable {
      * {@inheritDoc} Shuts the <code>GamePlayEngine</code>.
      */
     public void shutdown() {
+        if (d_gameLoop.isAlive()) {
+            d_gameLoop.stop();
+        }
         // Interrupt thread if it is alive.
         if (d_LoopThread != null && d_LoopThread.isAlive())
             d_LoopThread.interrupt();
