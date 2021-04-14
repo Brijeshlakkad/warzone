@@ -8,10 +8,8 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
-import com.warzone.team08.VM.map_editor.services.LoadMapService;
 import com.warzone.team08.VM.map_editor.services.ValidateMapService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,17 +37,8 @@ public class Preload extends MapEditor {
         TournamentEngine l_tournamentEngine = VirtualMachine.TOURNAMENT_ENGINE();
         for (Map<String, List<String>> l_argument : p_arguments) {
             if (l_argument.containsKey("M")) {
-                List<String> l_listOfMapFiles = l_argument.get("M");
-                for (String l_mapFilePath : l_listOfMapFiles) {
-                    LoadMapService l_loadMapService = new LoadMapService();
-
-                    // Loading the map data will first remove the old at EditMapService
-                    l_loadMapService.execute(Collections.singletonList(l_mapFilePath));
-
-                    // Add MapEditorEngine to the list at TournamentEngine
-                    l_tournamentEngine.addMapEditorEngine(VirtualMachine.getGameEngine().getMapEditorEngine());
-                }
-                VirtualMachine.getGameEngine().initialise();
+                // Save the list of provided map files.
+                l_tournamentEngine.setMapFileList(l_argument.get("M"));
             } else if (l_argument.containsKey("P")) {
                 List<String> l_playerStrategies = l_argument.get("P");
                 for (String l_playerStrategy : l_playerStrategies) {

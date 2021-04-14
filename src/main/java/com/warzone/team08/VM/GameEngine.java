@@ -37,9 +37,6 @@ public class GameEngine implements JSONable {
 
     private boolean d_isTournamentModeOn = false;
 
-    LogEntryBuffer d_logEntryBuffer;
-    LogWriter d_logWriter;
-
     /**
      * Default constructor.
      */
@@ -72,12 +69,6 @@ public class GameEngine implements JSONable {
      */
     public void initialise() {
         this.setGamePhase(new Preload(this));
-        d_logEntryBuffer = LogEntryBuffer.getLogger();
-        try {
-            d_logWriter = new LogWriter(d_logEntryBuffer);
-        } catch (ResourceNotFoundException p_e) {
-            VirtualMachine.getInstance().stderr("LogEntryBuffer failed!");
-        }
     }
 
     /**

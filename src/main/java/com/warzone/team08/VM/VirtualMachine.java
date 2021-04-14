@@ -1,6 +1,9 @@
 package com.warzone.team08.VM;
 
 import com.warzone.team08.UserInterfaceMiddleware;
+import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
+import com.warzone.team08.VM.logger.LogWriter;
 import com.warzone.team08.VM.phases.Phase;
 
 import java.util.concurrent.ExecutorService;
@@ -35,6 +38,9 @@ public class VirtualMachine {
      */
     private final ExecutorService d_executor = Executors.newFixedThreadPool(10);
 
+    private LogEntryBuffer d_logEntryBuffer;
+    private LogWriter d_logWriter;
+
     /**
      * Creates the single instance of the <code>VirtualMachine</code> class.
      *
@@ -43,6 +49,12 @@ public class VirtualMachine {
     public static VirtualMachine newInstance() {
         d_Instance = new VirtualMachine();
         d_gameEngine = new GameEngine();
+        d_Instance.d_logEntryBuffer = LogEntryBuffer.getLogger();
+        try {
+            d_Instance.d_logWriter = new LogWriter(d_Instance.d_logEntryBuffer);
+        } catch (ResourceNotFoundException p_e) {
+            VirtualMachine.getInstance().stderr("LogEntryBuffer failed!");
+        }
         // Default exception handler.
 //        ExceptionHandler l_exceptionHandler = new ExceptionHandler();
 //        Thread.setDefaultUncaughtExceptionHandler(l_exceptionHandler);
