@@ -1,7 +1,6 @@
 package com.warzone.team08.VM;
 
 import com.warzone.team08.UserInterfaceMiddleware;
-import com.warzone.team08.VM.exceptions.ExceptionHandler;
 import com.warzone.team08.VM.phases.Phase;
 
 import java.util.concurrent.ExecutorService;

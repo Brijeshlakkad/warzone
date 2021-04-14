@@ -3,7 +3,6 @@ package com.warzone.team08.VM.entities.strategy;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.constants.interfaces.Card;
-import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.entities.orders.*;
@@ -20,11 +19,10 @@ import java.util.Random;
  * @author Brijesh Lakkad
  */
 public class RandomStrategy extends PlayerStrategy {
-
     private List<Country> d_ownedCountries;
     private Country d_attackingCountry;
     private Country d_oppositionCountry;
-    Random d_random =new Random();
+    Random d_random = new Random();
     private BombOrder d_bomb;
     private AirliftOrder d_airlift;
     private BlockadeOrder d_blockade;
@@ -32,6 +30,7 @@ public class RandomStrategy extends PlayerStrategy {
 
     /**
      * set the player
+     *
      * @param p_player defines Plater
      */
     public RandomStrategy(Player p_player) {
@@ -39,7 +38,8 @@ public class RandomStrategy extends PlayerStrategy {
     }
 
     /**
-     * for find out attacking country
+     * <<<<<<< HEAD for find out attacking country
+     *
      * @return the Country
      */
     public Country getAttackingCountry() {
@@ -48,6 +48,7 @@ public class RandomStrategy extends PlayerStrategy {
 
     /**
      * setter method
+     *
      * @param p_attackingCountry is the attacking country
      */
     public void setAttackingCountry(Country p_attackingCountry) {
@@ -56,6 +57,7 @@ public class RandomStrategy extends PlayerStrategy {
 
     /**
      * getter method
+     *
      * @return the opposition country
      */
     public Country getOppositionCountry() {
@@ -64,6 +66,7 @@ public class RandomStrategy extends PlayerStrategy {
 
     /**
      * setter method for Opposition country
+     *
      * @param p_oppositionCountry contains opposition country
      */
     public void setOppositionCountry(Country p_oppositionCountry) {
@@ -73,48 +76,44 @@ public class RandomStrategy extends PlayerStrategy {
     /**
      * This method finds the strongest country of the aggressive player.
      */
-    public void deploy(){
-        d_ownedCountries=d_player.getAssignedCountries();
+    public void deploy() {
+        d_ownedCountries = d_player.getAssignedCountries();
         d_attackingCountry = d_ownedCountries.get(d_random.nextInt(d_ownedCountries.size()));
     }
 
     /**
      * This method finds opposite player's country, Which is neighbour of the deploy Country.
      */
-    public void opposition(){
-        List<Country> l_neighborCountries= d_attackingCountry.getNeighbourCountries();
-        d_oppositionCountry=l_neighborCountries.get(d_random.nextInt(l_neighborCountries.size()));
+    public void opposition() {
+        List<Country> l_neighborCountries = d_attackingCountry.getNeighbourCountries();
+        d_oppositionCountry = l_neighborCountries.get(d_random.nextInt(l_neighborCountries.size()));
     }
 
     /**
      * This method is useful for craete orders of the cards
-     * @throws EntityNotFoundException throws If not found
+     *
+     * @throws EntityNotFoundException  throws If not found
      * @throws InvalidArgumentException throws If enter invalid input
      */
     public void cards(Card p_card) throws EntityNotFoundException, InvalidArgumentException {
-        if(p_card.equals(CardType.BOMB))
-        {
-            d_bomb = new BombOrder(d_oppositionCountry.getCountryName(),d_player);
+        if (p_card.getType() == CardType.BOMB) {
+            d_bomb = new BombOrder(d_oppositionCountry.getCountryName(), d_player);
             this.d_player.addOrder(d_bomb);
         }
-        if(p_card.equals(CardType.AIRLIFT))
-        {
+        if (p_card.getType() == CardType.AIRLIFT) {
             Country d_targetCountry = d_ownedCountries.get(d_random.nextInt(d_ownedCountries.size()));
-            d_airlift = new AirliftOrder(d_attackingCountry.getCountryName(),d_targetCountry.getCountryName(),String.valueOf(d_attackingCountry.getNumberOfArmies()-1),d_player);
+            d_airlift = new AirliftOrder(d_attackingCountry.getCountryName(), d_targetCountry.getCountryName(), String.valueOf(d_attackingCountry.getNumberOfArmies() - 1), d_player);
             this.d_player.addOrder(d_airlift);
         }
-        if(p_card.equals(CardType.BLOCKADE))
-        {
-            d_blockade = new BlockadeOrder(d_oppositionCountry.getCountryName(),d_player);
+        if (p_card.getType() == CardType.BLOCKADE) {
+            d_blockade = new BlockadeOrder(d_oppositionCountry.getCountryName(), d_player);
             this.d_player.addOrder(d_blockade);
         }
-        if(p_card.equals(CardType.DIPLOMACY))
-        {
-            d_negotiate = new NegotiateOrder(d_player,d_oppositionCountry.getOwnedBy().toString());
+        if (p_card.getType() == CardType.DIPLOMACY) {
+            d_negotiate = new NegotiateOrder(d_player, d_oppositionCountry.getOwnedBy().toString());
             this.d_player.addOrder(d_negotiate);
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -123,15 +122,14 @@ public class RandomStrategy extends PlayerStrategy {
     public void execute() throws InvalidArgumentException, EntityNotFoundException {
         deploy();
         opposition();
-        DeployOrder l_deployOrder=new DeployOrder(d_attackingCountry.getCountryName(),String.valueOf(d_player.getReinforcementCount()),d_player);
+        DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getReinforcementCount()), d_player);
         this.d_player.addOrder(l_deployOrder);
-        if(d_player.hasCard(CardType.BOMB) || d_player.hasCard(CardType.AIRLIFT) || d_player.hasCard(CardType.DIPLOMACY) || d_player.hasCard(CardType.BLOCKADE))
-        {
+        if (d_player.hasCard(CardType.BOMB) || d_player.hasCard(CardType.AIRLIFT) || d_player.hasCard(CardType.DIPLOMACY) || d_player.hasCard(CardType.BLOCKADE)) {
             Card l_card = d_player.getCards().get(d_random.nextInt(d_player.getCards().size()));
             cards(l_card);
         }
         int l_advanceArmy = d_attackingCountry.getNumberOfArmies() + d_player.getRemainingReinforcementCount();
-        AdvanceOrder l_advanceOrder=new AdvanceOrder(d_attackingCountry.getCountryName(),d_oppositionCountry.getCountryName(),String.valueOf(l_advanceArmy),d_player);
+        AdvanceOrder l_advanceOrder = new AdvanceOrder(d_attackingCountry.getCountryName(), d_oppositionCountry.getCountryName(), String.valueOf(l_advanceArmy), d_player);
         this.d_player.addOrder(l_advanceOrder);
     }
 

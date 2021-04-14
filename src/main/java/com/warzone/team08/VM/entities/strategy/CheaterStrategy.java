@@ -25,6 +25,7 @@ public class CheaterStrategy extends PlayerStrategy {
 
     /**
      * This method transfer ownership of all the neighbour enemy countries to the cheater player.
+     *
      * @throws EntityNotFoundException Throws if not able to find Country.
      */
     public void cheating() throws EntityNotFoundException {

@@ -17,6 +17,7 @@ import java.util.Date;
 public abstract class Card {
     private final Date d_createdTime;
 
+
     /**
      * Constructor to assign its data members.
      */

@@ -42,6 +42,7 @@ public class DistributeCountriesServiceTest {
     public static void createPlayersList() throws IOException, URISyntaxException {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
+
         // (Re)initialise the VM.
         VirtualMachine.getInstance().initialise();
         d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();

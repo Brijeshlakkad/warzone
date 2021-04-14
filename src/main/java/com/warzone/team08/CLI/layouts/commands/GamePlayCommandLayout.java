@@ -54,7 +54,6 @@ public class GamePlayCommandLayout implements CommandLayout {
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("assigncountries");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE);
-        l_userCommand.setGameEngineStartCommand(true);
         l_userCommand.setGamePhaseMethodName("assignCountries");
         d_userCommands.add(l_userCommand);
 
@@ -111,6 +110,26 @@ public class GamePlayCommandLayout implements CommandLayout {
         l_userCommand.setOrderCommand(true);
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
         l_userCommand.setNumOfKeysOrValues(1);
+        d_userCommands.add(l_userCommand);
+
+        // Example of the command:
+        // > savegame filename
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("savegame");
+        l_userCommand.setGameEngineCommand(true);
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfKeysOrValues(1);
+        l_userCommand.setGamePhaseMethodName("saveGame");
+        d_userCommands.add(l_userCommand);
+
+        // Example of the command:
+        // > loadgame filename
+        l_userCommand = new PredefinedUserCommand();
+        l_userCommand.setHeadCommand("loadgame");
+        l_userCommand.setGameEngineCommand(true);
+        l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
+        l_userCommand.setNumOfKeysOrValues(1);
+        l_userCommand.setGamePhaseMethodName("loadGame");
         d_userCommands.add(l_userCommand);
     }
 

@@ -5,7 +5,6 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
-import com.warzone.team08.VM.exceptions.InvalidOrderException;
 
 import java.util.concurrent.ExecutionException;
 
@@ -31,11 +30,12 @@ public abstract class PlayerStrategy {
      * @throws ExecutionException       If any error while processing concurrent thread.
      * @throws InterruptedException     If scheduled thread was interrupted.
      */
-    public abstract void execute() throws InvalidCommandException,
+    public abstract void execute() throws
+            InvalidCommandException,
             EntityNotFoundException,
             ExecutionException,
             InterruptedException,
-            InvalidArgumentException, InvalidOrderException;
+            InvalidArgumentException;
 
     /**
      * Gets the type of strategy.

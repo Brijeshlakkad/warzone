@@ -92,7 +92,7 @@ public class DeployOrderTest {
      * @throws InvalidOrderException    Throws if exception while executing the order.
      */
     @Test(expected = EntityNotFoundException.class)
-    public void testInvalidCountry() throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException{
+    public void testInvalidCountry() throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
         // Randomly passing any country name.
         DeployOrder l_deployOrder = new DeployOrder("INDIA", "10", d_player1);
         l_deployOrder.execute();
@@ -107,7 +107,7 @@ public class DeployOrderTest {
      */
     @Test(expected = InvalidArgumentException.class)
     public void testInvalidNoOfArmies()
-            throws EntityNotFoundException, InvalidArgumentException{
+            throws EntityNotFoundException, InvalidArgumentException {
         // Passing negative number of armies to move.
         new DeployOrder("Mercury-South", "-10", d_player1);
     }
@@ -122,7 +122,7 @@ public class DeployOrderTest {
      */
     @Test(expected = Test.None.class)
     public void testCorrectDeployOrder()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException{
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException {
         Country l_country = d_player1.getAssignedCountries().get(0);
 
         // Assign reinforcement to player 1.

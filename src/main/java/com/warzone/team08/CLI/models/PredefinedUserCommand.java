@@ -61,11 +61,6 @@ public class PredefinedUserCommand {
     private boolean d_isOrderCommand = false;
 
     /**
-     * This command represents that <code>GameEngine</code> will start.
-     */
-    private boolean d_isGameEngineStartCommand = false;
-
-    /**
      * Represents the name of the method to be called for this user command.
      */
     private String d_gamePhaseMethodName;
@@ -222,25 +217,6 @@ public class PredefinedUserCommand {
      */
     public void setOrderCommand(boolean p_orderCommand) {
         d_isOrderCommand = p_orderCommand;
-    }
-
-    /**
-     * <code>VM#GameEngine</code> needs input from user.
-     *
-     * @return True if the <code>VM#GameEngine</code> had requested.
-     */
-    public boolean isGameEngineStartCommand() {
-        return d_isGameEngineStartCommand;
-    }
-
-    /**
-     * Sets if the <code>VM#GameEngine</code> can ask input from user.
-     *
-     * @param p_gameEngineStartCommand Value of true if only <code>VM#GameEngine</code> can ask for this type of user
-     *                                 command.
-     */
-    public void setGameEngineStartCommand(boolean p_gameEngineStartCommand) {
-        d_isGameEngineStartCommand = p_gameEngineStartCommand;
     }
 
     /**

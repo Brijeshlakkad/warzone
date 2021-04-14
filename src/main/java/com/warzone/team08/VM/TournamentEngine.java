@@ -2,8 +2,11 @@ package com.warzone.team08.VM;
 
 import com.warzone.team08.VM.entities.GameResult;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.phases.PlaySetup;
 
 import java.util.*;
 
@@ -117,21 +120,38 @@ public class TournamentEngine {
         d_maxNumberOfTurns = p_maxNumberOfTurns;
     }
 
+    public List<Player> getPlayers() {
+        List<Player> l_clonedPlayers = new ArrayList<>();
+        for (Player l_player : d_players) {
+            l_clonedPlayers.add(new Player(l_player.getName(), l_player.getPlayerStrategyType()));
+        }
+        return l_clonedPlayers;
+    }
+
     /**
      * Starts the tournament. This will create a <code>GameEngine</code> using MapEditor and GamePlay engines. It will
      * also record the <code>GameEngine</code> to the list.
      * <p>
      * If any error occurred while the game is in the loop, it will set the game result as interrupted.
      * </p>
+     *
+     * @throws VMException If any exception while executing the tournament.
      */
-    public void onStart() {
+    public void onStart() throws VMException {
         for (int d_currentGameIndex = 0; d_currentGameIndex < d_numberOfGames; d_currentGameIndex++) {
             for (MapEditorEngine l_mapEditorEngine : d_mapEditorEngineList) {
                 GamePlayEngine l_gamePlayEngine = new GamePlayEngine();
                 GameEngine l_gameEngine = new GameEngine(l_mapEditorEngine, l_gamePlayEngine);
-                l_gamePlayEngine.setPlayerList(d_players);
+                l_gamePlayEngine.setPlayerList(this.getPlayers());
                 // Prepare GameEngine for this tournament round.
                 VirtualMachine.setGameEngine(l_gameEngine);
+
+                DistributeCountriesService l_distributeCountriesService = new DistributeCountriesService();
+                l_distributeCountriesService.execute(new ArrayList<>());
+
+                // Tournament will start from PlaySetup phase.
+                l_gameEngine.setGamePhase(new PlaySetup(l_gameEngine));
+
                 // If the game index exists, it will add the GameEngine to the list; otherwise it will create a singleton list.
                 if (d_playedGameEngineMappings.containsKey(d_currentGameIndex)) {
                     d_playedGameEngineMappings.get(d_currentGameIndex).add(l_gameEngine);

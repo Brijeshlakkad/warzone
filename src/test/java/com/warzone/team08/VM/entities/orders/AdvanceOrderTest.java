@@ -64,6 +64,7 @@ public class AdvanceOrderTest {
     @Before
     public void before() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
         d_GamePlayEngine.initialise();
+
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assertNotNull(d_TestFilePath);
