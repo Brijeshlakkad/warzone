@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.entities.strategy;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Country;
@@ -41,11 +42,22 @@ public class AggressiveStrategy extends PlayerStrategy {
     public void deploy() {
         d_ownedCountries = d_player.getAssignedCountries();
         int count = 0;
+
+        int l_initial = 0;
         for (Country c : d_ownedCountries) {
-            if (c.getNumberOfArmies() > count) {
-                count = c.getNumberOfArmies();
-                d_attackingCountry = c;
+            if (c.getNumberOfArmies() == 0) {
+                l_initial++;
             }
+        }
+        if (l_initial != d_ownedCountries.size()) {
+            for (Country c : d_ownedCountries) {
+                if (c.getNumberOfArmies() > count) {
+                    count = c.getNumberOfArmies();
+                    d_attackingCountry = c;
+                }
+            }
+        } else {
+            d_attackingCountry = d_ownedCountries.get(0);
         }
     }
 
@@ -134,8 +146,10 @@ public class AggressiveStrategy extends PlayerStrategy {
         deploy();
         opposition();
         cards();
-        DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getReinforcementCount()), d_player);
-        this.d_player.addOrder(l_deployOrder);
+        if (VirtualMachine.getGameEngine().isTournamentModeOn() && d_player.getRemainingReinforcementCount() > 0) {
+            DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getRemainingReinforcementCount()), d_player);
+            this.d_player.addOrder(l_deployOrder);
+        }
 
         int counter = 1;
         if (d_player.hasCard(CardType.BOMB)) {

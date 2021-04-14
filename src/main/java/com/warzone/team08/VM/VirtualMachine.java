@@ -1,6 +1,7 @@
 package com.warzone.team08.VM;
 
 import com.warzone.team08.UserInterfaceMiddleware;
+import com.warzone.team08.VM.exceptions.ExceptionHandler;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.logger.LogWriter;
@@ -56,8 +57,8 @@ public class VirtualMachine {
             VirtualMachine.getInstance().stderr("LogEntryBuffer failed!");
         }
         // Default exception handler.
-//        ExceptionHandler l_exceptionHandler = new ExceptionHandler();
-//        Thread.setDefaultUncaughtExceptionHandler(l_exceptionHandler);
+        ExceptionHandler l_exceptionHandler = new ExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(l_exceptionHandler);
         return d_Instance;
     }
 
