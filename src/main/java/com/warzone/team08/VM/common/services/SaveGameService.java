@@ -4,6 +4,7 @@ import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
 import com.warzone.team08.VM.exceptions.VMException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.utils.FileUtil;
 import com.warzone.team08.VM.utils.PathResolverUtil;
 import org.json.JSONObject;
@@ -24,12 +25,14 @@ import java.util.List;
  */
 public class SaveGameService implements SingleCommand {
     private JSONObject d_currentGameEngine;
+    private final LogEntryBuffer d_logEntryBuffer;
 
     /**
      * Initialize JSON object.
      */
     public SaveGameService() {
         d_currentGameEngine = new JSONObject();
+        d_logEntryBuffer = LogEntryBuffer.getLogger();
     }
 
     /**
@@ -70,6 +73,7 @@ public class SaveGameService implements SingleCommand {
 
         try (Writer l_writer = new FileWriter(l_targetFile)) {
             l_writer.write(this.getGameEngineJSONData().toString(4));
+            d_logEntryBuffer.dataChanged("savegame", "Game saved successfully with filename: "+p_commandValues.get(0));
             return "Game saved successfully!";
         } catch (IOException p_ioException) {
             throw new VMException("Error in file saving!");

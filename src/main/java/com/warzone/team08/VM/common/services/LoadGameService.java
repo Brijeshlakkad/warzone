@@ -5,6 +5,7 @@ import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.FileType;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.exceptions.VMException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.utils.FileUtil;
 import com.warzone.team08.VM.utils.PathResolverUtil;
 import org.json.JSONObject;
@@ -24,6 +25,7 @@ import java.util.List;
  * @version 1.0
  */
 public class LoadGameService implements SingleCommand {
+    private LogEntryBuffer d_logEntryBuffer=LogEntryBuffer.getLogger();
     /**
      * Loads the game engine and its sub-engines from the provided path to JSON file.
      *
@@ -57,6 +59,8 @@ public class LoadGameService implements SingleCommand {
         } catch (IOException p_ioException) {
             throw new VMException(String.format("Error while loading the game file %s!", p_commandValues.get(0)));
         }
+        d_logEntryBuffer.dataChanged("loadgame", this.loadGameState(new JSONObject(l_fileContentBuilder.toString()))+" from file: "+p_commandValues.get(0));
+
         // Load the string content in JSONObject.
         return this.loadGameState(new JSONObject(l_fileContentBuilder.toString()));
     }
