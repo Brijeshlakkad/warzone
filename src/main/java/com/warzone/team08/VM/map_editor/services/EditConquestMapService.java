@@ -6,12 +6,14 @@ import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
-import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
 import com.warzone.team08.VM.utils.FileUtil;
 import com.warzone.team08.VM.utils.PathResolverUtil;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,8 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class act as an Adaptee.
- * It loads the conquest map into different java objects.
+ * This class act as an Adaptee. It loads the conquest map into different java objects.
  *
  * @author CHARIT
  */
@@ -31,11 +32,9 @@ public class EditConquestMapService implements SingleCommand {
      * Engine to store and retrieve map data.
      */
     private final MapEditorEngine d_mapEditorEngine;
-    private final ContinentRepository d_continentRepository;
     private final CountryRepository d_countryRepository;
     private final ContinentService d_continentService;
     private final CountryService d_countryService;
-    private final CountryNeighborService d_countryNeighborService;
     private final LogEntryBuffer d_logEntryBuffer;
 
     /**
@@ -44,17 +43,10 @@ public class EditConquestMapService implements SingleCommand {
     public EditConquestMapService() {
         d_MapDetails = new HashMap<>();
         d_mapEditorEngine = MapEditorEngine.getInstance();
-        d_continentRepository = new ContinentRepository();
         d_countryRepository = new CountryRepository();
         d_continentService = new ContinentService();
         d_countryService = new CountryService();
-        d_countryNeighborService = new CountryNeighborService();
         d_logEntryBuffer = LogEntryBuffer.getLogger();
-    }
-
-    public static void main(String args[]) {
-        EditConquestMapService e = new EditConquestMapService();
-        // e.loadConquestMap();
     }
 
     /**
@@ -120,25 +112,23 @@ public class EditConquestMapService implements SingleCommand {
     }
 
     /**
-     * This method is used to read the map details stored in [Map] tag.
-     * It stores this details in the HashMap.
+     * This method is used to read the map details stored in [Map] tag. It stores this details in the HashMap.
      *
      * @param p_reader Object of BufferedReader
      * @throws InvalidMapException Throws if error while reading file.
-     * @throws IOException         Throws if error occurs during IO Operation.
      */
-    private void readMapDetails(BufferedReader p_reader) throws InvalidMapException, IOException {
+    private void readMapDetails(BufferedReader p_reader) throws InvalidMapException {
         String l_currentLine;
         try {
             while ((l_currentLine = p_reader.readLine()) != null && !l_currentLine.startsWith("[")) {
-                if (!l_currentLine.isEmpty() && l_currentLine != null && !l_currentLine.equals("")) {
+                if (!l_currentLine.isEmpty()) {
                     String[] maps_entry = l_currentLine.split("=");
                     d_MapDetails.put(maps_entry[0], maps_entry[1]);
                     p_reader.mark(0);
                 }
             }
             p_reader.reset();
-            d_mapEditorEngine.setMapDetails(d_MapDetails);
+            MapEditorEngine.setMapDetails(d_MapDetails);
         } catch (IOException e) {
             throw new InvalidMapException("Invalid map file");
         }
@@ -177,11 +167,10 @@ public class EditConquestMapService implements SingleCommand {
     }
 
     /**
-     * This method is used to read country data from map file. It reads the country name,
-     * corresponding continent name and stores those values in Country class object using Country class
-     * methods. This object is later stored in the list.
-     * It also reads the name of the neighboring countries and stores them in a list
-     * and assign it as a list of neighboring countries to the current country.
+     * This method is used to read country data from map file. It reads the country name, corresponding continent name
+     * and stores those values in Country class object using Country class methods. This object is later stored in the
+     * list. It also reads the name of the neighboring countries and stores them in a list and assign it as a list of
+     * neighboring countries to the current country.
      *
      * @param p_reader Object of BufferedReader
      * @throws InvalidMapException     Throws if error while reading file.
@@ -191,7 +180,7 @@ public class EditConquestMapService implements SingleCommand {
         String l_territories;
         try {
             while ((l_territories = p_reader.readLine()) != null && !l_territories.startsWith("[")) {
-                if (!l_territories.isEmpty() && l_territories != null && !l_territories.equals("")) {
+                if (!l_territories.isEmpty()) {
                     String l_countryName, l_continentName;
                     String l_xCoordinate;
                     String l_yCoordinate;
@@ -207,9 +196,7 @@ public class EditConquestMapService implements SingleCommand {
                         try {
                             l_neighbour = d_countryRepository.findFirstByCountryName(l_neighbourCountryName);
                             l_neighbourNodes.add(l_neighbour);
-                        }
-                        catch(EntityNotFoundException e)
-                        {
+                        } catch (EntityNotFoundException e) {
                             l_neighbour = new Country(l_neighbourCountryName);
                             l_neighbourNodes.add(l_neighbour);
                         }
@@ -230,7 +217,7 @@ public class EditConquestMapService implements SingleCommand {
      */
     public List<String> getModelComponents(String p_line) {
         try {
-            if (!p_line.isEmpty() && p_line.contains("")) {
+            if (!p_line.isEmpty()) {
                 List<String> l_continentComponentList = Arrays.asList(p_line.split("="));
                 if (!l_continentComponentList.isEmpty()) {
                     l_continentComponentList = l_continentComponentList.stream().map(String::trim)
@@ -247,8 +234,8 @@ public class EditConquestMapService implements SingleCommand {
     }
 
     /**
-     * The overloading method of {@link EditConquestMapService#loadConquestMap(String, boolean)} This overloading method calls the
-     * overloaded method with a variable indicating that create a new file if it doesn't exists.
+     * The overloading method of {@link EditConquestMapService#loadConquestMap(String, boolean)} This overloading method
+     * calls the overloaded method with a variable indicating that create a new file if it doesn't exists.
      *
      * @param p_filePath Path of the file to be read.
      * @return Value of the response.
@@ -290,10 +277,9 @@ public class EditConquestMapService implements SingleCommand {
      * @param p_commandValues Represents the values passed while running the command.
      * @return Value of string acknowledging user that the file is loaded or not.
      * @throws VMException Throws if error occurs in VM Engine operation.
-     * @throws IOException Throws if error occurs during IO Operation.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws VMException, IOException {
+    public String execute(List<String> p_commandValues) throws VMException {
         String l_response = "";
         if (!p_commandValues.isEmpty()) {
             String l_resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));

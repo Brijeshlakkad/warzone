@@ -84,11 +84,12 @@ public class MapEditorCommandLayout implements CommandLayout {
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:
-        // > savemap filename
+        // > savemap filename map_type
         l_userCommand = new PredefinedUserCommand();
         l_userCommand.setHeadCommand("savemap");
         l_userCommand.setCommandSpecification(CommandSpecification.CAN_RUN_ALONE_WITH_VALUE);
         l_userCommand.setGamePhaseMethodName("saveMap");
+        l_userCommand.setNumOfValues(2);
         d_userCommands.add(l_userCommand);
 
         // Example of the below command:

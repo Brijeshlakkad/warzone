@@ -8,8 +8,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -51,9 +53,12 @@ public class UserCommandMapperTest {
         d_correctCommandWithArgument.pushUserArgument("remove",
                 Collections.singletonList("continentID"));
 
-        d_commandWithValue = "savemap filename";
+        d_commandWithValue = "savemap filename warzone";
         d_correctCommandWithValue = new UserCommand(UserCommandLayout.matchAndGetUserCommand("savemap"));
-        d_correctCommandWithValue.setCommandValues(Collections.singletonList("filename"));
+        List<String> l_commandValues = new ArrayList<>();
+        l_commandValues.add("filename");
+        l_commandValues.add("warzone");
+        d_correctCommandWithValue.setCommandValues(l_commandValues);
 
         // Sets the game state to MAP_EDITOR
         Application l_application = new Application();
