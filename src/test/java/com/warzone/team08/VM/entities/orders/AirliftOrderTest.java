@@ -42,6 +42,9 @@ public class AirliftOrderTest {
     public static void createPlayersList() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
+        VirtualMachine.getInstance().initialise();
+
+        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         d_TestFilePath = BombOrderTest.class.getClassLoader().getResource("map_files/solar.map");
     }
 
@@ -57,10 +60,7 @@ public class AirliftOrderTest {
      */
     @Before
     public void setup() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
-        VirtualMachine.getInstance().initialise();
-
-        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
-
+        d_GamePlayEngine.initialise();
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assertNotNull(d_TestFilePath);
@@ -87,7 +87,7 @@ public class AirliftOrderTest {
      */
     @Test
     public void testExecute()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -111,7 +111,7 @@ public class AirliftOrderTest {
     //not have airlift card
     @Test(expected = CardNotFoundException.class)
     public void testPlayerHasCard()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);
@@ -134,7 +134,7 @@ public class AirliftOrderTest {
     //try to transfer into other's country
     @Test(expected = InvalidOrderException.class)
     public void testPlayerNotAirliftInOthersCountry()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
@@ -155,7 +155,7 @@ public class AirliftOrderTest {
      */
     @Test(expected = InvalidOrderException.class)
     public void testPlayerHasEnteredArmies()
-            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
         List<Country> l_playerAssignCountries = l_player.getAssignedCountries();
         l_playerAssignCountries.get(0).setNumberOfArmies(7);

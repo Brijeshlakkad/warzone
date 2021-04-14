@@ -30,7 +30,8 @@ public abstract class PlayerStrategy {
      * @throws ExecutionException       If any error while processing concurrent thread.
      * @throws InterruptedException     If scheduled thread was interrupted.
      */
-    public abstract void execute() throws InvalidCommandException,
+    public abstract void execute() throws
+            InvalidCommandException,
             EntityNotFoundException,
             ExecutionException,
             InterruptedException,

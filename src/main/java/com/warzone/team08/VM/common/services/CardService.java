@@ -12,7 +12,7 @@ import java.util.Random;
  *
  * @author CHARIT
  */
-public class AssignRandomCardService {
+public class CardService {
 
     /**
      * List of CardType objects indicating the card type.
@@ -20,23 +20,33 @@ public class AssignRandomCardService {
     public static List<CardType> d_CardList = CardType.usableCardList();
 
     /**
-     * randomly assigns card to the player.
+     * Randomly assigns card to the player.
      *
      * @return Card name
      */
     public static Card randomCard() {
         Random rand = new Random();
-        CardType l_cardType = d_CardList.get(rand.nextInt(d_CardList.size()));
-        if (l_cardType == CardType.AIRLIFT) {
+        // Getting a card-type using random index and creating a card using the type.
+        return createCard(d_CardList.get(rand.nextInt(d_CardList.size())));
+    }
+
+    /**
+     * Creates card using the type of card.
+     *
+     * @param p_cardType Type of card.
+     * @return Card name
+     */
+    public static Card createCard(CardType p_cardType) {
+        if (p_cardType == CardType.AIRLIFT) {
             return new AirliftCard();
         }
-        if (l_cardType == CardType.BOMB) {
+        if (p_cardType == CardType.BOMB) {
             return new BombCard();
         }
-        if (l_cardType == CardType.BLOCKADE) {
+        if (p_cardType == CardType.BLOCKADE) {
             return new BlockadeCard();
         }
-        if (l_cardType == CardType.DIPLOMACY) {
+        if (p_cardType == CardType.DIPLOMACY) {
             return new DiplomacyCard();
         }
         return new EmptyCard();

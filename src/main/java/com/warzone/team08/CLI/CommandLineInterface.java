@@ -137,11 +137,9 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
                             this.setInteractionState(UserInteractionState.IN_PROGRESS);
                             // Takes action according to command instructions.
                             d_requestService.takeAction(l_userCommand);
-                            if (l_userCommand.getPredefinedUserCommand().isGameEngineStartCommand()) {
-                                this.setInteractionState(UserInteractionState.GAME_ENGINE);
-                            } else {
+
+                            if (this.getInteractionState() == UserInteractionState.IN_PROGRESS)
                                 this.setInteractionState(UserInteractionState.WAIT);
-                            }
                         } catch (IOException p_e) {
                         }
                     }
@@ -210,7 +208,11 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
      * @param p_message Represents the message.
      */
     public void stdout(String p_message) {
-        if (p_message.equals("GAME_ENGINE_STOPPED")) {
+        if (p_message.equals("GAME_ENGINE_STARTED")) {
+            d_thread.interrupt();
+            this.setInteractionState(UserInteractionState.GAME_ENGINE);
+        } else if (p_message.equals("GAME_ENGINE_STOPPED")) {
+            d_thread.interrupt();
             this.setInteractionState(UserInteractionState.WAIT);
         } else {
             System.out.println(p_message);

@@ -1,10 +1,11 @@
-package com.warzone.team08.VM.entities.orders;
+package com.warzone.team08.VM.entities.strategy;
 
 import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.StrategyType;
+import com.warzone.team08.VM.constants.interfaces.Order;
+import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
-import com.warzone.team08.VM.entities.cards.DiplomacyCard;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
@@ -18,15 +19,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
- * This class tests the Negotiate card operation works properly.
+ * This class test the execution of the Aggressive Strategy.
  *
  * @author Deep Patel
  */
-public class NegotiateOrderTest {
+public class AggressiveStrategyTest {
     private static Application d_Application;
     private static URL d_TestFilePath;
     private static GamePlayEngine d_GamePlayEngine;
@@ -41,9 +42,8 @@ public class NegotiateOrderTest {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
         VirtualMachine.getInstance().initialise();
-
         d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
-        d_TestFilePath = BombOrderTest.class.getClassLoader().getResource("map_files/solar.map");
+        d_TestFilePath = AggressiveStrategyTest.class.getClassLoader().getResource("test_map_files/test_strategy.map");
     }
 
     /**
@@ -58,8 +58,6 @@ public class NegotiateOrderTest {
      */
     @Before
     public void setup() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
-        d_GamePlayEngine.initialise();
-
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assertNotNull(d_TestFilePath);
@@ -77,19 +75,32 @@ public class NegotiateOrderTest {
     }
 
     /**
-     * Checks that player is successfully added to the FriendPlayer List.
+     * checks that execute method working properly.
      *
-     * @throws EntityNotFoundException Throws if would not able to find players.
-     * @throws CardNotFoundException   Throws if not able to find cards.
+     * @throws EntityNotFoundException  Throws if entity not found.
+     * @throws InvalidArgumentException Throws if the input is invalid.
+     * @throws InvalidOrderException    Throws if exception while executing the order.
+     * @throws CardNotFoundException    Card doesn't found in the player's card list.
      */
     @Test
-    public void testExecute() throws EntityNotFoundException, CardNotFoundException {
-        Player l_player1 = d_playerList.get(0);
+    public void testExecute() throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
+        Player l_player = d_playerList.get(0);
+        int i = 2;
+        for (Country traverse : l_player.getAssignedCountries()) {
+            traverse.setNumberOfArmies(i);
+            i++;
+        }
         Player l_player2 = d_playerList.get(1);
-        l_player1.addCard(new DiplomacyCard());
-        NegotiateOrder negotiateOrder = new NegotiateOrder(l_player1, "User_2");
-        negotiateOrder.execute();
-        assertTrue(l_player1.getFriendPlayers().contains(l_player2));
-        assertTrue(l_player2.getFriendPlayers().contains(l_player1));
+        for (Country traverse : l_player2.getAssignedCountries()) {
+            traverse.setNumberOfArmies(5);
+        }
+
+        l_player.setReinforcementCount(6);
+        AggressiveStrategy l_check = new AggressiveStrategy(l_player);
+        l_check.execute();
+        for (Order l_travers : l_player.getOrders()) {
+            l_travers.execute();
+        }
+        assertEquals(6, l_check.getOppositionCountry().getNumberOfArmies());
     }
 }

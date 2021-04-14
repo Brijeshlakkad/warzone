@@ -93,7 +93,7 @@ public class AssignReinforcementService {
             for (Continent l_continent : d_mapEditorEngine.getContinentList()) {
 
                 List<String> l_countryList = new ArrayList<>(d_continentCountryList.get(l_continent.getContinentName()));
-                //Method Call: Here Control Value is assessed.
+                // Method Call: Here Control Value is assessed.
                 int l_returnContinentValue = checkPlayerOwnsContinent(l_player, l_countryList, l_continent);
 
                 l_continentValue = l_continentValue + l_returnContinentValue;

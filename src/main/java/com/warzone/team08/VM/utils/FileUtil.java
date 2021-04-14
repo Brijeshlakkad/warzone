@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.utils;
 
+import com.warzone.team08.VM.constants.enums.FileType;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
 import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 
@@ -17,6 +18,8 @@ import java.nio.file.StandardCopyOption;
 public class FileUtil {
     private static final String MAP_FILE_EXTENSION = "map";
 
+    private static final String GAME_EXTENSION = "warzone";
+
     /**
      * Gets the value of the valid available file extension.
      *
@@ -27,14 +30,41 @@ public class FileUtil {
     }
 
     /**
-     * Checks whether the given file name is valid or not.
+     * Checks whether the given map file name is valid or not. Uses overloading method
+     * <code>FileUtil#retrieveFile(String, FileType)</code>.
      *
-     * @param p_filePath Value of the path to file.
+     * @param p_filePath Value of the path to game file.
      * @return Value of File object for the file given with path.
      * @throws InvalidInputException     Throws if the file does not exist.
      * @throws ResourceNotFoundException Throws if file can not be created.
      */
-    public static File retrieveFile(String p_filePath) throws ResourceNotFoundException, InvalidInputException {
+    public static File retrieveMapFile(String p_filePath) throws ResourceNotFoundException, InvalidInputException {
+        return retrieveFile(p_filePath, FileType.MAP);
+    }
+
+    /**
+     * Checks whether the given game file name is valid or not. Uses overloading method
+     * <code>FileUtil#retrieveFile(String, FileType)</code>.
+     *
+     * @param p_filePath Value of the path to game file.
+     * @return Value of File object for the file given with path.
+     * @throws InvalidInputException     Throws if the file does not exist.
+     * @throws ResourceNotFoundException Throws if file can not be created.
+     */
+    public static File retrieveGameFile(String p_filePath) throws ResourceNotFoundException, InvalidInputException {
+        return retrieveFile(p_filePath, FileType.GAME);
+    }
+
+    /**
+     * Retrieves the file using file type and its name.
+     *
+     * @param p_filePath Value of the path to game file.
+     * @param p_fileType Type of the file.
+     * @return Value of File object for the file given with path.
+     * @throws InvalidInputException     Throws if the file does not exist.
+     * @throws ResourceNotFoundException Throws if file can not be created.
+     */
+    public static File retrieveFile(String p_filePath, FileType p_fileType) throws ResourceNotFoundException, InvalidInputException {
         File l_file = new File(p_filePath);
         String l_fileName = l_file.getName();
         try {
@@ -43,34 +73,36 @@ public class FileUtil {
             throw new ResourceNotFoundException("Can not create a file due to file permission!");
         }
 
-        try {
-            if (checksIfFileHasRequiredExtension(l_fileName)) {
-                return l_file;
-            }
-        } catch (InvalidInputException p_invalidInputException) {
-            throw p_invalidInputException;
+        if (checksIfFileHasRequiredExtension(l_fileName, p_fileType)) {
+            return l_file;
         }
 
         throw new InvalidInputException("Invalid file!");
     }
 
     /**
-     * Checks whether file has required extension or not.
+     * Checks whether file has required extension or not. It uses to <code>FileType</code> to distinguish the type of
+     * file.
      *
-     * @param p_fileName name of a file
+     * @param p_fileName Name of the file.
+     * @param p_fileType Type of the file.
      * @return True if file has requires argument; otherwise false.
      * @throws InvalidInputException Throws if filename is invalid.
      */
-    public static boolean checksIfFileHasRequiredExtension(String p_fileName) throws InvalidInputException {
+    public static boolean checksIfFileHasRequiredExtension(String p_fileName, FileType p_fileType) throws InvalidInputException {
         int l_index = p_fileName.lastIndexOf('.');
         if (l_index > 0) {
             char l_prevChar = p_fileName.charAt(l_index - 1);
             if (l_prevChar != '.') {
                 String l_extension = p_fileName.substring(l_index + 1);
-                if (!l_extension.equalsIgnoreCase(FileUtil.getFileExtension())) {
-                    throw new InvalidInputException("File doesn't exist!");
+                if (p_fileType == FileType.MAP &&
+                        l_extension.equalsIgnoreCase(FileUtil.getFileExtension())) {
+                    return true;
+                } else if (p_fileType == FileType.GAME &&
+                        l_extension.equalsIgnoreCase(FileUtil.getGameExtension())) {
+                    return true;
                 }
-                return true;
+                throw new InvalidInputException("File doesn't exist!");
             }
         }
         throw new InvalidInputException("File must have an extension!");
@@ -122,5 +154,14 @@ public class FileUtil {
         } catch (Exception l_ignored) {
             // Ignore the exception while copying.
         }
+    }
+
+    /**
+     * Gets the game extension.
+     *
+     * @return Value of the game extension.
+     */
+    public static String getGameExtension() {
+        return GAME_EXTENSION;
     }
 }

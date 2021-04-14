@@ -42,6 +42,10 @@ public class BombOrderTest {
     public static void beforeClass() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
+        // (Re)initialise the VM.
+        VirtualMachine.getInstance().initialise();
+
+        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         d_TestFilePath = BombOrderTest.class.getClassLoader().getResource("test_map_files/test_map.map");
     }
 
@@ -57,11 +61,7 @@ public class BombOrderTest {
      */
     @Before
     public void before() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
-        // (Re)initialise the VM.
-        VirtualMachine.getInstance().initialise();
-
-        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
-
+        d_GamePlayEngine.initialise();
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assertNotNull(d_TestFilePath);
@@ -88,7 +88,7 @@ public class BombOrderTest {
      */
     @Test(expected = Test.None.class)
     public void testBombOperationWithBombCard()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
@@ -111,7 +111,7 @@ public class BombOrderTest {
      */
     @Test(expected = CardNotFoundException.class)
     public void testBombOperationWithOutBombCard()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
@@ -134,7 +134,7 @@ public class BombOrderTest {
      */
     @Test(expected = InvalidOrderException.class)
     public void testBombOperationOnPlayerOwnedCountry()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
         Player l_player1 = d_playerList.get(0);
         List<Country> l_assignCountries = l_player1.getAssignedCountries();
         BombOrder l_bombOrder = new BombOrder(l_assignCountries.get(0).getCountryName(), l_player1);
@@ -150,7 +150,7 @@ public class BombOrderTest {
      */
     @Test(expected = CardNotFoundException.class)
     public void testCardSuccessfullyRemoved()
-            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException{
+            throws EntityNotFoundException, InvalidOrderException, CardNotFoundException {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
         List<Country> l_player2AssignCountries = l_player2.getAssignedCountries();
@@ -168,11 +168,11 @@ public class BombOrderTest {
     /**
      * test that in case of negotiation bomb order will not execute.
      *
-     * @throws InvalidOrderException Throws if exception while executing the order.
-     * @throws CardNotFoundException Card doesn't found in the player's card list.
+     * @throws InvalidOrderException   Throws if exception while executing the order.
+     * @throws CardNotFoundException   Card doesn't found in the player's card list.
      * @throws EntityNotFoundException Throws if entity not found.
      */
-    @Test (expected = Test.None.class)
+    @Test(expected = Test.None.class)
     public void testNegotiate() throws InvalidOrderException, CardNotFoundException, EntityNotFoundException {
         Player l_player1 = d_playerList.get(0);
         Player l_player2 = d_playerList.get(1);
@@ -183,6 +183,6 @@ public class BombOrderTest {
         l_player1.addCard(new BombCard());
         BombOrder l_bombOrder = new BombOrder(l_player2AssignCountries.get(0).getCountryName(), l_player1);
         l_bombOrder.execute();
-        assertEquals(l_player2AssignCountries.get(0).getNumberOfArmies(),l_expectedArmies);
+        assertEquals(l_player2AssignCountries.get(0).getNumberOfArmies(), l_expectedArmies);
     }
 }

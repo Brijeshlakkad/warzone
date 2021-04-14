@@ -44,6 +44,10 @@ public class AdvanceOrderTest {
     public static void beforeClass() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
+        // (Re)initialise the VM.
+        VirtualMachine.getInstance().initialise();
+
+        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         d_TestFilePath = AdvanceOrderTest.class.getClassLoader().getResource("test_map_files/test_map.map");
     }
 
@@ -59,10 +63,7 @@ public class AdvanceOrderTest {
      */
     @Before
     public void before() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
-        // (Re)initialise the VM.
-        VirtualMachine.getInstance().initialise();
-
-        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
+        d_GamePlayEngine.initialise();
 
         // Loads the map
         EditMapService l_editMapService = new EditMapService();

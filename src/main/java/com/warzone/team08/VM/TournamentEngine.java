@@ -3,9 +3,11 @@ package com.warzone.team08.VM;
 import com.jakewharton.fliptables.FlipTable;
 import com.warzone.team08.VM.entities.GameResult;
 import com.warzone.team08.VM.entities.Player;
-import com.warzone.team08.VM.exceptions.InvalidInputException;
+import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
+import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.phases.PlaySetup;
 
 import java.util.*;
 
@@ -134,15 +136,8 @@ public class TournamentEngine {
     }
 
     /**
-     * Gets the List of Players this tournament can have.
-     * @return List of Players
-     */
-    public List<Player> getPlayers() {
-        return d_players;
-    }
-
-    /**
      * Sets the List of Players this tournament can have.
+     *
      * @param p_playersList List of Players
      */
     public void setPlayers(List<Player> p_playersList) {
@@ -151,6 +146,7 @@ public class TournamentEngine {
 
     /**
      * Gets the List of Maps this tournament can have.
+     *
      * @return List of Maps
      */
     public List<String> getMapsList() {
@@ -159,10 +155,24 @@ public class TournamentEngine {
 
     /**
      * Sets the List of Players this tournament can have.
+     *
      * @param p_mapsList List of Players
      */
     public void setMapsList(List<String> p_mapsList) {
         d_mapsList = p_mapsList;
+    }
+
+    /**
+     * Clones the player for the current iteration of tournament.
+     *
+     * @return List of the cloned player.
+     */
+    public List<Player> getPlayers() {
+        List<Player> l_clonedPlayers = new ArrayList<>();
+        for (Player l_player : d_players) {
+            l_clonedPlayers.add(new Player(l_player.getName(), l_player.getPlayerStrategyType()));
+        }
+        return l_clonedPlayers;
     }
 
     /**
@@ -171,15 +181,25 @@ public class TournamentEngine {
      * <p>
      * If any error occurred while the game is in the loop, it will set the game result as interrupted.
      * </p>
+     *
+     * @throws VMException If any exception while executing the tournament.
      */
-    public void onStart() throws InvalidInputException {
+    public void onStart() throws VMException {
         for (int d_currentGameIndex = 0; d_currentGameIndex < d_numberOfGames; d_currentGameIndex++) {
             for (MapEditorEngine l_mapEditorEngine : d_mapEditorEngineList) {
                 GamePlayEngine l_gamePlayEngine = new GamePlayEngine();
                 GameEngine l_gameEngine = new GameEngine(l_mapEditorEngine, l_gamePlayEngine);
-                l_gamePlayEngine.setPlayerList(d_players);
                 // Prepare GameEngine for this tournament round.
                 VirtualMachine.setGameEngine(l_gameEngine);
+
+                l_gamePlayEngine.setPlayerList(this.getPlayers());
+
+                DistributeCountriesService l_distributeCountriesService = new DistributeCountriesService();
+                l_distributeCountriesService.execute(new ArrayList<>());
+
+                // Tournament will start from PlaySetup phase.
+                l_gameEngine.setGamePhase(new PlaySetup(l_gameEngine));
+
                 // If the game index exists, it will add the GameEngine to the list; otherwise it will create a singleton list.
                 if (d_playedGameEngineMappings.containsKey(d_currentGameIndex)) {
                     d_playedGameEngineMappings.get(d_currentGameIndex).add(l_gameEngine);
@@ -201,56 +221,57 @@ public class TournamentEngine {
     /**
      * After the tournament ends, this method will be called to show the results in a tabular format.
      */
-    public void onComplete() throws InvalidInputException {
-        //for storing tournament result
+    public void onComplete() {
+        // For storing tournament result in tabular format.
         String[][] l_gameResultMatrix = new String[d_mapEditorEngineList.size()][this.getNumberOfGames() + 1];
-        List<String> l_playerNames=new ArrayList<>();
-        StringBuilder l_builder=new StringBuilder();
+        List<String> l_playerNames = new ArrayList<>();
+        StringBuilder l_builder = new StringBuilder();
 
-        for(Player l_player:this.getPlayers()){
+        for (Player l_player : d_players) {
             l_playerNames.add(l_player.getName());
         }
 
         l_builder.append("\n----Result of Tournament after Execution----\n");
-        l_builder.append("M: "+d_mapsList.toString()+"\n");
-        l_builder.append("P: "+l_playerNames.toString()+"\n");
-        l_builder.append("G: "+this.getNumberOfGames()+"\n");
-        l_builder.append("D: "+this.getMaxNumberOfTurns()+"\n");
+        l_builder.append("M: " + d_mapsList.toString() + "\n");
+        l_builder.append("P: " + l_playerNames.toString() + "\n");
+        l_builder.append("G: " + this.getNumberOfGames() + "\n");
+        l_builder.append("D: " + this.getMaxNumberOfTurns() + "\n");
 
-        int l_count =1;
+        int l_count = 1;
         for (int l_row = 0; l_row < d_mapEditorEngineList.size(); l_row++) {
-            l_gameResultMatrix[l_row][0] = "Map"+ l_count;
+            l_gameResultMatrix[l_row][0] = "Map" + l_count;
             l_count++;
         }
 
-        LinkedList<GameEngine> l_gameEngines=new LinkedList<>();
-        for (Map.Entry<Integer, List<GameEngine>> entry : d_playedGameEngineMappings.entrySet()){
-            List<GameEngine> l_singleTurnGameEngines=entry.getValue();
-            for(GameEngine l_singleGameEngine: l_singleTurnGameEngines){
-                l_gameEngines.add(l_singleGameEngine);
-            }
-        }
+        int l_rowIndex = 0;
+        int l_columnIndex = 0;
+        for (Map.Entry<Integer, List<GameEngine>> entry : d_playedGameEngineMappings.entrySet()) {
+            List<GameEngine> l_singleTurnGameEngines = entry.getValue();
+            for (GameEngine l_singleGameEngine : l_singleTurnGameEngines) {
+                GamePlayEngine l_gamePlayEngine = l_singleGameEngine.getGamePlayEngine();
+                GameResult l_gameResult = l_gamePlayEngine.getGameResult();
 
-        for(int l_row=0;l_row<d_mapEditorEngineList.size(); l_row++){
-            for(int l_col=1;l_col<this.getNumberOfGames()+1;l_col++){
-                GameEngine l_gameEngine=l_gameEngines.pollFirst();
-                GamePlayEngine l_gamePlayEngine= l_gameEngine.getGamePlayEngine();
-                GameResult l_gameResult=l_gamePlayEngine.getGameResult();
-                try {
-                    l_gameResultMatrix[l_row][l_col] = l_gameResult.getWinnerPlayer().getName();
-                }catch (Exception e){
-                    throw new InvalidInputException("invalid data in tournament");
+                // Store the result.
+                if (l_gameResult.isDeclaredDraw()) {
+                    l_gameResultMatrix[l_rowIndex][l_columnIndex] = "Draw";
+                } else if (l_gameResult.getWinnerPlayer() != null) {
+                    l_gameResultMatrix[l_rowIndex][l_columnIndex] = l_gameResult.getWinnerPlayer().getName();
+                } else {
+                    l_gameResultMatrix[l_rowIndex][l_columnIndex] = "Interrupted";
                 }
-            }
 
+                l_columnIndex++;
+            }
+            l_rowIndex++;
         }
 
-        String[] l_gameHeader = new String[this.getNumberOfGames()+1];
-        l_gameHeader[0]="Result";
+
+        String[] l_gameHeader = new String[this.getNumberOfGames() + 1];
+        l_gameHeader[0] = "Result";
         for (int i = 1; i < l_gameHeader.length; i++) {
             l_gameHeader[i] = "Game" + i;
         }
 
-        System.out.println(l_builder+FlipTable.of(l_gameHeader, l_gameResultMatrix));
+        VirtualMachine.getInstance().stdout(l_builder + FlipTable.of(l_gameHeader, l_gameResultMatrix));
     }
 }

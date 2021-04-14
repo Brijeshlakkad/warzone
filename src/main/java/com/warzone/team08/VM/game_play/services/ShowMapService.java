@@ -7,8 +7,6 @@ import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.exceptions.InvalidInputException;
-import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 
@@ -45,7 +43,7 @@ public class ShowMapService implements SingleCommand {
      * Shows the information of countries owned by player with the army count on each country.
      *
      * @param p_player Player for who information will be displayed.
-     * @return string of player information
+     * @return String of player information
      */
     public String showPlayerContent(Player p_player) {
         List<Country> l_countryList = p_player.getAssignedCountries();
@@ -84,7 +82,7 @@ public class ShowMapService implements SingleCommand {
      * @throws EntityNotFoundException If no player is available.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws EntityNotFoundException, ResourceNotFoundException, InvalidInputException {
+    public String execute(List<String> p_commandValues) throws EntityNotFoundException {
         StringBuilder l_playerContent = new StringBuilder();
         String l_logResponse = "";
         int l_playerCount = 0;

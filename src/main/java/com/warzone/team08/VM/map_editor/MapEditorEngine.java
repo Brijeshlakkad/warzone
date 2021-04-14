@@ -1,9 +1,15 @@
 package com.warzone.team08.VM.map_editor;
 
+import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.constants.interfaces.Engine;
+import com.warzone.team08.VM.constants.interfaces.JSONable;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidGameException;
+import com.warzone.team08.VM.repositories.CountryRepository;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -14,7 +20,7 @@ import java.util.*;
  * @author CHARIT
  * @version 1.0
  */
-public class MapEditorEngine implements Engine {
+public class MapEditorEngine implements Engine, JSONable {
     private List<Continent> d_continentList;
 
     private boolean d_isLoadingMap = false;
@@ -147,10 +153,84 @@ public class MapEditorEngine implements Engine {
         d_isLoadingMap = p_loadingMap;
     }
 
+
     /**
      * {@inheritDoc} Shuts the <code>MapEditorEngine</code>.
      */
     public void shutdown() {
         // No threads created by MapEditorEngine.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_mapEditorEngineJSON = new JSONObject();
+        JSONArray l_continentJSONList = new JSONArray();
+        for (Continent l_continent : getContinentList()) {
+            l_continentJSONList.put(l_continent.toJSON());
+        }
+        l_mapEditorEngineJSON.put("continents", l_continentJSONList);
+
+        // Save neighbor details.
+        JSONObject l_neighborCountryJSON = new JSONObject();
+        for (Country l_country : getCountryList()) {
+            JSONArray l_countryNeighbors = new JSONArray();
+            for (Country l_neighbourCountry : l_country.getNeighbourCountries()) {
+                l_countryNeighbors.put(l_neighbourCountry.getCountryName());
+            }
+            l_neighborCountryJSON.put(l_country.getCountryName(), l_countryNeighbors);
+        }
+        l_mapEditorEngineJSON.put("neighborCountryMappings", l_neighborCountryJSON);
+        return l_mapEditorEngineJSON;
+    }
+
+    /**
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     * @param p_gameEngine Instance of target <code>GameEngine</code>.
+     * @return Created instance of this class using the provided JSON data.
+     * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
+     *                              the values.
+     */
+    public static MapEditorEngine fromJSON(JSONObject p_jsonObject, GameEngine p_gameEngine) throws InvalidGameException {
+        CountryRepository l_countryRepository = new CountryRepository();
+
+        MapEditorEngine l_mapEditorEngine = new MapEditorEngine();
+        p_gameEngine.setMapEditorEngine(l_mapEditorEngine);
+
+        JSONArray l_continentJSONList = p_jsonObject.getJSONArray("continents");
+        for (int l_continentIndex = 0; l_continentIndex < l_continentJSONList.length(); l_continentIndex++) {
+            JSONObject l_continentJSON = l_continentJSONList.getJSONObject(l_continentIndex);
+            // Create new continent.
+            Continent l_continent = Continent.fromJSON(l_continentJSON);
+            l_mapEditorEngine.addContinent(l_continent);
+        }
+
+        // Assign neighbors.
+        JSONObject l_neighborCountryJSON = p_jsonObject.getJSONObject("neighborCountryMappings");
+        Set<String> l_countryList = l_neighborCountryJSON.keySet();
+        for (String l_countryName : l_countryList) {
+            try {
+                Country l_targetCountry = l_countryRepository.findFirstByCountryName(l_countryName);
+                JSONArray l_countryNeighbors = l_neighborCountryJSON.getJSONArray(l_countryName);
+                for (int l_neighborCountryIndex = 0; l_neighborCountryIndex < l_countryNeighbors.length(); l_neighborCountryIndex++) {
+                    String l_neighborCountryName = l_countryNeighbors.getString(l_neighborCountryIndex);
+                    try {
+                        Country l_targetNeighborCountry = l_countryRepository.findFirstByCountryName(l_neighborCountryName);
+                        // Add the country to the list.
+                        l_targetCountry.addNeighbourCountry(l_targetNeighborCountry);
+                    } catch (EntityNotFoundException p_entityNotFoundException) {
+                        throw new InvalidGameException(String.format("Neighbor country of %s with name %s not found!", l_countryName, l_neighborCountryName));
+                    }
+                }
+            } catch (EntityNotFoundException p_entityNotFoundException) {
+                throw new InvalidGameException(String.format("Country with name %s not found!", l_countryName));
+            }
+        }
+        return l_mapEditorEngine;
     }
 }

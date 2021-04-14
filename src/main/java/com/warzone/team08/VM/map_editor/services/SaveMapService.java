@@ -108,6 +108,6 @@ public class SaveMapService implements SingleCommand {
         l_validateObj.execute(null, "savemap");
 
         // Validates the file, gets the file object, and writes the data into it.
-        return saveToFile(FileUtil.retrieveFile(PathResolverUtil.resolveFilePath(p_commandValues.get(0))));
+        return saveToFile(FileUtil.retrieveMapFile(PathResolverUtil.resolveFilePath(p_commandValues.get(0))));
     }
 }

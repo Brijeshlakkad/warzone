@@ -43,6 +43,9 @@ public class DistributeCountriesServiceTest {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
 
+        // (Re)initialise the VM.
+        VirtualMachine.getInstance().initialise();
+        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
 
         d_Application.restoreMapFiles();
         d_TestFilePath = DistributeCountriesServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
@@ -56,11 +59,7 @@ public class DistributeCountriesServiceTest {
      */
     @Before
     public void before() throws VMException, URISyntaxException {
-        // (Re)initialise the VM.
-        VirtualMachine.getInstance().initialise();
-
-        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
-
+        d_GamePlayEngine.initialise();
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assertNotNull(d_TestFilePath);

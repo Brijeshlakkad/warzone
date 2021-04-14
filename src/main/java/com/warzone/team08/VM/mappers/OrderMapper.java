@@ -7,7 +7,9 @@ import com.warzone.team08.VM.entities.orders.*;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.exceptions.InvalidCommandException;
+import com.warzone.team08.VM.exceptions.InvalidGameException;
 import com.warzone.team08.VM.responses.CommandResponse;
+import org.json.JSONObject;
 
 /**
  * The class to map <code>CommandResponse</code> to <code>Order</code>.
@@ -18,8 +20,7 @@ import com.warzone.team08.VM.responses.CommandResponse;
 public class OrderMapper {
     /**
      * Maps the <code>CommandResponse</code> to <code>Order</code> object.
-     * <p>This is a static method and returns a new
-     * order instance created from <code>CommandResponse</code>.
+     * <p>This method returns a new order instance created from <code>CommandResponse</code>.
      *
      * @param p_commandResponse Command object received at VM which represents the user command input.
      * @param p_player          Player who has issued the order.
@@ -52,5 +53,33 @@ public class OrderMapper {
             // If not handled here, it will throw a InvalidCommandException.
         }
         throw new InvalidCommandException("Invalid command!");
+    }
+
+    /**
+     * Maps the <code>JSONObject</code> to <code>Order</code> object.
+     * <p>This method returns a new order instance created from <code>JSONObject</code>.
+     *
+     * @param p_jsonObject JSONObject having the information regarding the order to be created.
+     * @param p_player     Player who has issued the order.
+     * @return Value of the new order created from user command response.
+     * @throws InvalidGameException Throws if JSON data is corrupted or required information was not present.
+     */
+    public Order toOrder(JSONObject p_jsonObject, Player p_player)
+            throws InvalidGameException {
+        OrderType l_orderType = p_jsonObject.getEnum(OrderType.class, "type");
+        if (l_orderType == OrderType.advance) {
+            return AdvanceOrder.fromJSON(p_jsonObject, p_player);
+        } else if (l_orderType == OrderType.airlift) {
+            return AirliftOrder.fromJSON(p_jsonObject, p_player);
+        } else if (l_orderType == OrderType.blockade) {
+            return BlockadeOrder.fromJSON(p_jsonObject, p_player);
+        } else if (l_orderType == OrderType.bomb) {
+            return BombOrder.fromJSON(p_jsonObject, p_player);
+        } else if (l_orderType == OrderType.deploy) {
+            return DeployOrder.fromJSON(p_jsonObject, p_player);
+        } else if (l_orderType == OrderType.negotiate) {
+            return NegotiateOrder.fromJSON(p_jsonObject, p_player);
+        }
+        throw new InvalidGameException();
     }
 }

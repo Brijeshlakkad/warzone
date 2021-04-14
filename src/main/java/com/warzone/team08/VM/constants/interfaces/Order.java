@@ -2,6 +2,7 @@ package com.warzone.team08.VM.constants.interfaces;
 
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.OrderType;
+import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
@@ -13,7 +14,7 @@ import com.warzone.team08.VM.game_play.GamePlayEngine;
  * @author CHARIT
  * @version 1.0
  */
-public abstract class Order {
+public abstract class Order implements JSONable {
     /**
      * Execution game-play-index to define when this order supposed to be executed.
      */
@@ -22,11 +23,15 @@ public abstract class Order {
      * Defines when this order supposed to be expired.
      */
     private int d_expiryIndex = -1;
+    private final Player d_owner;
 
     /**
      * Default constructor.
+     *
+     * @param p_player Player who issued this order.
      */
-    public Order() {
+    public Order(Player p_player) {
+        d_owner = p_player;
         if (this.getType() == OrderType.negotiate) {
             d_executionIndex = GamePlayEngine.getCurrentExecutionIndex() + 1;
             d_expiryIndex = d_executionIndex + 1;
@@ -51,6 +56,15 @@ public abstract class Order {
      * @return Value of the order type.
      */
     public abstract OrderType getType();
+
+    /**
+     * Gets the player who created the order.
+     *
+     * @return Owner of this order.
+     */
+    public Player getOwner() {
+        return d_owner;
+    }
 
     /**
      * Gets the execution index of this order.

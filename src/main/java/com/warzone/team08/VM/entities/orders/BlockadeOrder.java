@@ -8,9 +8,11 @@ import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidGameException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.CountryRepository;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -24,7 +26,6 @@ import java.util.List;
  */
 public class BlockadeOrder extends Order {
     private final Country d_targetCountry;
-    private final Player d_owner;
     /**
      * Constant to multiply the armies count.
      */
@@ -46,8 +47,8 @@ public class BlockadeOrder extends Order {
      */
     public BlockadeOrder(String p_targetCountry, Player p_owner)
             throws EntityNotFoundException {
+        super(p_owner);
         d_targetCountry = d_countryRepository.findFirstByCountryName(p_targetCountry);
-        d_owner = p_owner;
     }
 
     /**
@@ -61,22 +62,22 @@ public class BlockadeOrder extends Order {
         Country l_country;
         List<Country> l_countryList;
         Card l_requiredCard;
-        if (d_targetCountry.getOwnedBy() == d_owner) {
-            l_requiredCard = d_owner.getCard(CardType.BLOCKADE);
+        if (d_targetCountry.getOwnedBy().equals(this.getOwner())) {
+            l_requiredCard = this.getOwner().getCard(CardType.BLOCKADE);
         } else {
             throw new InvalidOrderException("You have selected opponent player's country to perform blockade operation.");
         }
 
         l_country = d_targetCountry;
-        l_countryList = d_owner.getAssignedCountries();
+        l_countryList = this.getOwner().getAssignedCountries();
         try {
             l_country.setNumberOfArmies(l_country.getNumberOfArmies() * CONSTANT);
             l_countryList.remove(l_country);
         } catch (Exception e) {
             throw new InvalidOrderException("You can not perform blockade operation as you don't own this country");
         }
-        d_owner.setAssignedCountries(l_countryList);
-        d_owner.removeCard(l_requiredCard);
+        this.getOwner().setAssignedCountries(l_countryList);
+        this.getOwner().removeCard(l_requiredCard);
 
         // Logging
         StringBuilder l_logResponse = new StringBuilder();
@@ -110,5 +111,35 @@ public class BlockadeOrder extends Order {
     @Override
     public String toString() {
         return String.format("%s %s", getType().getJsonValue(), d_targetCountry.getCountryName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JSONObject toJSON() {
+        JSONObject l_order = new JSONObject();
+        l_order.put("target", d_targetCountry.getCountryName());
+        l_order.put("type", getType().name());
+        return l_order;
+    }
+
+    /**
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
+     *
+     * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     * @param p_player     Player who had issued this order.
+     * @return Created instance of this class using the provided JSON data.
+     * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
+     *                              the values.
+     */
+    public static BlockadeOrder fromJSON(JSONObject p_jsonObject, Player p_player) throws InvalidGameException {
+        try {
+            return new BlockadeOrder(p_jsonObject.getString("target"),
+                    p_player);
+        } catch (EntityNotFoundException p_entityNotFoundException) {
+            throw new InvalidGameException();
+        }
     }
 }

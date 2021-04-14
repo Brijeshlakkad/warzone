@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.map_editor.services;
 
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.FileType;
 import com.warzone.team08.VM.constants.enums.MapModelType;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Country;
@@ -79,7 +80,7 @@ public class EditMapService implements SingleCommand {
         if (new File(p_filePath).exists()) {
             try {
                 // Try to retrieve the file
-                FileUtil.retrieveFile(p_filePath);
+                FileUtil.retrieveMapFile(p_filePath);
                 // Will throw exception if the file path is not valid
                 BufferedReader l_reader = new BufferedReader(new FileReader(p_filePath));
 
@@ -105,7 +106,7 @@ public class EditMapService implements SingleCommand {
             }
         } else if (shouldCreateNew) {
             // Throws exception if file doesn't have required extension.
-            FileUtil.checksIfFileHasRequiredExtension(p_filePath);
+            FileUtil.checksIfFileHasRequiredExtension(p_filePath, FileType.MAP);
 
             FileUtil.createFileIfNotExists(p_filePath);
             return "New file created!";
@@ -284,7 +285,6 @@ public class EditMapService implements SingleCommand {
      * Takes the command and executes the function.
      *
      * @param p_commandValues Represents the values passed while running the command.
-     * @return Value of string acknowledging user that the file is loaded or not.
      * @throws InvalidMapException       Throws if the map was not valid.
      * @throws ResourceNotFoundException Throws if file not found.
      * @throws InvalidInputException     Throws if the user command is invalid.

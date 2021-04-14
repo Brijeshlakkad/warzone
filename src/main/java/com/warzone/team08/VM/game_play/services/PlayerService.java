@@ -59,11 +59,11 @@ public class PlayerService {
                 Player l_player = new Player(p_playerName, l_strategyType);
                 d_gamePlayEngine.addPlayer(l_player);
                 // Logging
-                d_logEntryBuffer.dataChanged("gameplayer", p_playerName + " player added!");
+                d_logEntryBuffer.dataChanged("gameplayer", p_playerName + " player added with strategy type: "+p_strategyType);
 
                 return String.format("%s player added!", p_playerName);
             } catch (Exception e) {
-                throw new InvalidInputException("Player name is not valid");
+                throw new InvalidInputException("Invalid player arguments!");
             }
         } else {
             throw new InvalidInputException("Player name already exists....Please provide different name.");
