@@ -120,6 +120,11 @@ public class TournamentEngine {
         d_maxNumberOfTurns = p_maxNumberOfTurns;
     }
 
+    /**
+     * Clones the player for the current iteration of tournament.
+     *
+     * @return List of the cloned player.
+     */
     public List<Player> getPlayers() {
         List<Player> l_clonedPlayers = new ArrayList<>();
         for (Player l_player : d_players) {
@@ -142,9 +147,10 @@ public class TournamentEngine {
             for (MapEditorEngine l_mapEditorEngine : d_mapEditorEngineList) {
                 GamePlayEngine l_gamePlayEngine = new GamePlayEngine();
                 GameEngine l_gameEngine = new GameEngine(l_mapEditorEngine, l_gamePlayEngine);
-                l_gamePlayEngine.setPlayerList(this.getPlayers());
                 // Prepare GameEngine for this tournament round.
                 VirtualMachine.setGameEngine(l_gameEngine);
+
+                l_gamePlayEngine.setPlayerList(this.getPlayers());
 
                 DistributeCountriesService l_distributeCountriesService = new DistributeCountriesService();
                 l_distributeCountriesService.execute(new ArrayList<>());
