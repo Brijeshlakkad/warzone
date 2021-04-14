@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.map_editor.services;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
@@ -28,7 +29,7 @@ public class ContinentService {
      * Initialization of different objects.
      */
     public ContinentService() {
-        d_mapEditorEngine = MapEditorEngine.getInstance();
+        d_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
         d_continentRepository = new ContinentRepository();
         d_logEntryBuffer = LogEntryBuffer.getLogger();
     }

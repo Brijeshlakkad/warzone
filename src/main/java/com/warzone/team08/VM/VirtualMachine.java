@@ -22,6 +22,11 @@ public class VirtualMachine {
     private static VirtualMachine d_Instance;
 
     /**
+     * GameEngine attached to this VM. This engine is changeable.
+     */
+    private static GameEngine d_gameEngine;
+
+    /**
      * List of User interface middleware. (Can be a stub/skeleton)
      */
     private UserInterfaceMiddleware d_userInterfaceMiddleware;
@@ -38,9 +43,10 @@ public class VirtualMachine {
      */
     public static VirtualMachine newInstance() {
         d_Instance = new VirtualMachine();
+        d_gameEngine = new GameEngine();
         // Default exception handler.
-        ExceptionHandler l_exceptionHandler = new ExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(l_exceptionHandler);
+//        ExceptionHandler l_exceptionHandler = new ExceptionHandler();
+//        Thread.setDefaultUncaughtExceptionHandler(l_exceptionHandler);
         return d_Instance;
     }
 
@@ -49,14 +55,16 @@ public class VirtualMachine {
      */
     public void initialise() {
         // Prepare instances.
-        VirtualMachine.GAME_ENGINE().initialise();
+        VirtualMachine.getGameEngine().initialise();
+        VirtualMachine.TOURNAMENT_ENGINE().initialise();
     }
 
     /**
      * Terminates gracefully. Signals its engines to terminate.
      */
     public static void exit() {
-        GAME_ENGINE().shutdown();
+        getGameEngine().shutdown();
+        TOURNAMENT_ENGINE().shutdown();
         VirtualMachine.getInstance().stdout("Shutting down...");
     }
 
@@ -84,12 +92,30 @@ public class VirtualMachine {
     }
 
     /**
+     * Sets the game engine to store runtime information of the game.
+     *
+     * @param p_gameEngine Value of the game engine.
+     */
+    public static void setGameEngine(GameEngine p_gameEngine) {
+        d_gameEngine = p_gameEngine;
+    }
+
+    /**
      * Gets game engine to store runtime information of the game.
      *
      * @return Value of the game engine.
      */
-    public static GameEngine GAME_ENGINE() {
-        return GameEngine.getInstance();
+    public static GameEngine getGameEngine() {
+        return d_gameEngine;
+    }
+
+    /**
+     * Gets tournament engine to store information of the game while the game mode is tournament.
+     *
+     * @return Value of the game engine.
+     */
+    public static TournamentEngine TOURNAMENT_ENGINE() {
+        return TournamentEngine.getInstance();
     }
 
     /**
@@ -98,7 +124,7 @@ public class VirtualMachine {
      * @return Value of the game state
      */
     public static Phase getGamePhase() {
-        return GAME_ENGINE().getGamePhase();
+        return d_gameEngine.getGamePhase();
     }
 
     /**

@@ -1,5 +1,8 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.warzone.team08.Application;
+import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
@@ -22,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Rutwik
  */
 public class AssignReinforcementServiceTest {
+    private static Application d_Application = new Application();
     private static MapEditorEngine d_MapEditorEngine;
     private static EditMapService d_EditMapService;
     private static URL d_TestFile;
@@ -35,8 +39,10 @@ public class AssignReinforcementServiceTest {
      */
     @BeforeClass
     public static void beforeClass() {
-        d_GamePlayEngine = GamePlayEngine.getInstance();
-        d_MapEditorEngine = MapEditorEngine.getInstance();
+        d_Application.handleApplicationStartup();
+        VirtualMachine.getInstance().initialise();
+        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
+        d_MapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
         d_TestFile = AssignReinforcementServiceTest.class.getClassLoader().getResource("test_map_files/test_map.map");
     }
 
@@ -58,8 +64,8 @@ public class AssignReinforcementServiceTest {
         d_MapEditorEngine.getCountryList();
         d_AssignReinforcementService = new AssignReinforcementService();
 
-        Player l_player1 = new Player();
-        Player l_player2 = new Player();
+        Player l_player1 = new Player("USER_1", StrategyType.HUMAN);
+        Player l_player2 = new Player("USER_1", StrategyType.HUMAN);
 
         d_GamePlayEngine.addPlayer(l_player1);
         d_GamePlayEngine.addPlayer(l_player2);
@@ -77,7 +83,7 @@ public class AssignReinforcementServiceTest {
      */
     @Test(expected = Test.None.class)
     public void testAssignCountry() {
-        for (Player l_player : GamePlayEngine.getInstance().getPlayerList()) {
+        for (Player l_player : d_GamePlayEngine.getPlayerList()) {
             assertNotNull(l_player.getAssignedCountries());
         }
     }
@@ -90,10 +96,10 @@ public class AssignReinforcementServiceTest {
     @Test
     public void testingCalculatedReinforcedArmyValue() throws EntityNotFoundException {
         d_AssignReinforcementService.execute();
-        int l_reinforcementArmies = GamePlayEngine.getInstance().getPlayerList().get(0).getReinforcementCount();
+        int l_reinforcementArmies = d_GamePlayEngine.getPlayerList().get(0).getReinforcementCount();
         assertEquals(9, l_reinforcementArmies);
 
-        int l_reinforcementArmies1 = GamePlayEngine.getInstance().getPlayerList().get(1).getReinforcementCount();
+        int l_reinforcementArmies1 = d_GamePlayEngine.getPlayerList().get(1).getReinforcementCount();
         assertEquals(13, l_reinforcementArmies1);
     }
 }

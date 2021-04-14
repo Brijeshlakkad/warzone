@@ -3,9 +3,9 @@ package com.warzone.team08.VM.game_play.services;
 import com.jakewharton.fliptables.FlipTable;
 import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
+import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.*;
-import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -65,11 +65,11 @@ public class ShowMapServiceTest {
 
         DistributeCountriesService l_distributeCountriesService = new DistributeCountriesService();
         PlayerService l_playerService = new PlayerService();
-        l_playerService.add("User_1","HUMAN");
-        l_playerService.add("User_2","HUMAN");
+        l_playerService.add("User_1", StrategyType.HUMAN.getJsonValue());
+        l_playerService.add("User_2", StrategyType.HUMAN.getJsonValue());
 
         l_distributeCountriesService.distributeCountries();
-        d_playerList = GamePlayEngine.getInstance().getPlayerList();
+        d_playerList = VirtualMachine.getGameEngine().getGamePlayEngine().getPlayerList();
     }
 
     /**

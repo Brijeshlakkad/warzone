@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.constants.interfaces;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.OrderType;
 import com.warzone.team08.VM.exceptions.CardNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidOrderException;
@@ -29,7 +30,7 @@ public abstract class Order {
         if (this.getType() == OrderType.negotiate) {
             d_executionIndex = GamePlayEngine.getCurrentExecutionIndex() + 1;
             d_expiryIndex = d_executionIndex + 1;
-            GamePlayEngine.getInstance().addFutureOrder(this);
+            VirtualMachine.getGameEngine().getGamePlayEngine().addFutureOrder(this);
         } else {
             d_executionIndex = GamePlayEngine.getCurrentExecutionIndex();
         }

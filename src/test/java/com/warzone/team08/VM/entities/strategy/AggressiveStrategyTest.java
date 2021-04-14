@@ -19,7 +19,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class test the execution of the Aggressive Strategy.
@@ -40,7 +41,8 @@ public class AggressiveStrategyTest {
     public static void createPlayersList() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
-        d_GamePlayEngine = GamePlayEngine.getInstance();
+        VirtualMachine.getInstance().initialise();
+        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         d_TestFilePath = AggressiveStrategyTest.class.getClassLoader().getResource("test_map_files/test_strategy.map");
     }
 
@@ -56,19 +58,14 @@ public class AggressiveStrategyTest {
      */
     @Before
     public void setup() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
-        VirtualMachine.getInstance().initialise();
-
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assertNotNull(d_TestFilePath);
         String l_url = new URI(d_TestFilePath.getPath()).getPath();
         l_editMapService.handleLoadMap(l_url);
 
-        Player l_player1 = new Player(StrategyType.HUMAN);
-        Player l_player2 = new Player(StrategyType.HUMAN);
-
-        l_player1.setName("User_1");
-        l_player2.setName("User_2");
+        Player l_player1 = new Player("User_1", StrategyType.HUMAN);
+        Player l_player2 = new Player("User_2", StrategyType.HUMAN);
 
         d_GamePlayEngine.addPlayer(l_player1);
         d_GamePlayEngine.addPlayer(l_player2);

@@ -53,7 +53,7 @@ public class Execute extends MainPlay {
      */
     @Override
     public void nextState() {
-        GamePlayEngine.incrementIndex();
+        GamePlayEngine.incrementEngineIndex();
         d_gameEngine.setGamePhase(new Reinforcement(d_gameEngine));
     }
 }

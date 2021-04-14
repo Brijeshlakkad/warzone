@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.game_play.services;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
@@ -38,8 +39,8 @@ public class AssignReinforcementService {
      * bonus.
      */
     public AssignReinforcementService() {
-        d_mapEditorEngine = MapEditorEngine.getInstance();
-        d_gamePlayEngine = GamePlayEngine.getInstance();
+        d_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
+        d_gamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
     }
 
     /**
@@ -92,7 +93,7 @@ public class AssignReinforcementService {
             for (Continent l_continent : d_mapEditorEngine.getContinentList()) {
 
                 List<String> l_countryList = new ArrayList<>(d_continentCountryList.get(l_continent.getContinentName()));
-                //Method Call: Here Control Value is assessed.
+                // Method Call: Here Control Value is assessed.
                 int l_returnContinentValue = checkPlayerOwnsContinent(l_player, l_countryList, l_continent);
 
                 l_continentValue = l_continentValue + l_returnContinentValue;

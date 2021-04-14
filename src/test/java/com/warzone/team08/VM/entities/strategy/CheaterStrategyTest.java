@@ -3,7 +3,6 @@ package com.warzone.team08.VM.entities.strategy;
 import com.warzone.team08.Application;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.StrategyType;
-import com.warzone.team08.VM.constants.interfaces.Order;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.*;
@@ -41,7 +40,8 @@ public class CheaterStrategyTest {
     public static void createPlayersList() {
         d_Application = new Application();
         d_Application.handleApplicationStartup();
-        d_GamePlayEngine = GamePlayEngine.getInstance();
+        VirtualMachine.getInstance().initialise();
+        d_GamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         d_TestFilePath = CheaterStrategy.class.getClassLoader().getResource("test_map_files/test_cheaterStrategy.map");
     }
 
@@ -57,19 +57,14 @@ public class CheaterStrategyTest {
      */
     @Before
     public void setup() throws AbsentTagException, InvalidMapException, ResourceNotFoundException, InvalidInputException, EntityNotFoundException, URISyntaxException {
-        VirtualMachine.getInstance().initialise();
-
         // Loads the map
         EditMapService l_editMapService = new EditMapService();
         assertNotNull(d_TestFilePath);
         String l_url = new URI(d_TestFilePath.getPath()).getPath();
         l_editMapService.handleLoadMap(l_url);
 
-        Player l_player1 = new Player(StrategyType.HUMAN);
-        Player l_player2 = new Player(StrategyType.HUMAN);
-
-        l_player1.setName("User_1");
-        l_player2.setName("User_2");
+        Player l_player1 = new Player("User_1", StrategyType.HUMAN);
+        Player l_player2 = new Player("User_2", StrategyType.HUMAN);
 
         d_GamePlayEngine.addPlayer(l_player1);
         d_GamePlayEngine.addPlayer(l_player2);
@@ -94,13 +89,13 @@ public class CheaterStrategyTest {
         Country l_temp = l_countryRepository.findFirstByCountryName("Nepal");
         l_temp.setNumberOfArmies(3);
         //First this country has to be oppositions country
-        assertNotEquals(l_player,l_temp.getOwnedBy());
+        assertNotEquals(l_player, l_temp.getOwnedBy());
 
         CheaterStrategy l_cheatStrategy = new CheaterStrategy(l_player);
         l_cheatStrategy.execute();
         //After execution same country is owned by the cheater player
-        assertEquals(l_player,l_temp.getOwnedBy());
+        assertEquals(l_player, l_temp.getOwnedBy());
         //armies count will be doubled, If it has enemy neighbour
-        assertEquals(6,l_temp.getNumberOfArmies());
+        assertEquals(6, l_temp.getNumberOfArmies());
     }
 }

@@ -8,6 +8,7 @@ import com.warzone.team08.VM.logger.LogEntryBuffer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Base of the state of State pattern.
@@ -61,6 +62,16 @@ public abstract class Phase {
     Phase(GameEngine p_gameEngine) {
         d_gameEngine = p_gameEngine;
     }
+
+    /**
+     * Prepares the tournament using the passed parameters. It also sets the game mode as tournament.
+     *
+     * @param p_arguments Contains the list of mappings of key and its values.
+     * @return Response value of the operation.
+     * @throws VMException If any exception while preparing the tournament.
+     * @see com.warzone.team08.VM.map_editor.services.LoadMapService
+     */
+    abstract public String prepareTournament(List<Map<String, List<String>>> p_arguments) throws VMException;
 
     /**
      * Loads the map using the filename provided in the arguments.

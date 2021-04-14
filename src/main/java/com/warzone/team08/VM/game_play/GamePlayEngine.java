@@ -1,9 +1,11 @@
 package com.warzone.team08.VM.game_play;
 
 import com.warzone.team08.VM.GameEngine;
+import com.warzone.team08.VM.TournamentEngine;
 import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.Engine;
 import com.warzone.team08.VM.constants.interfaces.Order;
+import com.warzone.team08.VM.entities.GameResult;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.GameLoopIllegalStateException;
 import com.warzone.team08.VM.exceptions.VMException;
@@ -24,11 +26,6 @@ import java.util.stream.Collectors;
  * @version 1.0
  */
 public class GamePlayEngine implements Engine {
-    /**
-     * Singleton instance of the class.
-     */
-    private static GamePlayEngine d_Instance;
-
     /**
      * Players of the game.
      */
@@ -67,22 +64,14 @@ public class GamePlayEngine implements Engine {
     private final List<Order> d_futurePhaseOrders = new ArrayList<>();
 
     /**
-     * Gets the single instance of the <code>GamePlayEngine</code> class.
-     * <p>If not created before, it creates the one.
-     *
-     * @return Value of the instance.
+     * Result of the game. It will be null until the game is over.
      */
-    public static GamePlayEngine getInstance() {
-        if (d_Instance == null) {
-            d_Instance = new GamePlayEngine();
-        }
-        return d_Instance;
-    }
+    private GameResult d_gameResult;
 
     /**
      * Instance can not be created outside the class. (private)
      */
-    private GamePlayEngine() {
+    public GamePlayEngine() {
         this.initialise();
     }
 
@@ -119,6 +108,15 @@ public class GamePlayEngine implements Engine {
      */
     public List<Player> getPlayerList() {
         return d_playerList;
+    }
+
+    /**
+     * Sets the players of the game.
+     *
+     * @param p_playerList Value of the player list.
+     */
+    public void setPlayerList(List<Player> p_playerList) {
+        d_playerList = p_playerList;
     }
 
     /**
@@ -243,7 +241,7 @@ public class GamePlayEngine implements Engine {
     /**
      * Increments the current-execution-index.
      */
-    public static void incrementIndex() {
+    public static void incrementEngineIndex() {
         d_currentExecutionIndex++;
     }
 
@@ -256,9 +254,11 @@ public class GamePlayEngine implements Engine {
             d_LoopThread.interrupt();
         }
         d_LoopThread = new Thread(() -> {
-            GameEngine l_gameEngine = GameEngine.getInstance();
+            GameEngine l_gameEngine = VirtualMachine.getGameEngine();
             try {
-                if (l_gameEngine.getGamePhase().getClass().equals(PlaySetup.class)) {
+                if (l_gameEngine.isTournamentModeOn()) {
+                    l_gameEngine.setGamePhase(new Reinforcement(l_gameEngine));
+                } else if (l_gameEngine.getGamePhase().getClass().equals(PlaySetup.class)) {
                     l_gameEngine.getGamePhase().nextState();
                 } else {
                     throw new GameLoopIllegalStateException("Illegal state transition!");
@@ -273,6 +273,10 @@ public class GamePlayEngine implements Engine {
                     }
                     if (l_gameEngine.getGamePhase().getClass().equals(Execute.class)) {
                         l_gameEngine.getGamePhase().fortify();
+                        if (this.checkIfGameIsOver()) {
+                            // If the game is over, break the main-game-loop.
+                            break;
+                        }
                     }
                     l_gameEngine.getGamePhase().nextState();
                 }
@@ -284,6 +288,53 @@ public class GamePlayEngine implements Engine {
             }
         });
         d_LoopThread.start();
+    }
+
+    /**
+     * Returns thread representing the game loop.
+     *
+     * @return Thread.
+     */
+    public Thread getLoopThread() {
+        return d_LoopThread;
+    }
+
+    /**
+     * This game round will be over only when any player has won the game. If the game mode is tournament, then
+     * additional condition for the game to be over is to exceed the turns of the round.
+     *
+     * @return True if the game is over; false otherwise.
+     */
+    public boolean checkIfGameIsOver() {
+        if (VirtualMachine.getGameEngine().isTournamentModeOn() && d_currentExecutionIndex > TournamentEngine.getInstance().getMaxNumberOfTurns()) {
+            d_gameResult = new GameResult(true, null);
+            return true;
+        }
+        List<Player> l_playerWhoWonTheGame =
+                VirtualMachine.getGameEngine().getGamePlayEngine().getPlayerList().stream().filter(Player::isWon).collect(Collectors.toList());
+        if (l_playerWhoWonTheGame.size() > 0) {
+            d_gameResult = new GameResult(false, l_playerWhoWonTheGame.get(0));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Gets the result of the game.
+     *
+     * @return Value of the game result.
+     */
+    public GameResult getGameResult() {
+        return d_gameResult;
+    }
+
+    /**
+     * Sets the result of the game.
+     *
+     * @param p_gameResult Value of the game result.
+     */
+    public void setGameResult(GameResult p_gameResult) {
+        d_gameResult = p_gameResult;
     }
 
     /**

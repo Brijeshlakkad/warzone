@@ -9,49 +9,66 @@ import com.warzone.team08.VM.phases.Phase;
 import com.warzone.team08.VM.phases.Preload;
 
 /**
- * Handles the connection with different user interfaces. Creates an environment for the player to store the
- * information.
+ * Creates an environment for the player to store the information.
  *
  * @author Brijesh Lakkad
  * @version 1.0
  */
 public class GameEngine {
     /**
-     * Singleton instance of the class.
-     */
-    private static GameEngine d_Instance;
-
-    /**
      * State object of the GameEngine
      */
     private Phase d_gameState;
+
+    /**
+     * <code>MapEditorEngine</code> for this game.
+     * VM runtime map-editor engine to store map runtime information.
+     */
+    private MapEditorEngine d_mapEditorEngine;
+
+    /**
+     * <code>GamePlayEngine</code> for this game.
+     * VM runtime game-play engine to store runtime after game starts.
+     */
+    private GamePlayEngine d_gamePlayEngine;
+
+    private boolean d_isTournamentModeOn = false;
 
     LogEntryBuffer d_logEntryBuffer;
     LogWriter d_logWriter;
 
     /**
-     * Gets the single instance of the <code>GameEngine</code> class which was created before.
-     *
-     * @return Value of the instance.
+     * Default constructor.
      */
-    public static GameEngine getInstance() throws NullPointerException {
-        if (d_Instance == null) {
-            d_Instance = new GameEngine();
-            d_Instance.initialise();
-        }
-        return d_Instance;
+    public GameEngine() {
+        this.initialise();
+        // MAP_EDITOR ENGINE
+        d_mapEditorEngine = new MapEditorEngine();
+        d_mapEditorEngine.initialise();
+        // GAME_PLAY ENGINE
+        d_gamePlayEngine = new GamePlayEngine();
+        d_gamePlayEngine.initialise();
+    }
+
+    /**
+     * Sets the MapEditor and GamePlay engines for this tournament round. This method will be used at the time of
+     * tournament. Calling of this method also sets the game mode to tournament.
+     *
+     * @param p_mapEditorEngine MapEditor engine.
+     * @param p_gamePlayEngine  GamePlay engine.
+     */
+    public GameEngine(MapEditorEngine p_mapEditorEngine, GamePlayEngine p_gamePlayEngine) {
+        this.initialise();
+        d_mapEditorEngine = p_mapEditorEngine;
+        d_gamePlayEngine = p_gamePlayEngine;
+        d_isTournamentModeOn = true;
     }
 
     /**
      * Initialise all the engines to reset the runtime information.
      */
     public void initialise() {
-        d_Instance.setGamePhase(new Preload(this));
-        // MAP_EDITOR ENGINE
-        GameEngine.MAP_EDITOR_ENGINE().initialise();
-        // GAME_PLAY ENGINE
-        GameEngine.GAME_PLAY_ENGINE().initialise();
-
+        this.setGamePhase(new Preload(this));
         d_logEntryBuffer = LogEntryBuffer.getLogger();
         try {
             d_logWriter = new LogWriter(d_logEntryBuffer);
@@ -64,8 +81,8 @@ public class GameEngine {
      * Signals its engines to shutdown.
      */
     public void shutdown() {
-        MAP_EDITOR_ENGINE().shutdown();
-        GAME_PLAY_ENGINE().shutdown();
+        d_mapEditorEngine.shutdown();
+        d_gamePlayEngine.shutdown();
     }
 
     /**
@@ -91,8 +108,8 @@ public class GameEngine {
      *
      * @return Value of the map editor engine.
      */
-    public static MapEditorEngine MAP_EDITOR_ENGINE() {
-        return MapEditorEngine.getInstance();
+    public MapEditorEngine getMapEditorEngine() {
+        return d_mapEditorEngine;
     }
 
     /**
@@ -100,7 +117,16 @@ public class GameEngine {
      *
      * @return Value of the game-play engine.
      */
-    public static GamePlayEngine GAME_PLAY_ENGINE() {
-        return GamePlayEngine.getInstance();
+    public GamePlayEngine getGamePlayEngine() {
+        return d_gamePlayEngine;
+    }
+
+    /**
+     * Check if the tournament mode is on.
+     *
+     * @return True if the game mode is tournament; false otherwise.
+     */
+    public boolean isTournamentModeOn() {
+        return d_isTournamentModeOn;
     }
 }

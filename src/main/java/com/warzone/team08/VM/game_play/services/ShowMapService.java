@@ -1,6 +1,7 @@
 package com.warzone.team08.VM.game_play.services;
 
 import com.jakewharton.fliptables.FlipTable;
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Country;
@@ -34,7 +35,7 @@ public class ShowMapService implements SingleCommand {
      * @throws EntityNotFoundException Throws if entity not found.
      */
     public ShowMapService() throws EntityNotFoundException {
-        d_gamePlayEngine = GamePlayEngine.getInstance();
+        d_gamePlayEngine = VirtualMachine.getGameEngine().getGamePlayEngine();
         d_playerList = d_gamePlayEngine.getPlayerList();
         d_showMapService = new com.warzone.team08.VM.map_editor.services.ShowMapService();
         d_logEntryBuffer = LogEntryBuffer.getLogger();
