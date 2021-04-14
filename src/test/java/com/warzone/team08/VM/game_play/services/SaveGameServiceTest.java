@@ -111,7 +111,7 @@ public class SaveGameServiceTest {
         // This is the actual JSONObject.
         JSONObject l_actualJSONObject = l_saveGameService.getGameEngineJSONData();
         StringBuilder l_fileContentBuilder = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new FileReader(d_testSavedFilePath.getPath()))) {
+        try (BufferedReader  br = new BufferedReader(new FileReader(d_testSavedFilePath.getPath()))) {
 
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) {
