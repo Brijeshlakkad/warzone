@@ -19,8 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * This class test the execution of the Aggressive Strategy.
@@ -85,10 +84,8 @@ public class AggressiveStrategyTest {
     @Test
     public void testExecute() throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
-        int i = 2;
         for (Country traverse : l_player.getAssignedCountries()) {
-            traverse.setNumberOfArmies(i);
-            i++;
+            traverse.setNumberOfArmies(5);
         }
         Player l_player2 = d_playerList.get(1);
         for (Country traverse : l_player2.getAssignedCountries()) {
@@ -96,6 +93,7 @@ public class AggressiveStrategyTest {
         }
 
         l_player.setReinforcementCount(6);
+        VirtualMachine.getGameEngine().setTournamentMode(true);
         AggressiveStrategy l_check = new AggressiveStrategy(l_player);
         l_check.execute();
         for (Order l_travers : l_player.getOrders()) {
@@ -103,4 +101,27 @@ public class AggressiveStrategyTest {
         }
         assertEquals(6, l_check.getOppositionCountry().getNumberOfArmies());
     }
+
+
+//    /**
+//     * checks that execute method working properly.
+//     *
+//     * @throws EntityNotFoundException  Throws if entity not found.
+//     * @throws InvalidArgumentException Throws if the input is invalid.
+//     * @throws InvalidOrderException    Throws if exception while executing the order.
+//     * @throws CardNotFoundException    Card doesn't found in the player's card list.
+//     */
+//    @Test
+//    public void testExecute2() throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
+//        Player l_player = d_playerList.get(0);
+//        l_player.setReinforcementCount(6);
+//        VirtualMachine.getGameEngine().setTournamentMode(true);
+//
+//        AggressiveStrategy l_check = new AggressiveStrategy(l_player);
+//        l_check.execute();
+//        for (Order l_travers : l_player.getOrders()) {
+//            l_travers.execute();
+//        }
+//        assertEquals(6,l_player.getAssignedCountries().get(0).getNumberOfArmies());
+//    }
 }

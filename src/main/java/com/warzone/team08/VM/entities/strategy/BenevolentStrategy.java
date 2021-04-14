@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.entities.strategy;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Country;
@@ -37,7 +38,6 @@ public class BenevolentStrategy extends PlayerStrategy {
      * This method sets the number of armies to deploy.
      */
     public void deploy() {
-        d_ownedCountries = d_player.getAssignedCountries();
 
         //set the integer arrays, which contains number of armies for the respective country
         for (int i = 0; i < d_ownedCountries.size(); i++) {
@@ -127,11 +127,38 @@ public class BenevolentStrategy extends PlayerStrategy {
      */
     @Override
     public void execute() throws InvalidArgumentException, EntityNotFoundException {
-        deploy();
-        for (int i = 0; i < d_ownedCountries.size(); i++) {
-            DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(i).getCountryName(), String.valueOf(d_countriesArmyValues[i] - d_ownedCountries.get(i).getNumberOfArmies()), d_player);
-            this.d_player.addOrder(l_deployOrder);
+        d_ownedCountries = d_player.getAssignedCountries();
+        int l_initial = 0;
+        for (Country c : d_ownedCountries) {
+            if (c.getNumberOfArmies() == 0) {
+                l_initial++;
+            }
         }
+        if(VirtualMachine.getGameEngine().isTournamentModeOn() && d_player.getRemainingReinforcementCount()>0) {
+            if (l_initial != d_ownedCountries.size()) {
+                deploy();
+                for (int i = 0; i < d_ownedCountries.size(); i++) {
+                    DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(i).getCountryName(), String.valueOf(d_countriesArmyValues[i] - d_ownedCountries.get(i).getNumberOfArmies()), d_player);
+                    this.d_player.addOrder(l_deployOrder);
+                }
+            } else {
+                if (d_player.getAssignedCountries().size() > d_player.getRemainingReinforcementCount()) {
+                    for (int i = 0; i < d_player.getRemainingReinforcementCount(); i++) {
+                        DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(i).getCountryName(), String.valueOf(1), d_player);
+                        this.d_player.addOrder(l_deployOrder);
+                    }
+                } else {
+                    int l_assign = d_player.getRemainingReinforcementCount() / d_player.getAssignedCountries().size();
+                    for (int i = 0; i < d_player.getAssignedCountries().size() - 2; i++) {
+                        DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(i).getCountryName(), String.valueOf(l_assign), d_player);
+                        this.d_player.addOrder(l_deployOrder);
+                    }
+                    DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(d_ownedCountries.size() - 1).getCountryName(), String.valueOf(d_player.getRemainingReinforcementCount()), d_player);
+                    this.d_player.addOrder(l_deployOrder);
+                }
+            }
+        }
+
         cards();
         int counter = 1;
         if (d_player.hasCard(CardType.BLOCKADE)) {

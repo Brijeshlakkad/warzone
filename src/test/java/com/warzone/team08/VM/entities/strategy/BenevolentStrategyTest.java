@@ -93,10 +93,10 @@ public class BenevolentStrategyTest {
         }
 
         l_player.setReinforcementCount(3);
+        VirtualMachine.getGameEngine().setTournamentMode(true);
         BenevolentStrategy l_check = new BenevolentStrategy(l_player);
         l_check.execute();
 
-        System.out.println(l_player.getOrders());
         for (Order l_travers : l_player.getOrders()) {
             l_travers.execute();
         }

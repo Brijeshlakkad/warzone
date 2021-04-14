@@ -6,6 +6,7 @@ import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.map_editor.services.LoadMapService;
 import com.warzone.team08.VM.phases.PlaySetup;
 
 import java.util.*;
@@ -23,11 +24,6 @@ public class TournamentEngine {
     private static TournamentEngine d_Instance;
 
     /**
-     * List of <code>MapEditorEngine</code> for each map file.
-     */
-    private List<MapEditorEngine> d_mapEditorEngineList;
-
-    /**
      * Map of <code>GameEngine</code> which has been completed.
      */
     private Map<Integer, List<GameEngine>> d_playedGameEngineMappings;
@@ -36,6 +32,11 @@ public class TournamentEngine {
      * List of <code>Player</code> that representing a strategy.
      */
     private List<Player> d_players;
+
+    /**
+     * List of <code>Maps</code> that player entered in tournament.
+     */
+    private List<String> d_mapFileList;
 
     /**
      * Number of times need to run the game.
@@ -64,7 +65,7 @@ public class TournamentEngine {
      * Initialise all the engines to reset the runtime information.
      */
     public void initialise() {
-        d_mapEditorEngineList = new ArrayList<>();
+        d_mapFileList = new ArrayList<>();
         d_players = new ArrayList<>();
         d_playedGameEngineMappings = new HashMap<>();
     }
@@ -73,15 +74,6 @@ public class TournamentEngine {
      * Signals its engines to shutdown.
      */
     public void shutdown() {
-    }
-
-    /**
-     * Adds the MapEditorEngine engine to the list.
-     *
-     * @param p_mapEditorEngine MapEditorEngine having a single map.
-     */
-    public void addMapEditorEngine(MapEditorEngine p_mapEditorEngine) {
-        d_mapEditorEngineList.add(p_mapEditorEngine);
     }
 
     /**
@@ -120,6 +112,38 @@ public class TournamentEngine {
         d_maxNumberOfTurns = p_maxNumberOfTurns;
     }
 
+    /**
+     * Sets the List of Players this tournament can have.
+     *
+     * @param p_playersList List of Players
+     */
+    public void setPlayers(List<Player> p_playersList) {
+        d_players = p_playersList;
+    }
+
+    /**
+     * Gets the List of Maps this tournament can have.
+     *
+     * @return List of Maps
+     */
+    public List<String> getMapFileList() {
+        return d_mapFileList;
+    }
+
+    /**
+     * Sets the List of Players this tournament can have.
+     *
+     * @param p_mapFileList List of Players
+     */
+    public void setMapFileList(List<String> p_mapFileList) {
+        d_mapFileList = p_mapFileList;
+    }
+
+    /**
+     * Clones the player for the current iteration of tournament.
+     *
+     * @return List of the cloned player.
+     */
     public List<Player> getPlayers() {
         List<Player> l_clonedPlayers = new ArrayList<>();
         for (Player l_player : d_players) {
@@ -139,12 +163,18 @@ public class TournamentEngine {
      */
     public void onStart() throws VMException {
         for (int d_currentGameIndex = 0; d_currentGameIndex < d_numberOfGames; d_currentGameIndex++) {
-            for (MapEditorEngine l_mapEditorEngine : d_mapEditorEngineList) {
+            for (String l_mapFilePath : d_mapFileList) {
                 GamePlayEngine l_gamePlayEngine = new GamePlayEngine();
-                GameEngine l_gameEngine = new GameEngine(l_mapEditorEngine, l_gamePlayEngine);
-                l_gamePlayEngine.setPlayerList(this.getPlayers());
+                GameEngine l_gameEngine = new GameEngine(new MapEditorEngine(), l_gamePlayEngine);
                 // Prepare GameEngine for this tournament round.
                 VirtualMachine.setGameEngine(l_gameEngine);
+
+                LoadMapService l_loadMapService = new LoadMapService();
+
+                // Loading the map data will first remove the old at EditMapService
+                l_loadMapService.execute(Collections.singletonList(l_mapFilePath));
+
+                l_gamePlayEngine.setPlayerList(this.getPlayers());
 
                 DistributeCountriesService l_distributeCountriesService = new DistributeCountriesService();
                 l_distributeCountriesService.execute(new ArrayList<>());

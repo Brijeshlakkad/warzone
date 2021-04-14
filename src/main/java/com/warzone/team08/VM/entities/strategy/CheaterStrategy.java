@@ -1,9 +1,12 @@
 package com.warzone.team08.VM.entities.strategy;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
+import com.warzone.team08.VM.entities.orders.DeployOrder;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.ArrayList;
@@ -32,7 +35,6 @@ public class CheaterStrategy extends PlayerStrategy {
         List<String> a = new ArrayList<>();
         CountryRepository l_repository = new CountryRepository();
         Country l_transferOwner;
-        d_ownedCountries = d_player.getAssignedCountries();
         for (Country l_travers : d_ownedCountries) {
             for (Country l_neighbour : l_travers.getNeighbourCountries()) {
                 if (!l_neighbour.getOwnedBy().equals(d_player)) {
@@ -67,9 +69,38 @@ public class CheaterStrategy extends PlayerStrategy {
      * {@inheritDoc}
      */
     @Override
-    public void execute() throws EntityNotFoundException {
-        cheating();
-        doublearmy();
+    public void execute() throws EntityNotFoundException, InvalidArgumentException {
+        d_ownedCountries = d_player.getAssignedCountries();
+        int l_initial = 0;
+        for (Country c : d_ownedCountries) {
+            if (c.getNumberOfArmies() == 0) {
+                l_initial++;
+            }
+        }
+        if(VirtualMachine.getGameEngine().isTournamentModeOn() && d_player.getRemainingReinforcementCount()>0) {
+            if(l_initial == d_ownedCountries.size())
+            {
+                if (d_player.getAssignedCountries().size() > d_player.getRemainingReinforcementCount()) {
+                    for (int i = 0; i < d_player.getRemainingReinforcementCount(); i++) {
+                        DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(i).getCountryName(), String.valueOf(1), d_player);
+                        this.d_player.addOrder(l_deployOrder);
+                    }
+                } else {
+                    int l_assign = d_player.getRemainingReinforcementCount() / d_player.getAssignedCountries().size();
+                    for (int i = 0; i < d_player.getAssignedCountries().size() - 2; i++) {
+                        DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(i).getCountryName(), String.valueOf(l_assign), d_player);
+                        this.d_player.addOrder(l_deployOrder);
+                    }
+                    DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(d_ownedCountries.size() - 1).getCountryName(), String.valueOf(d_player.getRemainingReinforcementCount()), d_player);
+                    this.d_player.addOrder(l_deployOrder);
+                }
+            }
+            else
+            {
+                cheating();
+                doublearmy();
+            }
+        }
     }
 
     /**

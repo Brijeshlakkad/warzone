@@ -212,6 +212,7 @@ public class CommandLineInterface implements Runnable, UserInterfaceMiddleware {
             d_thread.interrupt();
             this.setInteractionState(UserInteractionState.GAME_ENGINE);
         } else if (p_message.equals("GAME_ENGINE_STOPPED")) {
+            d_thread.interrupt();
             this.setInteractionState(UserInteractionState.WAIT);
         } else {
             System.out.println(p_message);

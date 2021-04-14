@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.entities.strategy;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.constants.interfaces.Card;
@@ -122,12 +123,15 @@ public class RandomStrategy extends PlayerStrategy {
     public void execute() throws InvalidArgumentException, EntityNotFoundException {
         deploy();
         opposition();
-        DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getReinforcementCount()), d_player);
-        this.d_player.addOrder(l_deployOrder);
+        if (VirtualMachine.getGameEngine().isTournamentModeOn() && d_player.getRemainingReinforcementCount() > 0) {
+            DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getRemainingReinforcementCount()), d_player);
+            this.d_player.addOrder(l_deployOrder);
+        }
         if (d_player.hasCard(CardType.BOMB) || d_player.hasCard(CardType.AIRLIFT) || d_player.hasCard(CardType.DIPLOMACY) || d_player.hasCard(CardType.BLOCKADE)) {
             Card l_card = d_player.getCards().get(d_random.nextInt(d_player.getCards().size()));
             cards(l_card);
         }
+
         int l_advanceArmy = d_attackingCountry.getNumberOfArmies() + d_player.getRemainingReinforcementCount();
         AdvanceOrder l_advanceOrder = new AdvanceOrder(d_attackingCountry.getCountryName(), d_oppositionCountry.getCountryName(), String.valueOf(l_advanceArmy), d_player);
         this.d_player.addOrder(l_advanceOrder);

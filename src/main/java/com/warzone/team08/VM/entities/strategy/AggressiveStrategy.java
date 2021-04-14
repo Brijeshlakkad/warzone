@@ -1,5 +1,6 @@
 package com.warzone.team08.VM.entities.strategy;
 
+import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.CardType;
 import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Country;
@@ -39,8 +40,8 @@ public class AggressiveStrategy extends PlayerStrategy {
      * This method finds the strongest country of the aggressive player.
      */
     public void deploy() {
-        d_ownedCountries = d_player.getAssignedCountries();
         int count = 0;
+
         for (Country c : d_ownedCountries) {
             if (c.getNumberOfArmies() > count) {
                 count = c.getNumberOfArmies();
@@ -131,32 +132,50 @@ public class AggressiveStrategy extends PlayerStrategy {
      */
     @Override
     public void execute() throws InvalidArgumentException, EntityNotFoundException {
-        deploy();
-        opposition();
-        cards();
-        DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getReinforcementCount()), d_player);
-        this.d_player.addOrder(l_deployOrder);
+        d_ownedCountries = d_player.getAssignedCountries();
+        int l_initial = 0;
+        for (Country c : d_ownedCountries) {
+            if (c.getNumberOfArmies() == 0) {
+                l_initial++;
+            }
+        }
+        if(VirtualMachine.getGameEngine().isTournamentModeOn() && d_player.getRemainingReinforcementCount()>0) {
+            if (l_initial != d_ownedCountries.size()) {
+                deploy();
+                opposition();
+                cards();
 
-        int counter = 1;
-        if (d_player.hasCard(CardType.BOMB)) {
-            this.d_player.addOrder(d_bomb);
-            counter--;
+                DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getRemainingReinforcementCount()), d_player);
+                this.d_player.addOrder(l_deployOrder);
+
+                int counter = 1;
+                if (d_player.hasCard(CardType.BOMB)) {
+                    this.d_player.addOrder(d_bomb);
+                    counter--;
+                }
+                if (d_player.hasCard(CardType.AIRLIFT) && counter == 1) {
+                    this.d_player.addOrder(d_airlift);
+                    counter--;
+                }
+                if (d_player.hasCard(CardType.BLOCKADE) && counter == 1) {
+                    this.d_player.addOrder(d_blockade);
+                    counter--;
+                }
+                if (d_player.hasCard(CardType.DIPLOMACY) && counter == 1) {
+                    this.d_player.addOrder(d_negotiate);
+                    counter--;
+                }
+                int l_temp = d_attackingCountry.getNumberOfArmies()+d_player.getReinforcementCount();
+                AdvanceOrder l_advanceOrder = new AdvanceOrder(d_attackingCountry.getCountryName(), d_oppositionsCountry.getCountryName(), String.valueOf(l_temp - 1), d_player);
+                this.d_player.addOrder(l_advanceOrder);
+            }
+            else
+            {
+                d_attackingCountry = d_player.getAssignedCountries().get(0);
+                DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getReinforcementCount()), d_player);
+                this.d_player.addOrder(l_deployOrder);
+            }
         }
-        if (d_player.hasCard(CardType.AIRLIFT) && counter == 1) {
-            this.d_player.addOrder(d_airlift);
-            counter--;
-        }
-        if (d_player.hasCard(CardType.BLOCKADE) && counter == 1) {
-            this.d_player.addOrder(d_blockade);
-            counter--;
-        }
-        if (d_player.hasCard(CardType.DIPLOMACY) && counter == 1) {
-            this.d_player.addOrder(d_negotiate);
-            counter--;
-        }
-        int l_advanceArmy = d_attackingCountry.getNumberOfArmies() + d_player.getRemainingReinforcementCount();
-        AdvanceOrder l_advanceOrder = new AdvanceOrder(d_attackingCountry.getCountryName(), d_oppositionsCountry.getCountryName(), String.valueOf(l_advanceArmy - 1), d_player);
-        this.d_player.addOrder(l_advanceOrder);
     }
 
     /**

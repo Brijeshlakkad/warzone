@@ -1,6 +1,9 @@
 package com.warzone.team08.VM.entities;
 
 import com.warzone.team08.VM.entities.orders.*;
+import com.warzone.team08.VM.entities.strategy.AggressiveStrategyTest;
+import com.warzone.team08.VM.entities.strategy.BenevolentStrategyTest;
+import com.warzone.team08.VM.entities.strategy.CheaterStrategyTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -17,7 +20,10 @@ import org.junit.runners.Suite;
         BombOrderTest.class,
         DeployOrderTest.class,
         PlayerTest.class,
-        NegotiateOrderTest.class
+        NegotiateOrderTest.class,
+        AggressiveStrategyTest.class,
+        BenevolentStrategyTest.class,
+        CheaterStrategyTest.class
 })
 public class EntityTestSuite {
     // This class remains empty, it is used only as a holder for the above annotations
