@@ -152,6 +152,14 @@ public class GameEngine implements JSONable {
     }
 
     /**
+     * set the tournament mode
+     */
+    public void setTournamentMode(boolean p_tournamentMode)
+    {
+        d_isTournamentModeOn = p_tournamentMode;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

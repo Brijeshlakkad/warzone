@@ -38,7 +38,6 @@ public class BenevolentStrategy extends PlayerStrategy {
      * This method sets the number of armies to deploy.
      */
     public void deploy() {
-        d_ownedCountries = d_player.getAssignedCountries();
 
         //set the integer arrays, which contains number of armies for the respective country
         for (int i = 0; i < d_ownedCountries.size(); i++) {
@@ -128,6 +127,7 @@ public class BenevolentStrategy extends PlayerStrategy {
      */
     @Override
     public void execute() throws InvalidArgumentException, EntityNotFoundException {
+        d_ownedCountries = d_player.getAssignedCountries();
         int l_initial = 0;
         for (Country c : d_ownedCountries) {
             if (c.getNumberOfArmies() == 0) {

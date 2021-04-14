@@ -84,12 +84,15 @@ public class CheaterStrategyTest {
     @Test
     public void testExecute() throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
         Player l_player = d_playerList.get(0);
+        l_player.getAssignedCountries().get(0).setNumberOfArmies(1);
 
         CountryRepository l_countryRepository = new CountryRepository();
         Country l_temp = l_countryRepository.findFirstByCountryName("Nepal");
         l_temp.setNumberOfArmies(3);
         //First this country has to be oppositions country
         assertNotEquals(l_player, l_temp.getOwnedBy());
+        l_player.setReinforcementCount(1);
+        VirtualMachine.getGameEngine().setTournamentMode(true);
 
         CheaterStrategy l_cheatStrategy = new CheaterStrategy(l_player);
         l_cheatStrategy.execute();

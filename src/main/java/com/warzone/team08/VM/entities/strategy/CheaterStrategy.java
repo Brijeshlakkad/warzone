@@ -35,7 +35,6 @@ public class CheaterStrategy extends PlayerStrategy {
         List<String> a = new ArrayList<>();
         CountryRepository l_repository = new CountryRepository();
         Country l_transferOwner;
-        d_ownedCountries = d_player.getAssignedCountries();
         for (Country l_travers : d_ownedCountries) {
             for (Country l_neighbour : l_travers.getNeighbourCountries()) {
                 if (!l_neighbour.getOwnedBy().equals(d_player)) {
@@ -71,6 +70,7 @@ public class CheaterStrategy extends PlayerStrategy {
      */
     @Override
     public void execute() throws EntityNotFoundException, InvalidArgumentException {
+        d_ownedCountries = d_player.getAssignedCountries();
         int l_initial = 0;
         for (Country c : d_ownedCountries) {
             if (c.getNumberOfArmies() == 0) {
