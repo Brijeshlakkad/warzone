@@ -184,7 +184,17 @@ public class EditMapService implements SingleCommand {
                 }
                 List<String> l_countryComponentList = this.getModelComponents(l_currentLine);
                 if (l_countryComponentList.size() >= 3) {
-                    d_countryService.add(Integer.parseInt(l_countryComponentList.get(0)), l_countryComponentList.get(1), Integer.parseInt(l_countryComponentList.get(2)));
+                    try {
+                        d_countryService.add(Integer.parseInt(l_countryComponentList.get(0)),
+                                l_countryComponentList.get(1),
+                                Integer.parseInt(l_countryComponentList.get(2)),
+                                l_countryComponentList.get(3),
+                                l_countryComponentList.get(4));
+                    } catch (IndexOutOfBoundsException p_e) {
+                        d_countryService.add(Integer.parseInt(l_countryComponentList.get(0)),
+                                l_countryComponentList.get(1),
+                                Integer.parseInt(l_countryComponentList.get(2)));
+                    }
                 } else {
                     throw new AbsentTagException("Missing country value!");
                 }

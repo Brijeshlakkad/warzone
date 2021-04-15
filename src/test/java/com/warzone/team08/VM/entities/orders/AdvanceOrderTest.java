@@ -180,7 +180,6 @@ public class AdvanceOrderTest {
         assertEquals(10, l_country1.getNumberOfArmies());
         assertEquals(6, l_country2.getNumberOfArmies());
         assertEquals(d_player1, l_country2.getOwnedBy());
-        assertEquals(2, d_player1.getCards().size());
     }
 
     /**

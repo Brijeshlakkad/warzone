@@ -119,6 +119,9 @@ public class AdvanceOrder extends Order {
             }
             // If destination country is not owned by the current player than it performs battle.
             else {
+                if (d_countryFrom.getNumberOfArmies() <= 0) {
+                    throw new InvalidOrderException("Country doesn't have armies to advance!");
+                }
                 // Move armies and battle
                 int l_defendingArmies = d_countryTo.getNumberOfArmies();
                 int l_attackingArmies = d_numOfArmies;
@@ -131,10 +134,6 @@ public class AdvanceOrder extends Order {
 
                 int l_attackersKilled = (int) round(l_defendingArmies * 0.7);
                 int l_defendersKilled = (int) round(l_attackingArmies * 0.6);
-
-                if (d_countryFrom.getNumberOfArmies() <= 0) {
-                    throw new InvalidOrderException("Country doesn't have armies to advance!");
-                }
 
                 if (l_defendersKilled >= l_defendingArmies) {
                     Player l_countryToOwner = d_countryTo.getOwnedBy();

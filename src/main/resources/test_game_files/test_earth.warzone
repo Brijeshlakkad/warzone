@@ -74,6 +74,7 @@
         }
     },
     "game_pay": {
+        "futureOrders": [],
         "players": [
             {
                 "cards": [],

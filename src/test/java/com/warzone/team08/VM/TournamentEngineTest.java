@@ -60,6 +60,6 @@ public class TournamentEngineTest {
      */
     @Test(expected = Test.None.class)
     public void testTournament() throws VMException {
-        d_tournamentEngine.onStart();
+        d_tournamentEngine.onStart(true);
     }
 }

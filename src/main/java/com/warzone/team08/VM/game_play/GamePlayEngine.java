@@ -10,6 +10,7 @@ import com.warzone.team08.VM.entities.GameResult;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidGameException;
+import com.warzone.team08.VM.mappers.OrderMapper;
 import com.warzone.team08.VM.repositories.PlayerRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -361,6 +362,15 @@ public class GamePlayEngine implements Engine, JSONable {
         l_gamePlayEngineJSON.put("currentPlayerForIssuePhase", getCurrentPlayerForIssuePhase());
         l_gamePlayEngineJSON.put("currentPlayerForExecutionPhase", getCurrentPlayerForExecutionPhase());
         l_gamePlayEngineJSON.put("currentExecutionIndex", getCurrentExecutionIndex());
+        JSONArray l_futureOrderJSONList = new JSONArray();
+        for (Order l_order : d_futurePhaseOrders) {
+            JSONObject l_orderJSON = l_order.toJSON();
+            l_orderJSON.put("futureExecutionIndex", l_order.getExecutionIndex());
+            l_orderJSON.put("expiryExecutionIndex", l_order.getExpiryIndex());
+            l_orderJSON.put("owner", l_order.getOwner().getName());
+            l_futureOrderJSONList.put(l_orderJSON);
+        }
+        l_gamePlayEngineJSON.put("futureOrders", l_futureOrderJSONList);
         return l_gamePlayEngineJSON;
     }
 
@@ -402,6 +412,22 @@ public class GamePlayEngine implements Engine, JSONable {
 
         l_gamePlayEngine.setCurrentPlayerForIssuePhase(p_jsonObject.getInt("currentPlayerForIssuePhase"));
         l_gamePlayEngine.setCurrentPlayerForExecutionPhase(p_jsonObject.getInt("currentPlayerForExecutionPhase"));
+
+        OrderMapper l_orderMapper = new OrderMapper();
+        JSONArray l_futureOrderJSONList = p_jsonObject.getJSONArray("futureOrders");
+        try {
+            for (int l_orderIndex = 0; l_orderIndex < l_futureOrderJSONList.length(); l_orderIndex++) {
+                JSONObject l_orderJSON = l_futureOrderJSONList.getJSONObject(l_orderIndex);
+                Player l_player = d_PLAYER_REPOSITORY.findByPlayerName(l_orderJSON.getString("owner"));
+                l_orderMapper.toOrder(l_orderJSON,
+                        l_player,
+                        l_orderJSON.getInt("futureExecutionIndex"),
+                        l_orderJSON.getInt("expiryExecutionIndex"));
+            }
+        } catch (EntityNotFoundException p_entityNotFoundException) {
+            throw new InvalidGameException();
+        }
+
         return l_gamePlayEngine;
     }
 }

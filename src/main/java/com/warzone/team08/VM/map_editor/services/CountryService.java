@@ -74,55 +74,77 @@ public class CountryService {
      * Adds the country to the list stored at map editor engine(for conquest map file).
      *
      * @param p_countryName        Name of the country.
-     * @param p_continentName      Name of the continent.
+     * @param p_continent          Continent of the country.
      * @param p_neighbourCountries List representing the neighboring countries.
      * @param p_xCoordinate        X Coordinate of the country.
      * @param p_yCoordinate        Y Coordinate of the country.
      * @return Value of response of the request.
      * @throws EntityNotFoundException Throws if the either country not found.
      */
-    public String add(String p_countryName, String p_continentName, List<Country> p_neighbourCountries, String p_xCoordinate, String p_yCoordinate) throws EntityNotFoundException {
-        boolean l_isExist = false;
+    public String add(String p_countryName, Continent p_continent, List<Country> p_neighbourCountries, String p_xCoordinate, String p_yCoordinate) throws EntityNotFoundException {
         Country l_countryObject = null;
-        List<Country> l_countryList = d_mapEditorEngine.getCountryList();
-        for (Country l_coun : l_countryList) {
-            if (l_coun.getCountryName().equalsIgnoreCase(p_countryName)) {
-                l_isExist = true;
-                l_countryObject = l_coun;
-                break;
-            }
+        try {
+            l_countryObject = d_countryRepository.findFirstByCountryName(p_countryName);
+        } catch (EntityNotFoundException p_entityNotFoundException) {
         }
-        if (l_isExist) {
-            Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);
+        if (l_countryObject != null) {
             // Two way mappings (one to many mappings)
-            l_countryObject.setContinent(l_continent);
+            l_countryObject.setContinent(p_continent);
             // Save the list of neighboring countries.
             l_countryObject.setNeighbourCountries(p_neighbourCountries);
             l_countryObject.setXCoordinate(p_xCoordinate);
             l_countryObject.setYCoordinate(p_yCoordinate);
             // Save country to continent
-            l_continent.addCountry(l_countryObject);
+            p_continent.addCountry(l_countryObject);
             if (!d_mapEditorEngine.getLoadingMap()) {
-                d_logEntryBuffer.dataChanged("editcountry", l_countryObject.getCountryName() + " is added to the country list of" + l_continent.getContinentName());
+                d_logEntryBuffer.dataChanged("editcountry", l_countryObject.getCountryName() + " is added to the country list of" + p_continent.getContinentName());
             }
         } else {
-            Country l_country = new Country(d_mapEditorEngine.getCountryList().size() + 1);
+            Country l_country = new Country();
             l_country.setCountryName(p_countryName);
             l_country.setNeighbourCountries(p_neighbourCountries);
             l_country.setXCoordinate(p_xCoordinate);
             l_country.setYCoordinate(p_yCoordinate);
-            Continent l_continent = d_continentRepository.findFirstByContinentName(p_continentName);
             // Two way mappings (one to many mappings)
-            l_country.setContinent(l_continent);
+            l_country.setContinent(p_continent);
 
             // Save country to continent
-            l_continent.addCountry(l_country);
+            p_continent.addCountry(l_country);
             if (!d_mapEditorEngine.getLoadingMap()) {
-                d_logEntryBuffer.dataChanged("editcountry", l_country.getCountryName() + " is added to the country list of" + l_continent.getContinentName());
+                d_logEntryBuffer.dataChanged("editcountry", l_country.getCountryName() + " is added to the country list of" + p_continent.getContinentName());
             }
         }
         return String.format("%s country added!", p_countryName);
     }
+
+    /**
+     * Adds the country to the list stored at map editor engine.
+     *
+     * @param p_countryId   Value of the country id.
+     * @param p_countryName Value of the country name.
+     * @param p_continentId Value of the continent to which this country will be added.
+     * @param p_xCoordinate X-coordinate.
+     * @param p_yCoordinate Y-coordinate.
+     * @return Value of response of the request.
+     * @throws EntityNotFoundException Throws if the either country not found.
+     */
+    public String add(Integer p_countryId, String p_countryName, Integer p_continentId, String p_xCoordinate, String p_yCoordinate) throws EntityNotFoundException {
+        Country l_country = new Country(p_countryId);
+        l_country.setCountryName(p_countryName);
+        l_country.setXCoordinate(p_xCoordinate);
+        l_country.setYCoordinate(p_yCoordinate);
+
+        Continent l_continent = d_continentRepository.findByContinentId(p_continentId);
+
+        // Two way mappings (one to many mappings)
+        l_country.setContinent(l_continent);
+
+        // Save country to continent
+        l_continent.addCountry(l_country);
+
+        return String.format("%s country added!", p_countryName);
+    }
+
 
     /**
      * Adds the country to the list stored at map editor engine.

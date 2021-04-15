@@ -42,6 +42,23 @@ public class NegotiateOrder extends Order {
     }
 
     /**
+     * Parameterised constructor initialize player with whom negotiation is happened.
+     *
+     * @param p_thisPlayer     First player object.
+     * @param p_otherPlayer    Second player object.
+     * @param p_executionIndex Execution index of the order.
+     * @param p_expiryIndex    Expiry index of the order.
+     * @throws EntityNotFoundException Throws if the country with the given name doesn't exist.
+     */
+    public NegotiateOrder(Player p_thisPlayer,
+                          String p_otherPlayer,
+                          int p_executionIndex,
+                          int p_expiryIndex) throws EntityNotFoundException {
+        super(p_thisPlayer, p_executionIndex, p_expiryIndex);
+        d_otherPlayer = d_playerRepository.findByPlayerName(p_otherPlayer);
+    }
+
+    /**
      * Executes the method for adding player in each-others negotiation list.
      *
      * @throws CardNotFoundException Card doesn't found in the player's card list.
@@ -113,6 +130,29 @@ public class NegotiateOrder extends Order {
     public static NegotiateOrder fromJSON(JSONObject p_jsonObject, Player p_player) throws InvalidGameException {
         try {
             return new NegotiateOrder(p_player, p_jsonObject.getString("other_player"));
+        } catch (EntityNotFoundException p_vmException) {
+            throw new InvalidGameException();
+        }
+    }
+
+    /**
+     * Creates an instance of this class and assigns the data members of the concrete class using the values inside
+     * <code>JSONObject</code>.
+     *
+     * @param p_jsonObject     <code>JSONObject</code> holding the runtime information.
+     * @param p_player         Player who had issued this order.
+     * @param p_executionIndex Execution index of the order.
+     * @param p_expiryIndex    Expiry index of the order.
+     * @return Created instance of this class using the provided JSON data.
+     * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
+     *                              the values.
+     */
+    public static NegotiateOrder fromJSON(JSONObject p_jsonObject,
+                                          Player p_player,
+                                          int p_executionIndex,
+                                          int p_expiryIndex) throws InvalidGameException {
+        try {
+            return new NegotiateOrder(p_player, p_jsonObject.getString("other_player"), p_executionIndex, p_expiryIndex);
         } catch (EntityNotFoundException p_vmException) {
             throw new InvalidGameException();
         }

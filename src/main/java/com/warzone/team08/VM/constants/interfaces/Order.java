@@ -18,7 +18,7 @@ public abstract class Order implements JSONable {
     /**
      * Execution game-play-index to define when this order supposed to be executed.
      */
-    private final int d_executionIndex;
+    private int d_executionIndex;
     /**
      * Defines when this order supposed to be expired.
      */
@@ -38,6 +38,25 @@ public abstract class Order implements JSONable {
             VirtualMachine.getGameEngine().getGamePlayEngine().addFutureOrder(this);
         } else {
             d_executionIndex = GamePlayEngine.getCurrentExecutionIndex();
+        }
+    }
+
+
+    /**
+     * When an order created from <code>JSONObject</code>.
+     *
+     * @param p_player         Player who issued this order.
+     * @param p_executionIndex Execution index of the order.
+     * @param p_expiryIndex    Expiry index of the order.
+     */
+    public Order(Player p_player, int p_executionIndex, int p_expiryIndex) {
+        d_owner = p_player;
+        if (this.getType() == OrderType.negotiate) {
+            d_executionIndex = p_executionIndex;
+            d_expiryIndex = p_expiryIndex;
+            VirtualMachine.getGameEngine().getGamePlayEngine().addFutureOrder(this);
+        } else {
+            d_executionIndex = p_executionIndex;
         }
     }
 
@@ -76,12 +95,31 @@ public abstract class Order implements JSONable {
     }
 
     /**
+     * Sets the execution index of this order.
+     *
+     * @param p_executionIndex Value of the execution index.
+     */
+    public void setExecutionIndex(int p_executionIndex) {
+        d_executionIndex = p_executionIndex;
+    }
+
+    /**
      * Gets the expiration index for this order.
      *
      * @return Value of the expiration index.
      */
     public int getExpiryIndex() {
         return d_expiryIndex;
+    }
+
+
+    /**
+     * Sets the expiration index for this order.
+     *
+     * @param p_expiryIndex Value of the expiration index.
+     */
+    public void setExpiryIndex(int p_expiryIndex) {
+        d_expiryIndex = p_expiryIndex;
     }
 
     /**

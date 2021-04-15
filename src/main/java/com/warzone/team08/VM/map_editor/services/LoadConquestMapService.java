@@ -44,8 +44,8 @@ public class LoadConquestMapService implements SingleCommand {
             String l_response = l_editConquestMapService.loadConquestMap(l_resolvedPathToFile, false);
             try {
                 // Validates the map before saving the file.
-                ValidateMapService l_validateObj = new ValidateMapService();
-                l_validateObj.execute(null, "loadmap");
+                ValidateConquestMapService l_validateObj = new ValidateConquestMapService();
+                l_validateObj.execute(null);
             } catch (InvalidMapException | EntityNotFoundException l_e) {
                 VirtualMachine.getGameEngine().getMapEditorEngine().initialise();
                 throw l_e;

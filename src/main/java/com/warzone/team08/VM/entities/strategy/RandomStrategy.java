@@ -9,6 +9,7 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.entities.orders.*;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.util.List;
 import java.util.Random;
@@ -24,6 +25,7 @@ public class RandomStrategy extends PlayerStrategy {
     private Country d_randomCountry;
     private Country d_oppositeCountry;
     private final Random d_random = new Random();
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
 
     /**
      * Parameterised constructor to set the player.
@@ -81,18 +83,22 @@ public class RandomStrategy extends PlayerStrategy {
     @Override
     public void execute() throws InvalidArgumentException, EntityNotFoundException {
         d_ownedCountries = d_player.getAssignedCountries();
+        if (d_ownedCountries.size() <= 0) {
+            return;
+        }
         d_randomCountry = d_ownedCountries.get(d_random.nextInt(d_ownedCountries.size()));
         findOppositionCountry(d_randomCountry);
         if (VirtualMachine.getGameEngine().isTournamentModeOn() && d_player.getRemainingReinforcementCount() > 0) {
             DeployOrder l_deployOrder = new DeployOrder(d_randomCountry.getCountryName(), String.valueOf(d_player.getRemainingReinforcementCount()), d_player);
             this.d_player.addOrder(l_deployOrder);
         }
-        if (d_player.hasCard(CardType.BOMB) || d_player.hasCard(CardType.AIRLIFT) || d_player.hasCard(CardType.DIPLOMACY) || d_player.hasCard(CardType.BLOCKADE)) {
-            Card l_card = d_player.getCards().get(d_random.nextInt(d_player.getCards().size()));
-            consumeCard(l_card);
-        }
+        d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_player.getName()));
 
         if (d_oppositeCountry != null) {
+            if (d_player.hasCard(CardType.BOMB) || d_player.hasCard(CardType.AIRLIFT) || d_player.hasCard(CardType.DIPLOMACY) || d_player.hasCard(CardType.BLOCKADE)) {
+                Card l_card = d_player.getCards().get(d_random.nextInt(d_player.getCards().size()));
+                consumeCard(l_card);
+            }
             AdvanceOrder l_advanceOrder = new AdvanceOrder(
                     d_randomCountry.getCountryName(),
                     d_oppositeCountry.getCountryName(),

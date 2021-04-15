@@ -61,7 +61,7 @@ public class LoadGameService implements SingleCommand {
         } catch (IOException p_ioException) {
             throw new VMException(String.format("Error while loading the game file %s!", p_commandValues.get(0)));
         }
-        d_logEntryBuffer.dataChanged("loadgame", "From file: " + p_commandValues.get(0));
+        d_logEntryBuffer.dataChanged("loadgame", "Game loaded from file: " + p_commandValues.get(0));
 
         // Load the string content in JSONObject.
         return this.loadGameState(new JSONObject(l_fileContentBuilder.toString()));

@@ -490,6 +490,14 @@ public class Player implements JSONable {
      * @return True if the player has won.
      */
     public boolean isWon() {
-        return this.d_assignedCountries.size() == VirtualMachine.getGameEngine().getMapEditorEngine().getCountryList().size();
+        if (this.getAssignedCountries().size() == 0) {
+            return false;
+        }
+        for (Player l_player : VirtualMachine.getGameEngine().getGamePlayEngine().getPlayerList()) {
+            if (!l_player.equals(this) && l_player.d_assignedCountries.size() > 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }

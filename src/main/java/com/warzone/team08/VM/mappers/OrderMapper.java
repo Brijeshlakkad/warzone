@@ -82,4 +82,23 @@ public class OrderMapper {
         }
         throw new InvalidGameException();
     }
+
+    /**
+     * Overloading function to create a future-order from <code>JSONObject</code>.
+     *
+     * @param p_jsonObject     JSONObject having the information regarding the order to be created.
+     * @param p_player         Player who has issued the order.
+     * @param p_executionIndex Execution index of the order.
+     * @param p_expiryIndex    Expiry index of the order.
+     * @return Value of the new order created from user command response.
+     * @throws InvalidGameException Throws if JSON data is corrupted or required information was not present.
+     */
+    public Order toOrder(JSONObject p_jsonObject, Player p_player, int p_executionIndex, int p_expiryIndex)
+            throws InvalidGameException {
+        OrderType l_orderType = p_jsonObject.getEnum(OrderType.class, "type");
+        if (l_orderType == OrderType.negotiate) {
+            return NegotiateOrder.fromJSON(p_jsonObject, p_player, p_executionIndex, p_expiryIndex);
+        }
+        return this.toOrder(p_jsonObject, p_player);
+    }
 }

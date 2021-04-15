@@ -61,7 +61,12 @@ public class SaveMapService implements SingleCommand {
             l_writer.write("\n[" + "Countries" + "]\n");
 
             for (Country country : d_mapEditorEngine.getCountryList()) {
-                l_writer.write(country.getCountryId() + " " + country.getCountryName() + " " + country.getContinent().getContinentId() + "\n");
+                l_writer.write(country.getCountryId() + " " +
+                        country.getCountryName() + " " +
+                        country.getContinent().getContinentId() + " " +
+                        country.getXCoordinate() + " " +
+                        country.getYCoordinate() + " " +
+                        "\n");
             }
 
             l_writer.write("\n[" + "borders" + "]\n");
@@ -100,9 +105,11 @@ public class SaveMapService implements SingleCommand {
     @Override
     public String execute(List<String> p_commandValues) throws
             VMException {
-        // Validates the map before saving the file.
-        ValidateMapService l_validateObj = new ValidateMapService();
-        l_validateObj.execute(null, "savemap");
+        if (p_commandValues.get(1).equals("conquest")) {
+            // Validates the map before saving the file.
+            ValidateMapService l_validateObj = new ValidateMapService();
+            l_validateObj.execute(null);
+        }
 
         // Validates the file, gets the file object, and writes the data into it.
         return saveToFile(FileUtil.retrieveMapFile(PathResolverUtil.resolveFilePath(p_commandValues.get(0))));

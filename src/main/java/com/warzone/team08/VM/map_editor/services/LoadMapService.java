@@ -46,7 +46,7 @@ public class LoadMapService implements SingleCommand {
             try {
                 // Validates the map before saving the file.
                 ValidateMapService l_validateObj = new ValidateMapService();
-                l_validateObj.execute(null, "loadmap");
+                l_validateObj.execute(null);
             } catch (InvalidMapException | EntityNotFoundException l_e) {
                 VirtualMachine.getGameEngine().initialise();
                 throw l_e;

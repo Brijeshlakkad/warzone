@@ -7,14 +7,13 @@ import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GameLoop;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import com.warzone.team08.VM.phases.PlaySetup;
+import com.warzone.team08.VM.utils.PathResolverUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This engine will be used when user has entered `tournament` command.
@@ -52,6 +51,8 @@ public class TournamentEngine {
      * Maximum number of turns. After maximum turn passed, draw the game.
      */
     private int d_maxNumberOfTurns;
+
+    private LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
 
     /**
      * Main game loop.
@@ -178,9 +179,10 @@ public class TournamentEngine {
      * If any error occurred while the game is in the loop, it will set the game result as interrupted.
      * </p>
      *
+     * @param p_ignorePath Ignore adding the user-data-directory path.
      * @throws VMException If any exception while executing the tournament.
      */
-    public void onStart() throws VMException {
+    public void onStart(boolean p_ignorePath) throws VMException {
         for (int d_currentGameIndex = 0; d_currentGameIndex < d_numberOfGames; d_currentGameIndex++) {
             for (String l_mapFilePath : d_mapFileList) {
                 GamePlayEngine l_gamePlayEngine = new GamePlayEngine();
@@ -191,7 +193,7 @@ public class TournamentEngine {
                 EditMapService l_editMapService = new EditMapService();
 
                 // Loading the map data will first remove the old at EditMapService
-                l_editMapService.handleLoadMap(l_mapFilePath, false);
+                l_editMapService.handleLoadMap(p_ignorePath ? l_mapFilePath : PathResolverUtil.resolveFilePath(l_mapFilePath), false);
 
                 l_gamePlayEngine.setPlayerList(this.getPlayers());
 
@@ -220,54 +222,54 @@ public class TournamentEngine {
      * After the tournament ends, this method will be called to show the results in a tabular format.
      */
     public void onComplete() {
-        // For storing tournament result in tabular format.
-        String[][] l_gameResultMatrix = new String[this.getNumberOfGames()][d_mapFileList.size()];
+        // For storing tournament result
+        String[][] l_gameResultMatrix = new String[d_mapFileList.size()][this.getNumberOfGames() + 1];
         List<String> l_playerNames = new ArrayList<>();
         StringBuilder l_builder = new StringBuilder();
 
-        for (Player l_player : d_players) {
+        for (Player l_player : this.getPlayers()) {
             l_playerNames.add(l_player.getName());
         }
 
-        l_builder.append("\n----Result of Tournament after Execution----\n");
+        l_builder.append("\n----Result of Tournament----\n");
         l_builder.append("M: " + d_mapFileList.toString() + "\n");
         l_builder.append("P: " + l_playerNames.toString() + "\n");
         l_builder.append("G: " + this.getNumberOfGames() + "\n");
         l_builder.append("D: " + this.getMaxNumberOfTurns() + "\n");
 
-        int l_count = 1;
         for (int l_row = 0; l_row < d_mapFileList.size(); l_row++) {
-            l_gameResultMatrix[l_row][0] = "Map" + l_count;
-            l_count++;
+            l_gameResultMatrix[l_row][0] = String.format("%s", d_mapFileList.get(l_row));
         }
 
-        int l_rowIndex = 0;
-        int l_columnIndex;
+        LinkedList<GameEngine> l_gameEngines = new LinkedList<>();
         for (Map.Entry<Integer, List<GameEngine>> entry : d_playedGameEngineMappings.entrySet()) {
-            l_columnIndex = 0;
-            for (GameEngine l_singleGameEngine : entry.getValue()) {
-                GamePlayEngine l_gamePlayEngine = l_singleGameEngine.getGamePlayEngine();
-                GameResult l_gameResult = l_gamePlayEngine.getGameResult();
-
-                // Store the result.
-                if (l_gameResult.isDeclaredDraw()) {
-                    l_gameResultMatrix[l_rowIndex][l_columnIndex] = "Draw";
-                } else if (l_gameResult.getWinnerPlayer() != null) {
-                    l_gameResultMatrix[l_rowIndex][l_columnIndex] = l_gameResult.getWinnerPlayer().getName();
-                } else {
-                    l_gameResultMatrix[l_rowIndex][l_columnIndex] = "Interrupted";
-                }
-                l_columnIndex++;
-            }
-            l_rowIndex++;
+            List<GameEngine> l_singleTurnGameEngines = entry.getValue();
+            l_gameEngines.addAll(l_singleTurnGameEngines);
         }
 
-        String[] l_gameHeader = new String[d_mapFileList.size()];
+        for (int l_row = 0; l_row < d_mapFileList.size(); l_row++) {
+            for (int l_col = 1; l_col < this.getNumberOfGames() + 1; l_col++) {
+                GameEngine l_gameEngine = l_gameEngines.pollFirst();
+                GamePlayEngine l_gamePlayEngine = l_gameEngine.getGamePlayEngine();
+                GameResult l_gameResult = l_gamePlayEngine.getGameResult();
+                if (l_gameResult.isDeclaredDraw()) {
+                    l_gameResultMatrix[l_row][l_col] = "Draw";
+                } else if (l_gameResult.getWinnerPlayer() != null) {
+                    l_gameResultMatrix[l_row][l_col] = l_gameResult.getWinnerPlayer().getName();
+                } else {
+                    l_gameResultMatrix[l_row][l_col] = "Interrupted";
+                }
+            }
+        }
+
+        String[] l_gameHeader = new String[this.getNumberOfGames() + 1];
         l_gameHeader[0] = "Result";
         for (int i = 1; i < l_gameHeader.length; i++) {
-            l_gameHeader[i] = "Game" + i;
+            l_gameHeader[i] = "Game " + i;
         }
 
-        VirtualMachine.getInstance().stdout(l_builder + FlipTable.of(l_gameHeader, l_gameResultMatrix));
+        String l_tournamentData = l_builder + FlipTable.of(l_gameHeader, l_gameResultMatrix);
+        d_logEntryBuffer.dataChanged("tournament", l_tournamentData);
+        VirtualMachine.getInstance().stdout(l_tournamentData);
     }
 }

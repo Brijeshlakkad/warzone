@@ -80,12 +80,12 @@ public class PostLoad extends MapEditor {
      * {@inheritDoc}
      */
     @Override
-    public String saveMap(List<String> p_arguments) throws VMException, IOException {
+    public String saveMap(List<String> p_arguments) throws VMException {
         SaveMapService l_saveMapService;
         if (!p_arguments.isEmpty()) {
-            if (p_arguments.get(2).equalsIgnoreCase("warzone")) {
+            if (p_arguments.get(1).equalsIgnoreCase("warzone")) {
                 l_saveMapService = new SaveMapService();
-            } else if (p_arguments.get(2).equalsIgnoreCase("conquest")) {
+            } else if (p_arguments.get(1).equalsIgnoreCase("conquest")) {
                 l_saveMapService = new SaveMapAdapter(new SaveConquestMapService());
             } else {
                 throw new InvalidCommandException("Map type is not valid");

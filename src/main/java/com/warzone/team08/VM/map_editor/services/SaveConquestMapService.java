@@ -53,13 +53,19 @@ public class SaveConquestMapService implements SingleCommand {
             l_writer.write("[" + "Map" + "]\n");
             l_mapDetails = d_mapEditorEngine.getMapDetails();
 
-            for (String l_name : l_mapDetails.keySet()) {
-                String l_key = l_name;
-                String l_value = l_mapDetails.get(l_name);
-                System.out.println(l_key + "=" + l_value);
-                l_writer.write(l_key + "=" + l_value + "\n");
+            if (l_mapDetails != null) {
+                for (String l_name : l_mapDetails.keySet()) {
+                    String l_key = l_name;
+                    String l_value = l_mapDetails.get(l_name);
+                    l_writer.write(l_key + "=" + l_value + "\n");
+                }
+            } else {
+                l_writer.write("author=Iceworm72\n");
+                l_writer.write("image=002_I72_X-29.bmp\n");
+                l_writer.write("wrap=no\n");
+                l_writer.write("scroll=horizontalp\n");
+                l_writer.write("warn=no\n");
             }
-
             l_writer.write("\n[" + "Continents" + "]\n");
 
             for (Continent l_continents : d_mapEditorEngine.getContinentList()) {
@@ -70,7 +76,7 @@ public class SaveConquestMapService implements SingleCommand {
 
             for (Country l_country : d_mapEditorEngine.getCountryList()) {
                 String l_join = "";
-                l_writer.write(l_country.getCountryName() + "," + l_country.getXCoordinate() + "," + l_country.getYCoordinate() + "," + l_country.getContinent());
+                l_writer.write(l_country.getCountryName() + "," + l_country.getXCoordinate() + "," + l_country.getYCoordinate() + "," + l_country.getContinent().getContinentName());
                 for (Country l_neighbor : l_country.getNeighbourCountries()) {
                     l_join = String.join(",", l_join, l_neighbor.getCountryName());
                 }

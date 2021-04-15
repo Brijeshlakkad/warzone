@@ -4,10 +4,12 @@ import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.enums.FileType;
 import com.warzone.team08.VM.constants.enums.MapModelType;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
+import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.exceptions.*;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
+import com.warzone.team08.VM.repositories.ContinentRepository;
 import com.warzone.team08.VM.repositories.CountryRepository;
 import com.warzone.team08.VM.utils.FileUtil;
 import com.warzone.team08.VM.utils.PathResolverUtil;
@@ -35,6 +37,7 @@ public class EditConquestMapService implements SingleCommand {
      */
     private final MapEditorEngine d_mapEditorEngine;
     private final CountryRepository d_countryRepository;
+    private final ContinentRepository d_continentRepository;
     private final ContinentService d_continentService;
     private final CountryService d_countryService;
     private final LogEntryBuffer d_logEntryBuffer;
@@ -46,6 +49,7 @@ public class EditConquestMapService implements SingleCommand {
         d_MapDetails = new HashMap<>();
         d_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
         d_countryRepository = new CountryRepository();
+        d_continentRepository = new ContinentRepository();
         d_continentService = new ContinentService();
         d_countryService = new CountryService();
         d_logEntryBuffer = LogEntryBuffer.getLogger();
@@ -93,12 +97,11 @@ public class EditConquestMapService implements SingleCommand {
                         }
                         // Parsing the [Territories] portion of the map file
                         else if (this.doLineHasModelData(l_currentLine, MapModelType.TERRITORY)) {
-                            System.out.println("territories Tag Present");
                             readTerritories(l_reader);
                         }
                     }
                 }
-                return "File(Conquest map) successfully loaded";
+                return "File (Conquest map) successfully loaded";
             } catch (IOException e) {
                 throw new ResourceNotFoundException("File not found!");
             }
@@ -192,18 +195,21 @@ public class EditConquestMapService implements SingleCommand {
                     l_xCoordinate = l_terrProperties[1];
                     l_yCoordinate = l_terrProperties[2];
                     l_continentName = l_terrProperties[3];
+                    Continent l_continent = d_continentRepository.findFirstByContinentName(l_continentName);
                     for (int i = 4; i <= l_terrProperties.length - 1; i++) {
                         String l_neighbourCountryName = l_terrProperties[i];
-                        Country l_neighbour;
+                        Country l_neighbourCountry;
                         try {
-                            l_neighbour = d_countryRepository.findFirstByCountryName(l_neighbourCountryName);
-                            l_neighbourNodes.add(l_neighbour);
+                            l_neighbourCountry = d_countryRepository.findFirstByCountryName(l_neighbourCountryName);
+                            l_neighbourCountry.setContinent(l_continent);
+                            l_neighbourNodes.add(l_neighbourCountry);
                         } catch (EntityNotFoundException e) {
-                            l_neighbour = new Country(l_neighbourCountryName);
-                            l_neighbourNodes.add(l_neighbour);
+                            l_neighbourCountry = new Country(l_neighbourCountryName);
+                            l_neighbourCountry.setContinent(l_continent);
+                            l_neighbourNodes.add(l_neighbourCountry);
                         }
                     }
-                    d_countryService.add(l_countryName, l_continentName, l_neighbourNodes, l_xCoordinate, l_yCoordinate);
+                    d_countryService.add(l_countryName, l_continent, l_neighbourNodes, l_xCoordinate, l_yCoordinate);
                 }
             }
         } catch (IOException e) {

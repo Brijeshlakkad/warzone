@@ -19,7 +19,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * This class test the execution of the Aggressive Strategy.
@@ -101,27 +102,4 @@ public class AggressiveStrategyTest {
         }
         assertEquals(6, l_check.getOppositionCountry().getNumberOfArmies());
     }
-
-
-//    /**
-//     * checks that execute method working properly.
-//     *
-//     * @throws EntityNotFoundException  Throws if entity not found.
-//     * @throws InvalidArgumentException Throws if the input is invalid.
-//     * @throws InvalidOrderException    Throws if exception while executing the order.
-//     * @throws CardNotFoundException    Card doesn't found in the player's card list.
-//     */
-//    @Test
-//    public void testExecute2() throws EntityNotFoundException, InvalidArgumentException, InvalidOrderException, CardNotFoundException {
-//        Player l_player = d_playerList.get(0);
-//        l_player.setReinforcementCount(6);
-//        VirtualMachine.getGameEngine().setTournamentMode(true);
-//
-//        AggressiveStrategy l_check = new AggressiveStrategy(l_player);
-//        l_check.execute();
-//        for (Order l_travers : l_player.getOrders()) {
-//            l_travers.execute();
-//        }
-//        assertEquals(6,l_player.getAssignedCountries().get(0).getNumberOfArmies());
-//    }
 }

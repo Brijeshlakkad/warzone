@@ -91,7 +91,7 @@ public class Preload extends MapEditor {
         }
         // If no error occurred during preparing the tournament, start it.
         this.d_gameEngine.setGamePhase(new Reinforcement(d_gameEngine));
-        l_tournamentEngine.onStart();
+        l_tournamentEngine.onStart(false);
         return "";
     }
 

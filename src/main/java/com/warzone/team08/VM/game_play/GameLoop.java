@@ -48,12 +48,12 @@ public class GameLoop {
                 }
                 if (l_gameEngine.getGamePhase().getClass().equals(Execute.class)) {
                     l_gameEngine.getGamePhase().fortify();
-                    if (d_gamePlayEngine.checkIfGameIsOver()) {
-                        // If the game is over, break the main-game-loop.
-                        break;
-                    }
                 }
                 l_gameEngine.getGamePhase().nextState();
+                if (d_gamePlayEngine.checkIfGameIsOver()) {
+                    // If the game is over, break the main-game-loop.
+                    break;
+                }
             }
         } catch (VMException p_vmException) {
             VirtualMachine.getInstance().stderr(p_vmException.getMessage());

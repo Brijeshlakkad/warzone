@@ -189,6 +189,9 @@ public class Country implements JSONable {
      * @return X coordinate.
      */
     public String getXCoordinate() {
+        if (d_xCoordinate == null) {
+            return "0";
+        }
         return d_xCoordinate;
     }
 
@@ -207,6 +210,9 @@ public class Country implements JSONable {
      * @return Y coordinate.
      */
     public String getYCoordinate() {
+        if (d_yCoordinate == null) {
+            return "0";
+        }
         return d_yCoordinate;
     }
 

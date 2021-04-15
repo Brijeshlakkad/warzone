@@ -89,7 +89,6 @@ public class ShowMapService implements SingleCommand {
         if (!this.d_playerList.isEmpty()) {
             for (Player l_player : d_playerList) {
                 l_playerContent.append("Player " + (++l_playerCount) + "\n");
-                l_playerContent.append("Total Deployed Army (previously): " + (l_player.getReinforcementCount() - l_player.getRemainingReinforcementCount()) + "\n");
                 l_playerContent.append("Total Reinforcement Count: " + l_player.getReinforcementCount() + "\n");
                 if (l_player.getCards().size() <= 0) {
                     l_playerContent.append("Player doesn't have any card yet.\n");
