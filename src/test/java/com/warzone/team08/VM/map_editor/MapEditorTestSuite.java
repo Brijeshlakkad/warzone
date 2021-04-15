@@ -17,7 +17,9 @@ import org.junit.runners.Suite;
         ContinentServiceTest.class,
         ValidateMapServiceTest.class,
         CountryServiceTest.class,
-        CountryNeighborServiceTest.class
+        CountryNeighborServiceTest.class,
+        SaveMapServiceTest.class,
+        EditConquestMapServiceTest.class
 })
 public class MapEditorTestSuite {
     // This class remains empty, it is used only as a holder for the above annotations

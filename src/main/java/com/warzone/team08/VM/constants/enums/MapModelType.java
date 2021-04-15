@@ -8,6 +8,10 @@ package com.warzone.team08.VM.constants.enums;
  */
 public enum MapModelType {
     /**
+     * If map file contains Map tag.
+     */
+    MAP("Map"),
+    /**
      * If model data belongs to continents of map
      */
     CONTINENT("continents"),
@@ -18,8 +22,11 @@ public enum MapModelType {
     /**
      * If model data belongs to neighbours of the countries
      */
-    BORDER("borders");
-
+    BORDER("borders"),
+    /**
+     * If the model data belongs to territories.
+     */
+    TERRITORY("Territories");
     /**
      * Variable to set enum value.
      */

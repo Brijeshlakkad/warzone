@@ -4,10 +4,8 @@ import com.warzone.team08.VM.VirtualMachine;
 import com.warzone.team08.VM.constants.interfaces.SingleCommand;
 import com.warzone.team08.VM.entities.Continent;
 import com.warzone.team08.VM.entities.Country;
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidInputException;
-import com.warzone.team08.VM.exceptions.InvalidMapException;
-import com.warzone.team08.VM.exceptions.ResourceNotFoundException;
+import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.utils.FileUtil;
@@ -97,12 +95,11 @@ public class SaveMapService implements SingleCommand {
      *
      * @param p_commandValues Value of parameters entered by the user.
      * @return Value of string acknowledging user that the file is saved or not.
-     * @throws InvalidInputException     Throws if the file write operation was not successful.
-     * @throws InvalidMapException       Throws if the map was not valid.
-     * @throws ResourceNotFoundException Throws if the file resource not found or can not be created.
+     * @throws VMException Throws if error occurs in VM Engine operation.
      */
     @Override
-    public String execute(List<String> p_commandValues) throws InvalidInputException, InvalidMapException, ResourceNotFoundException, EntityNotFoundException {
+    public String execute(List<String> p_commandValues) throws
+            VMException {
         // Validates the map before saving the file.
         ValidateMapService l_validateObj = new ValidateMapService();
         l_validateObj.execute(null, "savemap");

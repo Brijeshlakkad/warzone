@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class MapEditorEngine implements Engine, JSONable {
     private List<Continent> d_continentList;
-
+    private HashMap<String, String> d_MapDetails;
     private boolean d_isLoadingMap = false;
 
     /**
@@ -232,5 +232,24 @@ public class MapEditorEngine implements Engine, JSONable {
             }
         }
         return l_mapEditorEngine;
+
+    }
+
+    /**
+     * Stores the information about the map file.
+     *
+     * @return Hashmap storing map info.
+     */
+    public HashMap<String, String> getMapDetails() {
+        return d_MapDetails;
+    }
+
+    /**
+     * Returns the hashmap storing map info.
+     *
+     * @param p_MapDetails mMp info.
+     */
+    public void setMapDetails(HashMap<String, String> p_MapDetails) {
+        d_MapDetails = p_MapDetails;
     }
 }

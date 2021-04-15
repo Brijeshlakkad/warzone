@@ -228,7 +228,7 @@ public class ValidateMapService implements SingleCommand {
      * @param p_headCommand   name of headCommand
      * @return Value of the response.
      * @throws InvalidMapException     If the map is not valid.
-     * @throws EntityNotFoundException If the entity not found.
+     * @throws EntityNotFoundException If any entity not found.
      */
     public String execute(List<String> p_commandValues, String p_headCommand) throws InvalidMapException, EntityNotFoundException {
         //Checks map has at least 1 continent
