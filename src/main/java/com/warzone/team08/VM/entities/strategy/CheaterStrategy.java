@@ -7,7 +7,6 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.entities.orders.DeployOrder;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
-import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,46 +18,45 @@ import java.util.List;
  * @author Brijesh Lakkad
  */
 public class CheaterStrategy extends PlayerStrategy {
-    private List<Country> d_ownedCountries;
-    private List<Country> d_cheatCountry;
-
+    /**
+     * Parameterised constructor to set the player.
+     *
+     * @param p_player Player of this strategy.
+     */
     public CheaterStrategy(Player p_player) {
         super(p_player);
     }
 
     /**
      * This method transfer ownership of all the neighbour enemy countries to the cheater player.
-     *
-     * @throws EntityNotFoundException Throws if not able to find Country.
      */
-    public void cheating() throws EntityNotFoundException {
-        List<String> a = new ArrayList<>();
-        CountryRepository l_repository = new CountryRepository();
-        Country l_transferOwner;
-        for (Country l_travers : d_ownedCountries) {
-            for (Country l_neighbour : l_travers.getNeighbourCountries()) {
-                if (!l_neighbour.getOwnedBy().equals(d_player)) {
-                    l_neighbour.setOwnedBy(d_player);
-                    a.add(l_neighbour.getCountryName());
+    public void doesCheat() {
+        List<Country> l_futureOwningCountryList = new ArrayList<>();
+        // Add countries to the cheater player
+        for (Country l_traverseCountry : d_player.getAssignedCountries()) {
+            for (Country l_neighbourCountry : l_traverseCountry.getNeighbourCountries()) {
+                if (!l_neighbourCountry.getOwnedBy().equals(d_player)) {
+                    l_futureOwningCountryList.add(l_neighbourCountry);
                 }
             }
         }
-        //add countries to the cheater player
-        for (String l_countryName : a) {
-            l_transferOwner = l_repository.findFirstByCountryName(l_countryName);
-            d_player.addAssignedCountries(l_transferOwner);
+        for (Country l_futureOwningCountry : l_futureOwningCountryList) {
+            l_futureOwningCountry.getOwnedBy().removeCountry(l_futureOwningCountry);
+        }
+        for (Country l_futureOwningCountry : l_futureOwningCountryList) {
+            l_futureOwningCountry.setOwnedBy(d_player);
+            d_player.addAssignedCountries(l_futureOwningCountry);
         }
     }
 
     /**
      * This function doubles the cheater player army which has enemy neighbour
      */
-    public void doublearmy() {
-        d_cheatCountry = d_player.getAssignedCountries();
-        for (Country l_travers : d_ownedCountries) {
-            for (Country l_neighbour : l_travers.getNeighbourCountries()) {
-                if (!l_neighbour.getOwnedBy().equals(d_player)) {
-                    l_travers.setNumberOfArmies(l_travers.getNumberOfArmies() * 2);
+    public void doubleArmies() {
+        for (Country l_traverseCountry : d_player.getAssignedCountries()) {
+            for (Country l_neighbourCountry : l_traverseCountry.getNeighbourCountries()) {
+                if (!l_neighbourCountry.getOwnedBy().equals(d_player)) {
+                    l_traverseCountry.setNumberOfArmies(l_traverseCountry.getNumberOfArmies() * 2);
                     break;
                 }
             }
@@ -70,37 +68,29 @@ public class CheaterStrategy extends PlayerStrategy {
      */
     @Override
     public void execute() throws EntityNotFoundException, InvalidArgumentException {
-        d_ownedCountries = d_player.getAssignedCountries();
-        int l_initial = 0;
-        for (Country c : d_ownedCountries) {
-            if (c.getNumberOfArmies() == 0) {
-                l_initial++;
-            }
-        }
-        if(VirtualMachine.getGameEngine().isTournamentModeOn() && d_player.getRemainingReinforcementCount()>0) {
-            if(l_initial == d_ownedCountries.size())
-            {
-                if (d_player.getAssignedCountries().size() > d_player.getRemainingReinforcementCount()) {
-                    for (int i = 0; i < d_player.getRemainingReinforcementCount(); i++) {
-                        DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(i).getCountryName(), String.valueOf(1), d_player);
-                        this.d_player.addOrder(l_deployOrder);
-                    }
-                } else {
-                    int l_assign = d_player.getRemainingReinforcementCount() / d_player.getAssignedCountries().size();
-                    for (int i = 0; i < d_player.getAssignedCountries().size() - 2; i++) {
-                        DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(i).getCountryName(), String.valueOf(l_assign), d_player);
-                        this.d_player.addOrder(l_deployOrder);
-                    }
-                    DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(d_ownedCountries.size() - 1).getCountryName(), String.valueOf(d_player.getRemainingReinforcementCount()), d_player);
+        List<Country> l_ownedCountries = d_player.getAssignedCountries();
+        if (VirtualMachine.getGameEngine().isTournamentModeOn() && d_player.getRemainingReinforcementCount() > 0) {
+            // If the player has less armies than the number of assigned countries.
+            if (d_player.getAssignedCountries().size() > d_player.getRemainingReinforcementCount()) {
+                for (int i = 0; i < d_player.getRemainingReinforcementCount(); i++) {
+                    DeployOrder l_deployOrder = new DeployOrder(l_ownedCountries.get(i).getCountryName(), String.valueOf(1), d_player);
                     this.d_player.addOrder(l_deployOrder);
                 }
-            }
-            else
-            {
-                cheating();
-                doublearmy();
+            } else {
+                // If the player has more armies than the number of assigned countries.
+                int l_remainingReinforcementCount = d_player.getRemainingReinforcementCount();
+                int l_assignReinforcementCount = d_player.getRemainingReinforcementCount() / d_player.getAssignedCountries().size();
+                for (int i = 0; i < d_player.getAssignedCountries().size() - 1; i++) {
+                    DeployOrder l_deployOrder = new DeployOrder(l_ownedCountries.get(i).getCountryName(), String.valueOf(l_assignReinforcementCount), d_player);
+                    this.d_player.addOrder(l_deployOrder);
+                    l_remainingReinforcementCount -= l_assignReinforcementCount;
+                }
+                DeployOrder l_deployOrder = new DeployOrder(l_ownedCountries.get(l_ownedCountries.size() - 1).getCountryName(), String.valueOf(l_remainingReinforcementCount), d_player);
+                this.d_player.addOrder(l_deployOrder);
             }
         }
+        doesCheat();
+        doubleArmies();
     }
 
     /**

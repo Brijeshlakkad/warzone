@@ -9,8 +9,6 @@ import com.warzone.team08.VM.entities.orders.*;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 
-import java.util.List;
-
 /**
  * This class defines the behavior of aggressive player.
  *
@@ -18,17 +16,11 @@ import java.util.List;
  * @author Brijesh Lakkad
  */
 public class AggressiveStrategy extends PlayerStrategy {
-    private List<Country> d_ownedCountries;
     private Country d_attackingCountry;
-    private Country d_oppositionsCountry;
-    private Country d_cardCountry;
-    private BombOrder d_bomb;
-    private AirliftOrder d_airlift;
-    private BlockadeOrder d_blockade;
-    private NegotiateOrder d_negotiate;
+    private Country d_oppositionCountry;
 
     /**
-     * caling super class constructor
+     * Calling super class constructor to provide the player of this strategy.
      *
      * @param p_player defines player
      */
@@ -39,25 +31,30 @@ public class AggressiveStrategy extends PlayerStrategy {
     /**
      * This method finds the strongest country of the aggressive player.
      */
-    public void deploy() {
-        int count = 0;
+    public void deployArmies() {
+        int l_currentArmies = 0;
 
-        for (Country c : d_ownedCountries) {
-            if (c.getNumberOfArmies() > count) {
-                count = c.getNumberOfArmies();
-                d_attackingCountry = c;
+        // Try to find the strongest country.
+        for (Country l_ownedCountry : d_player.getAssignedCountries()) {
+            for (Country l_neighborCountry : l_ownedCountry.getNeighbourCountries()) {
+                if (l_ownedCountry.getNumberOfArmies() > l_currentArmies &&
+                        !l_neighborCountry.getOwnedBy().equals(d_player)) {
+                    l_currentArmies = l_ownedCountry.getNumberOfArmies();
+                    d_attackingCountry = l_ownedCountry;
+                    d_oppositionCountry = l_neighborCountry;
+                }
             }
         }
-    }
-
-    /**
-     * This method finds opposite player's country, Which is neighbour of the deploy Country.
-     */
-    public void opposition() {
-        for (Country l_traverseCountry : d_attackingCountry.getNeighbourCountries()) {
-            if (!l_traverseCountry.getOwnedBy().equals(d_player)) {
-                d_oppositionsCountry = l_traverseCountry;
-                break;
+        if (d_attackingCountry == null) {
+            // Distribute the armies to a country that has a neighbor country owned by another player.
+            for (Country l_country : d_player.getAssignedCountries()) {
+                for (Country l_neighbourCountry : l_country.getNeighbourCountries()) {
+                    if (!l_neighbourCountry.getOwnedBy().equals(d_player)) {
+                        d_attackingCountry = l_country;
+                        d_oppositionCountry = l_neighbourCountry;
+                        break;
+                    }
+                }
             }
         }
     }
@@ -68,49 +65,63 @@ public class AggressiveStrategy extends PlayerStrategy {
      * @throws EntityNotFoundException  throws If not found
      * @throws InvalidArgumentException throws If enter invalid input
      */
-    public void cards() throws EntityNotFoundException, InvalidArgumentException {
-        int counter = 1;
+    public void consumeCard() throws EntityNotFoundException, InvalidArgumentException {
         if (d_player.hasCard(CardType.BOMB)) {
-            d_cardCountry = d_oppositionsCountry;
-            d_bomb = new BombOrder(d_cardCountry.getCountryName(), d_player);
-            counter--;
+            this.d_player.addOrder(new BombOrder(d_oppositionCountry.getCountryName(), d_player));
+            return;
         }
-        if (counter != 0 && d_player.hasCard(CardType.BLOCKADE)) {
-            int count = 0;
-            for (Country l_traverseCountry : d_attackingCountry.getNeighbourCountries()) {
-                if (!l_traverseCountry.getOwnedBy().equals(d_player) && l_traverseCountry.getNumberOfArmies() > count) {
-                    count = l_traverseCountry.getNumberOfArmies();
-                    d_cardCountry = l_traverseCountry;
+        // Checking if the player has blockade card.
+        if (d_player.hasCard(CardType.BLOCKADE)) {
+            int l_maximumReinforcementCount = 0;
+            Country l_targetCountry = null;
+            for (Country l_ownedCountry : d_player.getAssignedCountries()) {
+                for (Country l_traverseCountry : l_ownedCountry.getNeighbourCountries()) {
+                    if (!l_traverseCountry.getOwnedBy().equals(d_player)
+                            && l_traverseCountry.getNumberOfArmies() > l_maximumReinforcementCount) {
+                        l_maximumReinforcementCount = l_traverseCountry.getNumberOfArmies();
+                        l_targetCountry = l_ownedCountry;
+                    }
                 }
             }
-            d_blockade = new BlockadeOrder(d_cardCountry.getCountryName(), d_player);
-            counter--;
+            if (l_targetCountry != null)
+                this.d_player.addOrder(new BlockadeOrder(l_targetCountry.getCountryName(), d_player));
+            return;
         }
-        if (counter != 0 && d_player.hasCard(CardType.AIRLIFT)) {
-            int count = 0;
-            for (Country c : d_ownedCountries) {
-                if (c.getNumberOfArmies() > count && !c.equals(d_attackingCountry)) {
-                    count = c.getNumberOfArmies();
-                    d_cardCountry = c;
+        // Checking if the player has airlift card.
+        if (d_player.hasCard(CardType.AIRLIFT)) {
+            int l_maximumReinforcementCount = 0;
+            Country l_targetCountry = null;
+            for (Country l_traverseCountry : d_player.getAssignedCountries()) {
+                if (l_traverseCountry.getNumberOfArmies() > l_maximumReinforcementCount &&
+                        !l_traverseCountry.equals(d_attackingCountry)) {
+                    l_maximumReinforcementCount = l_traverseCountry.getNumberOfArmies();
+                    l_targetCountry = l_traverseCountry;
                 }
             }
-            d_airlift = new AirliftOrder(d_cardCountry.getCountryName(), d_attackingCountry.getCountryName(), String.valueOf(d_cardCountry.getNumberOfArmies() - 1), d_player);
-            counter--;
+            if (l_targetCountry != null)
+                this.d_player.addOrder(new AirliftOrder(l_targetCountry.getCountryName(),
+                        d_attackingCountry.getCountryName(),
+                        String.valueOf(Math.min(l_targetCountry.getNumberOfArmies() - 1, l_targetCountry.getNumberOfArmies())),
+                        d_player));
+            return;
         }
-        if (counter != 0 && d_player.hasCard(CardType.DIPLOMACY)) {
+        // Checking if the player has negotiate card.
+        if (d_player.hasCard(CardType.DIPLOMACY)) {
+            Country l_targetCountry = null;
             for (Country l_traverseCountry : d_attackingCountry.getNeighbourCountries()) {
                 if (!l_traverseCountry.getOwnedBy().equals(d_player)) {
-                    d_cardCountry = l_traverseCountry;
+                    l_targetCountry = l_traverseCountry;
                     break;
                 }
             }
-            d_negotiate = new NegotiateOrder(d_player, d_cardCountry.getOwnedBy().toString());
-            counter--;
+            if (l_targetCountry != null)
+                this.d_player.addOrder(new NegotiateOrder(d_player, l_targetCountry.getOwnedBy().getName()));
+            return;
         }
     }
 
     /**
-     * getter method for the country from which countries deploy
+     * Getter method for the country from which countries deploy
      *
      * @return the Country
      */
@@ -119,12 +130,12 @@ public class AggressiveStrategy extends PlayerStrategy {
     }
 
     /**
-     * getter method for fetch defending country
+     * Getter method for fetch defending country
      *
      * @return the country
      */
     public Country getOppositionCountry() {
-        return d_oppositionsCountry;
+        return d_oppositionCountry;
     }
 
     /**
@@ -132,50 +143,28 @@ public class AggressiveStrategy extends PlayerStrategy {
      */
     @Override
     public void execute() throws InvalidArgumentException, EntityNotFoundException {
-        d_ownedCountries = d_player.getAssignedCountries();
-        int l_initial = 0;
-        for (Country c : d_ownedCountries) {
-            if (c.getNumberOfArmies() == 0) {
-                l_initial++;
+        deployArmies();
+
+        int l_remainingReinforcementCount = d_player.getRemainingReinforcementCount();
+        if (VirtualMachine.getGameEngine().isTournamentModeOn() && l_remainingReinforcementCount > 0) {
+            // Distribute the armies to a country that has a neighbor country owned by another player.
+            if (d_attackingCountry != null) {
+                // Create a deploy order.
+                this.d_player.addOrder(new DeployOrder(d_attackingCountry.getCountryName(),
+                        String.valueOf(l_remainingReinforcementCount),
+                        d_player));
             }
         }
-        if(VirtualMachine.getGameEngine().isTournamentModeOn() && d_player.getRemainingReinforcementCount()>0) {
-            if (l_initial != d_ownedCountries.size()) {
-                deploy();
-                opposition();
-                cards();
 
-                DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getRemainingReinforcementCount()), d_player);
-                this.d_player.addOrder(l_deployOrder);
+        consumeCard();
 
-                int counter = 1;
-                if (d_player.hasCard(CardType.BOMB)) {
-                    this.d_player.addOrder(d_bomb);
-                    counter--;
-                }
-                if (d_player.hasCard(CardType.AIRLIFT) && counter == 1) {
-                    this.d_player.addOrder(d_airlift);
-                    counter--;
-                }
-                if (d_player.hasCard(CardType.BLOCKADE) && counter == 1) {
-                    this.d_player.addOrder(d_blockade);
-                    counter--;
-                }
-                if (d_player.hasCard(CardType.DIPLOMACY) && counter == 1) {
-                    this.d_player.addOrder(d_negotiate);
-                    counter--;
-                }
-                int l_temp = d_attackingCountry.getNumberOfArmies()+d_player.getReinforcementCount();
-                AdvanceOrder l_advanceOrder = new AdvanceOrder(d_attackingCountry.getCountryName(), d_oppositionsCountry.getCountryName(), String.valueOf(l_temp - 1), d_player);
-                this.d_player.addOrder(l_advanceOrder);
-            }
-            else
-            {
-                d_attackingCountry = d_player.getAssignedCountries().get(0);
-                DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getReinforcementCount()), d_player);
-                this.d_player.addOrder(l_deployOrder);
-            }
-        }
+        // Create an advance order.
+        AdvanceOrder l_advanceOrder = new AdvanceOrder(
+                d_attackingCountry.getCountryName(),
+                d_oppositionCountry.getCountryName(),
+                String.valueOf(d_attackingCountry.getNumberOfArmies() + l_remainingReinforcementCount - 1),
+                d_player);
+        this.d_player.addOrder(l_advanceOrder);
     }
 
     /**
