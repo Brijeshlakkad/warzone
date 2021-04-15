@@ -7,6 +7,7 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.entities.orders.*;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class AggressiveStrategy extends PlayerStrategy {
     private AirliftOrder d_airlift;
     private BlockadeOrder d_blockade;
     private NegotiateOrder d_negotiate;
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
 
     /**
      * caling super class constructor
@@ -134,6 +136,7 @@ public class AggressiveStrategy extends PlayerStrategy {
         deploy();
         opposition();
         cards();
+        d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_player.getName()));
         DeployOrder l_deployOrder = new DeployOrder(d_attackingCountry.getCountryName(), String.valueOf(d_player.getReinforcementCount()), d_player);
         this.d_player.addOrder(l_deployOrder);
 

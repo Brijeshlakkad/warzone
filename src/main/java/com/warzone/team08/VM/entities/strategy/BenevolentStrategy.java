@@ -10,6 +10,7 @@ import com.warzone.team08.VM.entities.orders.DeployOrder;
 import com.warzone.team08.VM.entities.orders.NegotiateOrder;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class BenevolentStrategy extends PlayerStrategy {
     private NegotiateOrder d_negotiate;
     private BlockadeOrder d_blockade;
     private AirliftOrder d_airlift;
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
 
     public BenevolentStrategy(Player p_player) {
         super(p_player);
@@ -128,6 +130,7 @@ public class BenevolentStrategy extends PlayerStrategy {
     @Override
     public void execute() throws InvalidArgumentException, EntityNotFoundException {
         deploy();
+        d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_player.getName()));
         for (int i = 0; i < d_ownedCountries.size(); i++) {
             DeployOrder l_deployOrder = new DeployOrder(d_ownedCountries.get(i).getCountryName(), String.valueOf(d_countriesArmyValues[i] - d_ownedCountries.get(i).getNumberOfArmies()), d_player);
             this.d_player.addOrder(l_deployOrder);

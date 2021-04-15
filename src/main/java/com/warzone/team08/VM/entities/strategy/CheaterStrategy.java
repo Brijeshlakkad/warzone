@@ -4,6 +4,7 @@ import com.warzone.team08.VM.constants.enums.StrategyType;
 import com.warzone.team08.VM.entities.Country;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.repositories.CountryRepository;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 public class CheaterStrategy extends PlayerStrategy {
     private List<Country> d_ownedCountries;
     private List<Country> d_cheatCountry;
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
 
     public CheaterStrategy(Player p_player) {
         super(p_player);
@@ -68,6 +70,7 @@ public class CheaterStrategy extends PlayerStrategy {
      */
     @Override
     public void execute() throws EntityNotFoundException {
+        d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_player.getName()));
         cheating();
         doublearmy();
     }
