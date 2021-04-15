@@ -3,6 +3,7 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" value="$USER_HOME$/Desktop/ZXY" />
+    <option name="OTHER_OPTIONS" value="-Xdoclint:all" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">

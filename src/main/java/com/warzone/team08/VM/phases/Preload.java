@@ -3,7 +3,7 @@ package com.warzone.team08.VM.phases;
 import com.warzone.team08.VM.GameEngine;
 import com.warzone.team08.VM.exceptions.InvalidMapException;
 import com.warzone.team08.VM.exceptions.VMException;
-import com.warzone.team08.VM.map_editor.services.Adapter;
+import com.warzone.team08.VM.map_editor.services.EditMapAdapter;
 import com.warzone.team08.VM.map_editor.services.EditConquestMapService;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import com.warzone.team08.VM.map_editor.services.ValidateMapService;
@@ -67,7 +67,7 @@ public class Preload extends MapEditor {
                 if (l_substring.equalsIgnoreCase("continents")) {
                     l_editMapService = new EditMapService();
                 } else if (l_substring.equalsIgnoreCase("Map")) {
-                    l_editMapService = new Adapter(new EditConquestMapService());
+                    l_editMapService = new EditMapAdapter(new EditConquestMapService());
                 } else {
                     throw new InvalidMapException("Unrecognised map file!");
                 }

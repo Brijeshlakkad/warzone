@@ -5,22 +5,22 @@ import com.warzone.team08.VM.exceptions.VMException;
 import java.util.List;
 
 /**
- * This class implements the behaviour of Adapter class.
+ * This class implements the behaviour of Adapter class to load the map file.
  *
  * @author CHARIT
  * @author Brijesh Lakkad
  * @version 1.0
  */
-public class Adapter extends EditMapService {
+public class EditMapAdapter extends EditMapService {
 
     private final EditConquestMapService d_editConquestMapService;
 
     /**
-     * Constructor to initialize the class object.
+     * Constructor to initialize <code>EditConquestMapService</code> class object.
      *
      * @param p_editConquestMapService Object of the EditConquestMapService.java class.
      */
-    public Adapter(EditConquestMapService p_editConquestMapService) {
+    public EditMapAdapter(EditConquestMapService p_editConquestMapService) {
         d_editConquestMapService = p_editConquestMapService;
     }
 

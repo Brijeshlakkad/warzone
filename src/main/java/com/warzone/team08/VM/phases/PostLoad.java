@@ -71,28 +71,19 @@ public class PostLoad extends MapEditor {
      */
     @Override
     public String saveMap(List<String> p_arguments) throws VMException, IOException {
-
-        if(!p_arguments.isEmpty())
-        {
-            if(p_arguments.get(2).equalsIgnoreCase("warzone"))
-            {
-                SaveMapService l_saveMapService = new SaveMapService();
-                return l_saveMapService.execute(p_arguments);
-            }
-            else if(p_arguments.get(2).equalsIgnoreCase("conquest"))
-            {
-                SaveConquestMapService l_saveConquestMapService = new SaveConquestMapService();
-                return l_saveConquestMapService.execute(p_arguments);
-            }
-            else
-            {
+        SaveMapService l_saveMapService;
+        if (!p_arguments.isEmpty()) {
+            if (p_arguments.get(2).equalsIgnoreCase("warzone")) {
+                l_saveMapService = new SaveMapService();
+            } else if (p_arguments.get(2).equalsIgnoreCase("conquest")) {
+                l_saveMapService = new SaveMapAdapter(new SaveConquestMapService());
+            } else {
                 throw new InvalidCommandException("Map type is not valid");
             }
-        }
-        else
-        {
+        } else {
             throw new InvalidInputException("Empty arguments found. Please provide required arguments.");
         }
+        return l_saveMapService.execute(p_arguments);
     }
 
     /**
