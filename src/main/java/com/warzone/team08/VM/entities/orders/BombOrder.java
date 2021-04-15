@@ -139,6 +139,10 @@ public class BombOrder extends Order {
      * <code>JSONObject</code>.
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     * @param p_player     Player who had issued this order.
+     * @return Created instance of this class using the provided JSON data.
+     * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
+     *                              the values.
      */
     public static BombOrder fromJSON(JSONObject p_jsonObject, Player p_player) throws InvalidGameException {
         try {

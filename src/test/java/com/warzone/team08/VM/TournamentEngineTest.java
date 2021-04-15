@@ -31,8 +31,8 @@ public class TournamentEngineTest {
     @BeforeClass
     public static void beforeClass() throws URISyntaxException {
         d_Application.handleApplicationStartup();
-        d_mapFiles.add(TournamentEngineTest.class.getClassLoader().getResource("map_files/test_earth.map").toURI().toString());
-        d_mapFiles.add(TournamentEngineTest.class.getClassLoader().getResource("map_files/test_craters.map").toURI().toString());
+        d_mapFiles.add(TournamentEngineTest.class.getClassLoader().getResource("test_map_files/test_earth.map").toURI().getPath());
+        d_mapFiles.add(TournamentEngineTest.class.getClassLoader().getResource("test_map_files/test_craters.map").toURI().getPath());
     }
 
     /**

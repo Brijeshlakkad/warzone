@@ -1,15 +1,11 @@
 package com.warzone.team08.VM.entities;
 
 import com.warzone.team08.VM.constants.interfaces.JSONable;
-import com.warzone.team08.VM.exceptions.EntityNotFoundException;
-import com.warzone.team08.VM.exceptions.InvalidGameException;
-import com.warzone.team08.VM.repositories.CountryRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * This class provides different getter-setter methods to perform different operation on Continent entity.
@@ -178,8 +174,9 @@ public class Continent implements JSONable {
      * <code>JSONObject</code>.
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     * @return Created instance of this class using the provided JSON data.
      */
-    public static Continent fromJSON(JSONObject p_jsonObject) throws InvalidGameException {
+    public static Continent fromJSON(JSONObject p_jsonObject) {
         Continent l_continent = new Continent();
         l_continent.setContinentName(p_jsonObject.getString("name"));
         l_continent.setContinentControlValue(p_jsonObject.getInt("controlValue"));

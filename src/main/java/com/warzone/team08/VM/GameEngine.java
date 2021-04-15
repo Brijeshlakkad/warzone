@@ -140,10 +140,11 @@ public class GameEngine implements JSONable {
     }
 
     /**
-     * set the tournament mode
+     * Set the tournament mode
+     *
+     * @param p_tournamentMode True if the tournament mode is on; false otherwise.
      */
-    public void setTournamentMode(boolean p_tournamentMode)
-    {
+    public void setTournamentMode(boolean p_tournamentMode) {
         d_isTournamentModeOn = p_tournamentMode;
     }
 
@@ -164,6 +165,7 @@ public class GameEngine implements JSONable {
      * <code>JSONObject</code>.
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     * @return Created instance of this class using the provided JSON data.
      * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
      *                              the values.
      */

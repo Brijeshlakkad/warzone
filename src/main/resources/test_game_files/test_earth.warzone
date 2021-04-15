@@ -104,7 +104,7 @@
                 "reinforceCount": 6
             }
         ],
-        "currentExecutionIndex": 1,
+        "currentExecutionIndex": 0,
         "currentPlayerForIssuePhase": 0,
         "currentPlayerForExecutionPhase": 0,
         "friendPlayerMappings": {

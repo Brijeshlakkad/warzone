@@ -218,8 +218,7 @@ public class Player implements JSONable {
             EntityNotFoundException,
             ExecutionException,
             InterruptedException,
-            InvalidArgumentException,
-            InvalidOrderException {
+            InvalidArgumentException {
         d_isDone = false;
         d_playerStrategy.execute();
         if (this.d_playerStrategy.getType() != StrategyType.HUMAN) {
@@ -363,8 +362,7 @@ public class Player implements JSONable {
     }
 
     /**
-     * <<<<<<< HEAD ======= Creates <code>JSONObject</code> using the runtime information stored in data members of this
-     * class.
+     * Creates <code>JSONObject</code> using the runtime information stored in data members of this class.
      *
      * @return Created <code>JSONObject</code>.
      */
@@ -403,6 +401,9 @@ public class Player implements JSONable {
      * <code>JSONObject</code>.
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
+     * @return Created instance of this class using the provided JSON data.
+     * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
+     *                              the values.
      */
     public static Player fromJSON(JSONObject p_jsonObject) throws InvalidGameException {
         StrategyType l_strategy;
@@ -444,7 +445,7 @@ public class Player implements JSONable {
     }
 
     /**
-     * >>>>>>> feature/save-load-game Gets the strategy type being used by this player.
+     * Gets the strategy type being used by this player.
      *
      * @return Type of strategy of the player.
      */

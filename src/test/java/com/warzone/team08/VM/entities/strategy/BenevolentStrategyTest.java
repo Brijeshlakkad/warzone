@@ -76,7 +76,7 @@ public class BenevolentStrategyTest {
     }
 
     /**
-     * checks that execute method working properly.
+     * Tests BenevolentStrategy#execute method and executes the order.
      *
      * @throws EntityNotFoundException  Throws if entity not found.
      * @throws InvalidArgumentException Throws if the input is invalid.
@@ -94,16 +94,16 @@ public class BenevolentStrategyTest {
 
         l_player.setReinforcementCount(3);
         VirtualMachine.getGameEngine().setTournamentMode(true);
-        BenevolentStrategy l_check = new BenevolentStrategy(l_player);
-        l_check.execute();
+        BenevolentStrategy l_benevolentStrategy = new BenevolentStrategy(l_player);
+        l_benevolentStrategy.execute();
 
-        for (Order l_travers : l_player.getOrders()) {
-            l_travers.execute();
+        for (Order l_order : l_player.getOrders()) {
+            l_order.execute();
         }
 
-        assertEquals(4, l_player.getAssignedCountries().get(0).getNumberOfArmies());
+        assertEquals(3, l_player.getAssignedCountries().get(0).getNumberOfArmies());
         assertEquals(4, l_player.getAssignedCountries().get(1).getNumberOfArmies());
-        assertEquals(4, l_player.getAssignedCountries().get(2).getNumberOfArmies());
+        assertEquals(5, l_player.getAssignedCountries().get(2).getNumberOfArmies());
         assertEquals(5, l_player.getAssignedCountries().get(3).getNumberOfArmies());
     }
 }

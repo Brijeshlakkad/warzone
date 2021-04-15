@@ -1,15 +1,20 @@
 package com.warzone.team08.VM;
 
+import com.jakewharton.fliptables.FlipTable;
+import com.warzone.team08.VM.entities.GameResult;
 import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GameLoop;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
-import com.warzone.team08.VM.map_editor.services.LoadMapService;
+import com.warzone.team08.VM.map_editor.services.EditMapService;
 import com.warzone.team08.VM.phases.PlaySetup;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This engine will be used when user has entered `tournament` command.
@@ -100,6 +105,15 @@ public class TournamentEngine {
     }
 
     /**
+     * Gets the number of games to be played.
+     *
+     * @return p_numberOfGames Number of games to be played.
+     */
+    public int getNumberOfGames() {
+        return d_numberOfGames;
+    }
+
+    /**
      * Gets the number of the maximum turns this tournament can have.
      *
      * @return Value of the number of maximum turns.
@@ -174,10 +188,10 @@ public class TournamentEngine {
                 // Prepare GameEngine for this tournament round.
                 VirtualMachine.setGameEngine(l_gameEngine);
 
-                LoadMapService l_loadMapService = new LoadMapService();
+                EditMapService l_editMapService = new EditMapService();
 
                 // Loading the map data will first remove the old at EditMapService
-                l_loadMapService.execute(Collections.singletonList(l_mapFilePath));
+                l_editMapService.handleLoadMap(l_mapFilePath, false);
 
                 l_gamePlayEngine.setPlayerList(this.getPlayers());
 
@@ -191,7 +205,9 @@ public class TournamentEngine {
                 if (d_playedGameEngineMappings.containsKey(d_currentGameIndex)) {
                     d_playedGameEngineMappings.get(d_currentGameIndex).add(l_gameEngine);
                 } else {
-                    d_playedGameEngineMappings.put(d_currentGameIndex, Collections.singletonList(l_gameEngine));
+                    List<GameEngine> l_gameEngineList = new ArrayList<>();
+                    l_gameEngineList.add(l_gameEngine);
+                    d_playedGameEngineMappings.put(d_currentGameIndex, l_gameEngineList);
                 }
                 d_gameLoop = new GameLoop(l_gamePlayEngine);
                 d_gameLoop.run();
@@ -204,6 +220,54 @@ public class TournamentEngine {
      * After the tournament ends, this method will be called to show the results in a tabular format.
      */
     public void onComplete() {
-        // TODO Milesh show the results here.
+        // For storing tournament result in tabular format.
+        String[][] l_gameResultMatrix = new String[this.getNumberOfGames()][d_mapFileList.size()];
+        List<String> l_playerNames = new ArrayList<>();
+        StringBuilder l_builder = new StringBuilder();
+
+        for (Player l_player : d_players) {
+            l_playerNames.add(l_player.getName());
+        }
+
+        l_builder.append("\n----Result of Tournament after Execution----\n");
+        l_builder.append("M: " + d_mapFileList.toString() + "\n");
+        l_builder.append("P: " + l_playerNames.toString() + "\n");
+        l_builder.append("G: " + this.getNumberOfGames() + "\n");
+        l_builder.append("D: " + this.getMaxNumberOfTurns() + "\n");
+
+        int l_count = 1;
+        for (int l_row = 0; l_row < d_mapFileList.size(); l_row++) {
+            l_gameResultMatrix[l_row][0] = "Map" + l_count;
+            l_count++;
+        }
+
+        int l_rowIndex = 0;
+        int l_columnIndex;
+        for (Map.Entry<Integer, List<GameEngine>> entry : d_playedGameEngineMappings.entrySet()) {
+            l_columnIndex = 0;
+            for (GameEngine l_singleGameEngine : entry.getValue()) {
+                GamePlayEngine l_gamePlayEngine = l_singleGameEngine.getGamePlayEngine();
+                GameResult l_gameResult = l_gamePlayEngine.getGameResult();
+
+                // Store the result.
+                if (l_gameResult.isDeclaredDraw()) {
+                    l_gameResultMatrix[l_rowIndex][l_columnIndex] = "Draw";
+                } else if (l_gameResult.getWinnerPlayer() != null) {
+                    l_gameResultMatrix[l_rowIndex][l_columnIndex] = l_gameResult.getWinnerPlayer().getName();
+                } else {
+                    l_gameResultMatrix[l_rowIndex][l_columnIndex] = "Interrupted";
+                }
+                l_columnIndex++;
+            }
+            l_rowIndex++;
+        }
+
+        String[] l_gameHeader = new String[d_mapFileList.size()];
+        l_gameHeader[0] = "Result";
+        for (int i = 1; i < l_gameHeader.length; i++) {
+            l_gameHeader[i] = "Game" + i;
+        }
+
+        VirtualMachine.getInstance().stdout(l_builder + FlipTable.of(l_gameHeader, l_gameResultMatrix));
     }
 }

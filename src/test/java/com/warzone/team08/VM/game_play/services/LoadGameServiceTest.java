@@ -99,7 +99,7 @@ public class LoadGameServiceTest {
         }
         JSONObject jsonObject = new JSONObject(l_fileContentBuilder.toString());
         l_loadGameService.loadGameState(jsonObject);
-        assertEquals(GamePlayEngine.getCurrentExecutionIndex(), 1);
+        assertEquals(GamePlayEngine.getCurrentExecutionIndex(), 0);
 
         MapEditorEngine l_mapEditorEngine = VirtualMachine.getGameEngine().getMapEditorEngine();
         assertEquals(l_mapEditorEngine.getContinentList().size(), 2);

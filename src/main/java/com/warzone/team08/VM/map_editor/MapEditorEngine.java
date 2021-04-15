@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class MapEditorEngine implements Engine, JSONable {
     private List<Continent> d_continentList;
-
+    private HashMap<String, String> d_MapDetails;
     private boolean d_isLoadingMap = false;
 
     /**
@@ -192,6 +192,7 @@ public class MapEditorEngine implements Engine, JSONable {
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
      * @param p_gameEngine Instance of target <code>GameEngine</code>.
+     * @return Created instance of this class using the provided JSON data.
      * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
      *                              the values.
      */
@@ -231,5 +232,24 @@ public class MapEditorEngine implements Engine, JSONable {
             }
         }
         return l_mapEditorEngine;
+
+    }
+
+    /**
+     * Stores the information about the map file.
+     *
+     * @return Hashmap storing map info.
+     */
+    public HashMap<String, String> getMapDetails() {
+        return d_MapDetails;
+    }
+
+    /**
+     * Returns the hashmap storing map info.
+     *
+     * @param p_MapDetails mMp info.
+     */
+    public void setMapDetails(HashMap<String, String> p_MapDetails) {
+        d_MapDetails = p_MapDetails;
     }
 }

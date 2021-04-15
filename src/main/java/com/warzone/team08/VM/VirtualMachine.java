@@ -158,7 +158,8 @@ public class VirtualMachine {
      * @param p_message Represents the message.
      */
     public void stdout(String p_message) {
-        d_userInterfaceMiddleware.stdout(p_message);
+        if (d_userInterfaceMiddleware != null)
+            d_userInterfaceMiddleware.stdout(p_message);
     }
 
     /**
@@ -167,6 +168,7 @@ public class VirtualMachine {
      * @param p_message Represents the error message.
      */
     public void stderr(String p_message) {
-        d_userInterfaceMiddleware.stderr(p_message);
+        if (d_userInterfaceMiddleware != null)
+            d_userInterfaceMiddleware.stderr(p_message);
     }
 }

@@ -369,6 +369,7 @@ public class GamePlayEngine implements Engine, JSONable {
      *
      * @param p_jsonObject <code>JSONObject</code> holding the runtime information.
      * @param p_gameEngine Instance of target <code>GameEngine</code>.
+     * @return Created instance of this class using the provided JSON data.
      * @throws InvalidGameException If the information from JSONObject cannot be used because it is corrupted or missing
      *                              the values.
      */

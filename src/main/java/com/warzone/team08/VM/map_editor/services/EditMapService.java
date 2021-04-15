@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This file loads map file in the user console.
+ * This file loads map file in the user console. This file acts as a Target class in adapter pattern.
  * <p>
  * This service handles `editmap` user command.
  *
@@ -137,7 +137,7 @@ public class EditMapService implements SingleCommand {
      * and stores those values in Continent class object using Continent class methods. This object is later stored in
      * the list.
      *
-     * @param p_reader object of BufferedReader
+     * @param p_reader Object of BufferedReader
      * @throws InvalidInputException Throws if the continent control value is not integer.
      * @throws InvalidMapException   Throws if error while reading file.
      * @throws AbsentTagException    Throws if the required element in line is not available.
@@ -294,18 +294,14 @@ public class EditMapService implements SingleCommand {
      */
     @Override
     public String execute(List<String> p_commandValues)
-            throws InvalidMapException,
-            ResourceNotFoundException,
-            InvalidInputException,
-            AbsentTagException,
-            EntityNotFoundException {
+            throws VMException {
         String l_response = "";
         if (!p_commandValues.isEmpty()) {
             // Resolve file path using absolute path of user data directory.
-            String resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));
-            int l_index = resolvedPathToFile.lastIndexOf('\\');
-            l_response = this.handleLoadMap(resolvedPathToFile);
-            d_logEntryBuffer.dataChanged("editmap", resolvedPathToFile.substring(l_index + 1) + " " + l_response);
+            String l_resolvedPathToFile = PathResolverUtil.resolveFilePath(p_commandValues.get(0));
+            int l_index = l_resolvedPathToFile.lastIndexOf('\\');
+            l_response = this.handleLoadMap(l_resolvedPathToFile);
+            d_logEntryBuffer.dataChanged("editmap", l_resolvedPathToFile.substring(l_index + 1) + " " + l_response);
             d_mapEditorEngine.setLoadingMap(false);
             return l_response;
         } else {

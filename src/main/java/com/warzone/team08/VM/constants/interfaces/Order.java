@@ -27,6 +27,8 @@ public abstract class Order implements JSONable {
 
     /**
      * Default constructor.
+     *
+     * @param p_player Player who issued this order.
      */
     public Order(Player p_player) {
         d_owner = p_player;

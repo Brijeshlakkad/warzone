@@ -1,12 +1,13 @@
 package com.warzone.team08.VM.phases;
 
 import com.warzone.team08.VM.GameEngine;
-import com.warzone.team08.VM.exceptions.InvalidCommandException;
-import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.common.services.LoadGameService;
 import com.warzone.team08.VM.common.services.SaveGameService;
+import com.warzone.team08.VM.exceptions.InvalidCommandException;
+import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.logger.LogEntryBuffer;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -103,10 +104,11 @@ public abstract class Phase {
      *
      * @param p_arguments Contains the filename.
      * @return Response value of the operation.
-     * @throws VMException If any exception during loading the map into engines.
+     * @throws VMException Throws if any exception during loading the map into engines.
+     * @throws IOException Throws if IO Exception occurs during execution.
      * @see com.warzone.team08.VM.map_editor.services.EditMapService
      */
-    abstract public String editMap(List<String> p_arguments) throws VMException;
+    abstract public String editMap(List<String> p_arguments) throws VMException, IOException;
 
     /**
      * Allows player to edit the continents on the map.
@@ -162,9 +164,10 @@ public abstract class Phase {
      * @param p_arguments Contains the filename.
      * @return Response value of the operation.
      * @throws VMException Base class of any exception during the operation.
+     * @throws IOException Throws if IO Exception occurs during execution.
      * @see com.warzone.team08.VM.map_editor.services.SaveMapService
      */
-    abstract public String saveMap(List<String> p_arguments) throws VMException;
+    abstract public String saveMap(List<String> p_arguments) throws VMException, IOException;
 
     /**
      * Adds the player for this game.

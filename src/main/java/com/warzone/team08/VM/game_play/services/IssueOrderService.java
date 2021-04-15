@@ -28,6 +28,8 @@ public class IssueOrderService {
      * <p>
      * If the player issues an order with reinforcements more than enough they possess, it will request the same player
      * again for a valid order.
+     *
+     * @throws InvalidOrderException If any exception while issuing the order for the player.
      */
     public void execute() throws InvalidOrderException {
         List<Player> finishedIssuingOrders = new ArrayList<>();

@@ -35,7 +35,9 @@ public class RandomStrategy extends PlayerStrategy {
     }
 
     /**
-     * This method finds opposite player's country, that is neighbour of the deploy Country.
+     * This method finds opposite player's country, that is neighbour of the randomly selected Country.
+     *
+     * @param p_randomCountry Random selected country.
      */
     public void findOppositionCountry(Country p_randomCountry) {
         for (Country l_neighbourCountry : p_randomCountry.getNeighbourCountries()) {
@@ -49,6 +51,7 @@ public class RandomStrategy extends PlayerStrategy {
     /**
      * This method is useful for create orders of the cards.
      *
+     * @param p_card Card to be used.
      * @throws EntityNotFoundException  throws If not found.
      * @throws InvalidArgumentException throws If enter invalid input.
      */
