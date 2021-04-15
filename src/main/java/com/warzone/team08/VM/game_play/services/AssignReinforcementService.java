@@ -75,9 +75,8 @@ public class AssignReinforcementService {
         boolean l_checkCountry = l_country.containsAll(p_countryList);
         if (l_checkCountry) {
             return p_continent.getContinentControlValue();
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     /**

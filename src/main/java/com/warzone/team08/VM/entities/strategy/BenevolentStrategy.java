@@ -6,6 +6,7 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.entities.orders.DeployOrder;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
  * @author Brijesh Lakkad
  */
 public class BenevolentStrategy extends PlayerStrategy {
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
+
     /**
      * Parameterised constructor to set the player.
      *
@@ -49,6 +52,7 @@ public class BenevolentStrategy extends PlayerStrategy {
             }
             DeployOrder l_deployOrder = new DeployOrder(l_ownedCountries.get(l_ownedCountries.size() - 1).getCountryName(), String.valueOf(l_remainingReinforcementCount), d_player);
             this.d_player.addOrder(l_deployOrder);
+            d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_player.getName()));
         }
     }
 

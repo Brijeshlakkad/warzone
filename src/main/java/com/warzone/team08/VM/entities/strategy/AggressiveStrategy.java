@@ -8,6 +8,7 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.entities.orders.*;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 /**
  * This class defines the behavior of aggressive player.
@@ -18,6 +19,7 @@ import com.warzone.team08.VM.exceptions.InvalidArgumentException;
 public class AggressiveStrategy extends PlayerStrategy {
     private Country d_attackingCountry;
     private Country d_oppositionCountry;
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
 
     /**
      * Calling super class constructor to provide the player of this strategy.
@@ -144,6 +146,7 @@ public class AggressiveStrategy extends PlayerStrategy {
     @Override
     public void execute() throws InvalidArgumentException, EntityNotFoundException {
         deployArmies();
+        d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_player.getName()));
 
         int l_remainingReinforcementCount = d_player.getRemainingReinforcementCount();
         if (VirtualMachine.getGameEngine().isTournamentModeOn() && l_remainingReinforcementCount > 0) {

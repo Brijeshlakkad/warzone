@@ -7,6 +7,7 @@ import com.warzone.team08.VM.exceptions.VMException;
 import com.warzone.team08.VM.game_play.GameLoop;
 import com.warzone.team08.VM.game_play.GamePlayEngine;
 import com.warzone.team08.VM.game_play.services.DistributeCountriesService;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 import com.warzone.team08.VM.map_editor.MapEditorEngine;
 import com.warzone.team08.VM.map_editor.services.EditMapService;
 import com.warzone.team08.VM.phases.PlaySetup;
@@ -52,6 +53,8 @@ public class TournamentEngine {
      * Maximum number of turns. After maximum turn passed, draw the game.
      */
     private int d_maxNumberOfTurns;
+
+    private LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
 
     /**
      * Main game loop.
@@ -267,7 +270,8 @@ public class TournamentEngine {
         for (int i = 1; i < l_gameHeader.length; i++) {
             l_gameHeader[i] = "Game" + i;
         }
-
-        VirtualMachine.getInstance().stdout(l_builder + FlipTable.of(l_gameHeader, l_gameResultMatrix));
+        String l_tournamentData=l_builder + FlipTable.of(l_gameHeader, l_gameResultMatrix);
+        d_logEntryBuffer.dataChanged("tournament",l_tournamentData);
+        VirtualMachine.getInstance().stdout(l_tournamentData);
     }
 }

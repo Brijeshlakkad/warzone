@@ -7,6 +7,7 @@ import com.warzone.team08.VM.entities.Player;
 import com.warzone.team08.VM.entities.orders.DeployOrder;
 import com.warzone.team08.VM.exceptions.EntityNotFoundException;
 import com.warzone.team08.VM.exceptions.InvalidArgumentException;
+import com.warzone.team08.VM.logger.LogEntryBuffer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.List;
  * @author Brijesh Lakkad
  */
 public class CheaterStrategy extends PlayerStrategy {
+    private final LogEntryBuffer d_logEntryBuffer = LogEntryBuffer.getLogger();
+
     /**
      * Parameterised constructor to set the player.
      *
@@ -91,6 +94,7 @@ public class CheaterStrategy extends PlayerStrategy {
         }
         doesCheat();
         doubleArmies();
+        d_logEntryBuffer.dataChanged("issue_order", String.format("%s player's turn to Issue Order", this.d_player.getName()));
     }
 
     /**
